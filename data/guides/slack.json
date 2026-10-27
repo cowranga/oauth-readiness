@@ -63,12 +63,14 @@
       "e6",
       "e10",
       "e16",
-      "e28"
+      "e28",
+      "e32",
+      "e33"
     ]
   },
   "composio": {
     "managedApp": "available",
-    "note": "Composio lists Slack (and a separate Slackbot toolkit) with managed OAuth, so you can start without your own Slack app. Users then see Composio on the install screen and you share its quota. Bring your own app when you need your name on the install screen, custom scopes, or your own rate limits. When you switch, only new connections use your app; existing users stay on the old one until they reconnect. Check with Composio whether its Slack app is Marketplace-listed, since that decides which history limit you get.",
+    "note": "Composio lists Slack (and a separate Slackbot toolkit) with managed OAuth, so you can start without your own Slack app. Users then see Composio on the install screen and you share its quota. Bring your own app when you need your name on the install screen, custom scopes, or your own rate limits. When you switch, only new connections use your app; existing users stay on the old one until they reconnect, or until you import their credentials where Composio supports it. Check with Composio whether its Slack app is Marketplace-listed, since that decides which history limit you get.",
     "evidenceIds": [
       "e21",
       "e22",
@@ -116,7 +118,9 @@
         "e6",
         "e16",
         "e5",
-        "e27"
+        "e27",
+        "e32",
+        "e33"
       ]
     },
     {
@@ -140,7 +144,8 @@
       "evidenceIds": [
         "e7",
         "e10",
-        "e12"
+        "e12",
+        "e35"
       ]
     }
   ],
@@ -282,7 +287,8 @@
       "agentCanHelp": false,
       "evidenceIds": [
         "e7",
-        "e12"
+        "e12",
+        "e35"
       ]
     },
     {
@@ -310,7 +316,7 @@
       "id": "r9",
       "item": "AI disclosures and no model training on Slack data",
       "stage": "production",
-      "detail": "Disclose the model, retention, and data residency in your listing, warn that output can be wrong, and never train a model on Slack data. Apps using the agent container should not store Slack data.",
+      "detail": "Disclose the model, retention, data tenancy, and data residency in your listing, warn that output can be wrong, and never train a model on Slack data. Agent apps must not store the Slack data they fetch. Store metadata and fetch the data when you need it.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e8",
@@ -356,13 +362,14 @@
     {
       "id": "s3",
       "stage": "prototype",
-      "title": "Turn on the agent features you need",
-      "detail": "If you want the split-view agent container, turn on the Agents & AI Apps feature in app settings. This adds assistant:write. The container needs a paid plan, so test in a sandbox and make sure the app still works on free plans.",
+      "title": "Turn on the agent feature if you need it",
+      "detail": "If you want the split-view agent container, turn on the Agents feature in app settings and check that assistant:write is in your scopes. Some AI features need a paid plan, so test in a free Developer Program sandbox and make sure the app still works on free plans.",
       "owner": "you",
       "estimate": "10 min",
       "evidenceIds": [
         "e8",
-        "e18"
+        "e18",
+        "e34"
       ]
     },
     {
@@ -416,11 +423,12 @@
       "id": "s8",
       "stage": "limited",
       "title": "Activate public distribution",
-      "detail": "Open Manage Distribution, complete the checklist (OAuth flow, HTTPS URLs, no hard-coded tokens), and click Activate Public Distribution. You get an Add to Slack button and a shareable install link.",
+      "detail": "Open Manage Distribution, complete the checklist (a working OAuth flow and HTTPS on every redirect and request URL), and click Activate Public Distribution. You get an Add to Slack button and a shareable install link. Slack does not review this step.",
       "owner": "you",
       "estimate": "15 min",
       "evidenceIds": [
-        "e2"
+        "e2",
+        "e33"
       ]
     },
     {
@@ -439,7 +447,7 @@
       "id": "s10",
       "stage": "limited",
       "title": "Send pilots the admin approval note",
-      "detail": "Many workspaces require app approval. Give each pilot customer the admin note draft so their workspace owner approves the app instead of ignoring the request.",
+      "detail": "Some workspaces require app approval. It is off by default, but common at larger companies and on Enterprise Grid. Give each pilot customer the admin note draft so their workspace owner approves the app instead of ignoring the request.",
       "owner": "you",
       "estimate": "15 min per customer",
       "evidenceIds": [
@@ -455,7 +463,8 @@
       "estimate": "weeks, depends on your sales",
       "evidenceIds": [
         "e7",
-        "e12"
+        "e12",
+        "e35"
       ]
     },
     {
@@ -478,7 +487,7 @@
       "title": "Wait for preliminary and functional review",
       "detail": "Slack checks your listing first, then a reviewer installs the app in their own workspace and tests it. Answer all feedback. Slack will not speed up review for a launch date.",
       "owner": "provider",
-      "estimate": "2 to 12 weeks, as Slack states",
+      "estimate": "Up to about 12 weeks, as Slack states",
       "evidenceIds": [
         "e10",
         "e11"
@@ -539,8 +548,8 @@
       ]
     },
     {
-      "symptom": "invalid_refresh_token or tokens stop working after 12 hours.",
-      "cause": "Token rotation is on and you reused an old refresh token. Each one works only once.",
+      "symptom": "Token refresh fails, or tokens stop working after 12 hours.",
+      "cause": "Token rotation is on and you reused an old refresh token. Each one works only once, after a short grace period.",
       "fix": "Always store the newest refresh token from each refresh. Rotation cannot be turned off.",
       "evidenceIds": [
         "e14"
@@ -603,8 +612,8 @@
   "uncertainties": [
     {
       "question": "Do the reduced history limits now apply to installs made before May 29, 2025?",
-      "why": "Slack's changelog says existing installs are not affected. A community article says the grace period ended on March 3, 2026, but it cites no Slack source and we found none.",
-      "howToResolve": "Ask Slack developer support, or check the rate limit headers on an old install of an unlisted app."
+      "why": "Slack's changelog says existing installs are not affected and gives no end date. A community article says the grace period ended on March 3, 2026, and a 2025 news report says September 2, 2025. Neither links a Slack source we could find.",
+      "howToResolve": "Ask Slack developer support, or check the response size and rate limit errors on an old install of an unlisted app."
     },
     {
       "question": "Does the 1 per minute limit apply to user tokens as well as bot tokens?",
@@ -694,7 +703,7 @@
     {
       "id": "e8",
       "level": "sourced",
-      "claim": "Marketplace AI apps must not train models on Slack data, must disclose the model and data retention, must warn about inaccurate output, and apps using the agent container must disclose the paid plan need and should not store Slack data.",
+      "claim": "Marketplace AI apps must not train models on Slack data, must disclose the model, data retention, tenancy, and residency, must warn about inaccurate output, and agent container apps must disclose the paid plan need. Agent apps may not store Slack data they obtain.",
       "sourceUrl": "https://docs.slack.dev/slack-marketplace/slack-marketplace-app-guidelines-and-requirements/",
       "sourceTitle": "Slack Marketplace app guidelines and requirements",
       "sourceKind": "official_policy",
@@ -821,7 +830,7 @@
     {
       "id": "e22",
       "level": "sourced",
-      "claim": "Existing connected accounts stay on the auth config they were created with. Only new connections use your custom config.",
+      "claim": "Existing connected accounts stay on the auth config they were created with. Only new connections use your custom config. To move existing users, they reconnect or you import their credentials where supported.",
       "sourceUrl": "https://docs.composio.dev/docs/white-labeling-authentication",
       "sourceTitle": "White-labeling authentication",
       "sourceKind": "composio_docs",
@@ -898,7 +907,124 @@
       "claim": "An unlisted app can read new messages through Events API message events without calling conversations.history, so the reduced limit mostly hurts backfill and on-demand thread reads.",
       "retrievedAt": "2026-10-28",
       "note": "The rate limit change names only conversations.history and conversations.replies. channels:history also grants message events. Not tested, and Marketplace AI rules still discourage storing message data."
+    },
+    {
+      "id": "e32",
+      "level": "sourced",
+      "claim": "A news report says Slack capped conversations.history and conversations.replies at 1 request a minute and 15 messages for apps not in the Marketplace, starting May 29, 2025 for new apps and new installs. Marketplace apps keep normal limits.",
+      "sourceUrl": "https://roboin.io/article/2025/06/03/slack-tightens-rate-limits-on-api-requests",
+      "sourceTitle": "Slack adds a 1 per minute limit to some APIs for non-Marketplace apps (Japanese)",
+      "sourceKind": "community",
+      "retrievedAt": "2026-10-28",
+      "note": "Independent second source for the history limit. It also says existing installs would be limited from September 2, 2025, which Slack's changelog no longer says."
+    },
+    {
+      "id": "e33",
+      "level": "sourced",
+      "claim": "Activating public distribution gives you an Add to Slack button and a shareable install URL. Many users will need admin approval before they can install your app.",
+      "sourceUrl": "https://trailhead.salesforce.com/content/learn/modules/preparing-and-distributing-your-slack-app/get-to-know-the-slack-app-types",
+      "sourceTitle": "Get to know the Slack app types (Trailhead)",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-28",
+      "note": "Second source for self-serve distribution. It does not mention any Slack review step for distributed apps."
+    },
+    {
+      "id": "e34",
+      "level": "sourced",
+      "claim": "After you create an agent app, app settings show an Agents feature in the sidebar and the assistant:write scope. Some AI features need a paid plan, and a free Developer Program sandbox has them.",
+      "sourceUrl": "https://docs.slack.dev/ai/developing-agents",
+      "sourceTitle": "Developing agents",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-28"
+    },
+    {
+      "id": "e35",
+      "level": "sourced",
+      "claim": "Apps must be installed on 10 or more active workspaces, used in the past 28 days, or they are blocked from submitting to the Marketplace.",
+      "sourceUrl": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide/",
+      "sourceTitle": "Slack Marketplace review guide",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-28"
     }
   ],
-  "changelog": []
+  "changelog": [
+    {
+      "at": "2026-10-28",
+      "change": "Added a news report (e32) and a Salesforce Trailhead page (e33) as second sources for the history limit and for self-serve public distribution.",
+      "reason": "Tier-deciding claims need a second independent source. Both match Slack's own pages.",
+      "evidenceIds": [
+        "e32",
+        "e33",
+        "e4",
+        "e2"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Step s13 estimate changed from 2 to 12 weeks to up to about 12 weeks.",
+      "reason": "Slack states only upper limits: up to 10 business days, then up to 10 weeks. It gives no 2 week minimum.",
+      "evidenceIds": [
+        "e10"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Requirement r9 and evidence e8 now say agent apps must not store Slack data, and list data tenancy as a disclosure.",
+      "reason": "The guidelines say agent apps may not store Slack data, which is stronger than should not.",
+      "evidenceIds": [
+        "e8"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Step s8 no longer lists removing hard-coded tokens as a checklist item.",
+      "reason": "The distribution page names OAuth and SSL as preparation. It does not mention hard-coded tokens.",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Step s3 now names the Agents feature and asks you to check that assistant:write is present.",
+      "reason": "The assistant:write scope page does not say the feature adds the scope. Slack's agent docs now call the sidebar feature Agents and list the scope with it.",
+      "evidenceIds": [
+        "e18",
+        "e34"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Step s10 changed from many workspaces require approval to some workspaces do, and notes it is off by default.",
+      "reason": "Slack's help article says members can install apps without approval by default. How common approval is, is not stated.",
+      "evidenceIds": [
+        "e16"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Token rotation blocker no longer names invalid_refresh_token as the error.",
+      "reason": "The token rotation page says reusing a refresh token fails but names no error code.",
+      "evidenceIds": [
+        "e14"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Composio note now mentions credential import as a second way to move existing users.",
+      "reason": "Composio's white-labeling page offers re-authentication or credential import.",
+      "evidenceIds": [
+        "e22"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Uncertainty about older installs now lists a second conflicting date (September 2, 2025) from a news report.",
+      "reason": "Two third-party sources give different end dates for the grace period. Slack's current changelog gives none.",
+      "evidenceIds": [
+        "e5",
+        "e27",
+        "e32"
+      ]
+    }
+  ]
 }
