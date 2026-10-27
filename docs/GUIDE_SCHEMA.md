@@ -154,7 +154,7 @@ interface Guide {
 
 ## Derived in UI code, not stored (pure functions, tested)
 
-- `tierForUseCases(guide, selected)`: hardest tier among scope tiers matching the selected chips, mapped from `reviewLevel` (none→1, light→2, review→3, review_plus_audit→4, partner_only→5); falls back to `verdict.tier`.
+- `tierForUseCases(guide, selected)`: hardest tier among scope tiers matching the selected chips, mapped from `reviewLevel` (none→1, light→2, review→3, review_plus_audit→4, partner_only→5); falls back to `verdict.tier`. As built, the result is floored at `min(verdict.tier, 2)` (tier 1 vs 2 is an app-level fact), and `lightestTierForUseCases` (per chip the lightest tier, then the hardest across chips) drives the "you may only need tier N" note.
 - `attemptDepth(guide)`: `human_setup` if any `tested` evidence; `portal_checked` if any `probe` evidence about the developer portal; `endpoints_probed` if any other `probed`; else `docs_read`.
 
 ## Evidence levels (UI legend text)

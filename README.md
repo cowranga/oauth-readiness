@@ -41,7 +41,7 @@ What I learned while building this:
 ## How it works
 
 1. **Normalize** the input (name or URL). Verified apps open instantly; anything else goes to the agent.
-2. **Research** with Claude (`claude-sonnet-5-5`): web search, opening pages, unauthenticated OAuth probes (discovery document, the authorize endpoint with a fake client ID, the developer portal), and a check of Composio's managed-app list. About 20 tool calls, with an 80-second research budget.
+2. **Research** with Claude (`claude-sonnet-5-5`): web search, opening pages, unauthenticated OAuth probes (discovery document, the authorize endpoint with a fake client ID, the developer portal), and a check of Composio's managed-app list. Up to 20 tool calls, with an 80-second research budget.
 3. **Write** the guide through a `submit_guide` tool whose schema comes from the same zod schema the app uses. If it does not validate, the agent gets one repair turn.
 4. **Check it in code:** a claim can only be "sourced" if the agent opened that page during the run, and only "probed" if a probe hit that URL. Probes the agent forgot to cite are added. Deterministic rules fix ranges, stages, labels, and confidence.
 5. **Save** the guide at a stable link and stream progress to the browser the whole time.

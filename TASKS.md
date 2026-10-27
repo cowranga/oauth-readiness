@@ -80,8 +80,8 @@ No 100-app catalog (decision, 2026-10-28). The 7 seeds are the library; the live
   6. Key decisions (5 to 8 bullets from DECISIONS.md).
   7. Setup: clone, `npm i`, `.env.local` from `.env.example`, `npm run dev`; mock mode; deploy notes (Vercel + Upstash for persistent links; maxDuration).
   8. Limitations (include harvested `ponytail:` markers) and what I would do next.
-- [ ] **8.2** Fill the "Where" column in docs/ASSIGNMENT.md traceability.
-- [ ] **8.3** Final code-reviewer pass on the whole repo; apply must-fix items.
+- [x] **8.2** Fill the "Where" column in docs/ASSIGNMENT.md traceability.
+- [x] **8.3** Final code-reviewer pass on the whole repo; apply must-fix items.
 - [ ] **8.4** Fill `docs/MORNING_HANDOFF.md`. Final commit.
 
 ## Phase 9: Stretch (only if everything above is done)

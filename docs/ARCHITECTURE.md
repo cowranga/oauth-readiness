@@ -4,6 +4,8 @@ Small, boring, deployable. Pure logic in `lib/`, side effects at the edges (rout
 
 ## Layout
 
+As built, the tree also has: `lib/agent/{audit,generate}.ts` (evidence audit, shared CLI/route entry point), `lib/api/` (SSE helpers, rate limit), `lib/composio/managed.ts`, `lib/eval/compare.ts`, `lib/guide/{attempt,progress,url}.ts`, `lib/net/htmlText.ts`, `lib/store/{seeds,types}.ts`, `components/`, and `scripts/{live-tests.sh,validate-guide.ts}`. The original plan follows.
+
 ```
 app/
   page.tsx                      home: search, generate input, library grid
@@ -32,7 +34,7 @@ lib/
 data/
   guides/<slug>.json            verified seed guides (read-only at runtime)
 scripts/
-  generate.ts                   CLI wrapper around agent/run.ts
+  generate.ts                   CLI wrapper around agent/generate.ts
   eval.ts                       generator vs seed comparison -> docs/EVAL.md
   check-secrets.sh
 verification/
@@ -45,7 +47,7 @@ tests/
 ## Before implementing: verify these in docs (Task 0)
 
 Do not code from memory. Fetch and record findings + URLs in DECISIONS.md:
-- Anthropic Messages API: current server-side web search tool type string and options (`max_uses`, domain filters), current web fetch tool if any, `tool_choice` forcing a specific tool, streaming, prompt caching. Start at https://docs.claude.com/en/docs_site_map.md
+- Anthropic Messages API: current server-side web search tool type string and options (`max_uses`, domain filters), current web fetch tool if any, `tool_choice` forcing a specific tool (rejected by claude-sonnet-5-5, see DECISIONS.md), streaming, prompt caching. Start at https://docs.claude.com/en/docs_site_map.md
 - Current model IDs. Default `claude-sonnet-5-5` (quality/latency balance); `claude-haiku-5-5` is the cheap option. Make it `GUIDE_MODEL` env.
 - Vercel function max duration for route handlers on the Hobby plan; set `export const maxDuration` accordingly and note it in README.
 - How to tell if a Composio toolkit has a managed app without an API key (toolkit docs pages, possibly `.md` variants of docs URLs). With `COMPOSIO_API_KEY` set, docs say `GET https://backend.composio.dev/api/v3.1/toolkits/<slug>` with header `x-api-key` lists managed auth schemes. Support both; default to the keyless method.
@@ -64,7 +66,7 @@ input -> normalize -> [seed match?] -> research loop -> synthesis -> postprocess
    - `probe_oauth(input)`: unauthenticated probes (below).
    - `check_composio_managed(appName)`: managed app status.
    Budgets: max 20 tool calls, soft deadline 100s. On budget or deadline, stop researching and synthesize with what we have; the prompt tells the model to lower confidence and list gaps.
-4. **Synthesis.** (As built: `claude-sonnet-5-5` rejects forced `tool_choice`, so `submit_guide` is offered with `tool_choice: auto`, the prompt says to call it, and a text-only turn gets one nudge. See DECISIONS.md.) Same conversation, force `tool_choice` to `submit_guide` whose `input_schema` is generated from the zod schema (omit fields the server fills: slug, origin, generatedAt, generator).
+4. **Synthesis.** (As built: `claude-sonnet-5-5` rejects forced `tool_choice`, so `submit_guide` is offered with `tool_choice: auto`, the prompt says to call it, and a text-only turn gets one nudge. See DECISIONS.md.) Same conversation, offer `submit_guide` whose `input_schema` is generated from the zod schema (omit fields the server fills: slug, origin, generatedAt, generator).
 5. **Validate.** zod parse. On failure, send the zod issues back once and ask for a corrected `submit_guide`. Second failure: emit `error` with a clear message.
 6. **Postprocess.** Deterministic rules from GUIDE_SCHEMA.md.
 7. **Persist.** Live slug = `<appslug>-<6 random base36>`; immutable. Store, then emit `done {slug}`.

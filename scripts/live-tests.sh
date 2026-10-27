@@ -29,4 +29,5 @@ echo "== Prompt v2 re-runs for docs/EVAL.md"
 run v2-microsoft "Microsoft Outlook" microsoft-outlook
 run v2-linkedin "LinkedIn" linkedin
 
+echo "v2 guides written: $(ls verification/raw/*.v2.json 2>/dev/null | wc -l | tr -d " ") (expect 2)"
 npm run eval > /dev/null && echo "docs/EVAL.md updated"
