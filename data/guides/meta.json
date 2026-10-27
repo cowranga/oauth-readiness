@@ -334,7 +334,7 @@
       "id": "r9",
       "item": "Data handling questions answered",
       "stage": "production",
-      "detail": "Unlocks after business verification.",
+      "detail": "Meta asks these only after business verification passes.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e10"
@@ -602,7 +602,7 @@
     ],
     "canDoForYou": [
       "Write the OAuth flow, token exchange, and Page token storage code.",
-      "Make the one API call per permission that unlocks the review request.",
+      "Make the one API call per permission that Meta requires before you can request review.",
       "Draft usage descriptions, reviewer test instructions, and data handling answers for you to check.",
       "Check that your website, Business Info, and documents use the same name, address, and phone.",
       "Fill App Settings fields in a browser while you watch, after you sign in."
