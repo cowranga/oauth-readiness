@@ -62,6 +62,7 @@ Review levels for scope tiers: none = tier 1, light = tier 2, review = tier 3, r
 - Every wait range must point at evidence. If no source states it, say "our estimate" in the stage notes and back it with an inferred item.
 - Report numbers exactly as the source gives them. Do not round up ("about 4 months" is not "over 4 months"). A vendor or blog table is community evidence, not "developers report", unless it describes real reports.
 - When two official pages disagree, cite both and add an uncertainty. Do not pick one silently.
+- If a source gives only an upper bound, write "up to". Only give a date for a policy change if a page you opened states that date.
 - Confidence: high only if the tier-deciding claim has 2 or more independent non-inferred sources, one official. Medium with 1 official source. Low otherwise.
 
 # Guide content rules
