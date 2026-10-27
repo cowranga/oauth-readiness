@@ -40,7 +40,8 @@
       "e13",
       "e14",
       "e18",
-      "e25"
+      "e25",
+      "e35"
     ]
   },
   "verdict": {
@@ -125,7 +126,7 @@
         "max": 7
       },
       "reviewRequired": true,
-      "notes": "Meta says App Review takes about a week. A forum report shows the dashboard estimating about 10 days. Business verification comes first and a WhatsApp partner reports up to 14 business days for it. Each rejection adds another review cycle. WhatsApp onboarding is capped at 200 new customers a week after approval.",
+      "notes": "Meta says App Review takes about a week. A forum report shows the dashboard estimating about 10 days. Business verification comes first and a WhatsApp partner reports up to 14 business days for it. Each rejection adds another review cycle. WhatsApp onboarding starts at 10 new customers a week and rises to 200 after verification and review.",
       "evidenceIds": [
         "e7",
         "e10",
@@ -140,17 +141,16 @@
     {
       "name": "Log in only",
       "exampleScopes": [
-        "public_profile",
-        "email"
+        "public_profile"
       ],
       "reviewLevel": "none",
       "useCases": [
         "read"
       ],
-      "effect": "public_profile is granted to every app. Enough to identify the user, not to touch their Pages or messages.",
+      "effect": "public_profile is granted to every app. Enough to identify the user, not to touch their Pages or messages. The email permission is not automatic: its entry points to App Review, so plan to request Advanced Access for it.",
       "evidenceIds": [
         "e1",
-        "e16"
+        "e37"
       ]
     },
     {
@@ -221,11 +221,13 @@
         "write",
         "offline"
       ],
-      "effect": "Tech Provider onboarding: business verification first, then App Review with two videos. Then 200 new client businesses a week; more needs Meta Business Partner status.",
+      "effect": "Tech Provider onboarding: business verification first, then App Review with two videos. You start at 10 new client businesses a week, raised to 200 after verification and review. More needs Meta Business Partner status.",
       "evidenceIds": [
         "e18",
         "e19",
-        "e20"
+        "e20",
+        "e22",
+        "e36"
       ]
     },
     {
@@ -295,7 +297,7 @@
       "agentCanHelp": true,
       "evidenceIds": [
         "e10",
-        "e5"
+        "e38"
       ]
     },
     {
@@ -382,7 +384,7 @@
       "id": "s3",
       "stage": "prototype",
       "title": "Add your redirect URI",
-      "detail": "In the Facebook Login for Business settings, add your HTTPS callback URL, for example your Composio or app callback. Send exactly that value in the authorize request.",
+      "detail": "In the Facebook Login (or Facebook Login for Business) settings, add your HTTPS callback URL under Valid OAuth redirect URIs, for example your Composio or app callback. Send exactly that value in the authorize request and the code exchange.",
       "owner": "you",
       "estimate": "15 min",
       "evidenceIds": [
@@ -406,7 +408,7 @@
       "id": "s5",
       "stage": "prototype",
       "title": "Call every permission once",
-      "detail": "With your own test Page and accounts, make at least one successful API call per permission you will request. Meta needs this logged within 30 days before you submit.",
+      "detail": "With your own test Page and accounts, make at least one successful API call per permission you will request. Meta needs this logged within 30 days of submitting, and logging can take up to 2 days. The Graph API Explorer works too.",
       "owner": "agent",
       "estimate": "30 to 60 min",
       "evidenceIds": [
@@ -435,7 +437,7 @@
       "evidenceIds": [
         "e10",
         "e11",
-        "e5"
+        "e38"
       ]
     },
     {
@@ -446,14 +448,15 @@
       "owner": "you",
       "estimate": "30 min",
       "evidenceIds": [
-        "e10"
+        "e10",
+        "e38"
       ]
     },
     {
       "id": "s9",
       "stage": "production",
       "title": "Record one screencast per permission",
-      "detail": "Show a user granting the permission and your app using it. 1080p or higher, English UI, captions, no audio, a large cursor. Request only permissions you can show.",
+      "detail": "Show a user granting the permission and your app using it. 1080p or higher, screen width 1440 or less, English UI if you can, no audio, a large cursor. Add captions where the UI is not in English or not self-explanatory. Request only permissions you can show.",
       "owner": "you",
       "estimate": "2 to 6 hours",
       "evidenceIds": [
@@ -518,7 +521,7 @@
     {
       "symptom": "The Request advanced access button is grayed out.",
       "cause": "Meta has not logged a successful API call for that permission in the last 30 days.",
-      "fix": "Make one successful call with that permission from your test account, wait for it to register, then retry.",
+      "fix": "Make one successful call with that permission from your test account or the Graph API Explorer. Logging can take up to 2 days. Then retry.",
       "evidenceIds": [
         "e6"
       ]
@@ -569,10 +572,12 @@
     },
     {
       "symptom": "Embedded Signup stops onboarding new WhatsApp clients for the week.",
-      "cause": "You hit the limit of 10 (or 200 after review) new businesses per rolling 7 days.",
-      "fix": "Finish verification and review to reach 200. Above that, apply to be a Meta Business Partner.",
+      "cause": "You hit the limit of new businesses per rolling 7 days: 10 by default, 200 after Business Verification and App Review.",
+      "fix": "Finish verification and review to reach 200. Meta's Embedded Signup page also lists Access Verification, which Meta has since retired, so check the limit shown in WhatsApp Manager. Above 200, apply to be a Meta Business Partner.",
       "evidenceIds": [
-        "e20"
+        "e20",
+        "e22",
+        "e36"
       ]
     },
     {
@@ -651,7 +656,7 @@
     },
     {
       "question": "Is Access Verification still part of the WhatsApp onboarding limit?",
-      "why": "The Access Verification page says it is no longer required, but the Embedded Signup page still lists it to raise the limit to 200.",
+      "why": "The Access Verification page says it is no longer required, and a news report dates the retirement to October 9, 2026. The Embedded Signup page still lists it as one of three steps to raise the limit to 200.",
       "howToResolve": "Check the limit shown in your WhatsApp Manager after review, or ask Meta developer support."
     },
     {
@@ -701,7 +706,7 @@
     {
       "id": "e4",
       "level": "sourced",
-      "claim": "Apps used by anyone without a role on the app must pass App Review. If reviewers cannot access the app, the entire submission is rejected.",
+      "claim": "Apps used by anyone without a role on the app, or a role in a Business that has claimed the app, must pass App Review. If reviewers cannot access the app, the entire submission is rejected.",
       "retrievedAt": "2026-10-28",
       "sourceUrl": "https://developers.facebook.com/docs/app-review",
       "sourceTitle": "App Review",
@@ -710,7 +715,7 @@
     {
       "id": "e5",
       "level": "sourced",
-      "claim": "Each permission or feature needs its own screen recording showing a user granting it and how the app uses it: at least 1080p, monitor width 1440 or less, English UI, captions, no audio.",
+      "claim": "Each permission or feature needs its own screen recording showing a user granting it and how the app uses it: at least 1080p, monitor width 1440 or less, English UI if possible, captions where the UI is not self-explanatory, no audio.",
       "retrievedAt": "2026-10-28",
       "sourceUrl": "https://developers.facebook.com/docs/resp-plat-initiatives/individual-processes/app-review/submission-guide",
       "sourceTitle": "App Review submission guide",
@@ -719,7 +724,7 @@
     {
       "id": "e6",
       "level": "sourced",
-      "claim": "You must make at least one successful API call for each permission you request, within 30 days before submitting. The request button stays grayed out until a call is logged.",
+      "claim": "You must make at least one successful API call for each permission you request, within 30 days of submitting. The request button stays grayed out until a call is logged, which can take up to 2 days. The Graph API Explorer counts.",
       "retrievedAt": "2026-10-28",
       "sourceUrl": "https://developers.facebook.com/docs/resp-plat-initiatives/individual-processes/app-review/submission-guide",
       "sourceTitle": "App Review submission guide",
@@ -846,7 +851,7 @@
     {
       "id": "e20",
       "level": "sourced",
-      "claim": "You cannot onboard WhatsApp customers through Embedded Signup until each required permission has Advanced Access. Default limit is 10 new business customers per rolling 7 days, raised to 200 after verification and review. Above 200 you must apply to be a Meta Business Partner.",
+      "claim": "You cannot onboard WhatsApp customers through Embedded Signup until each required permission has Advanced Access. The default limit is 10 new business customers per rolling 7 days. The page says it rises to 200 automatically after Business Verification, App Review, and Access Verification. Above 200 you must apply to be a Meta Business Partner.",
       "retrievedAt": "2026-10-28",
       "sourceUrl": "https://developers.facebook.com/docs/whatsapp/embedded-signup",
       "sourceTitle": "Embedded Signup",
@@ -947,7 +952,7 @@
     {
       "id": "e31",
       "level": "sourced",
-      "claim": "A developer on Meta's forum reported in May 2026 that the dashboard showed a review window of about 10 days, and the review was still pending after 13 days with no reply.",
+      "claim": "A developer on Meta's forum reported in early June 2026 that the dashboard said most requests are reviewed within 10 days, and their request was still pending after 13 days with no update.",
       "retrievedAt": "2026-10-28",
       "sourceUrl": "https://developers.facebook.com/community/threads/2119529588613973/",
       "sourceTitle": "App Review pending for 13 days",
@@ -976,11 +981,108 @@
     },
     {
       "id": "e35",
-      "level": "inferred",
-      "claim": "The redirect URI for Facebook Login is set in the app dashboard under the Facebook Login (for Business) settings and must match the one you send.",
+      "level": "sourced",
+      "claim": "Valid OAuth redirect URIs are set in the App Dashboard under Facebook Login > Settings > Client OAuth Settings. The redirect_uri in the code exchange must be the same as the one used to start login. The manual flow page does not mention PKCE.",
       "retrievedAt": "2026-10-28",
-      "note": "Not re-read this run. Standard OAuth behavior and the first-pass generator output; check the Facebook Login settings page in your dashboard."
+      "sourceUrl": "https://developers.facebook.com/docs/facebook-login/guides/advanced/manual-flow",
+      "sourceTitle": "Manually Build a Login Flow",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e36",
+      "level": "sourced",
+      "claim": "Meta retired Access Verification for apps that access business data, in a developer blog post dated October 9, 2026. Developers no longer wait on a separate access review before going live.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://socialmediatoday.com/news/meta-removes-access-verification-for-developers/832678",
+      "sourceTitle": "Social Media Today: Meta removes access verification for developers",
+      "sourceKind": "community",
+      "note": "Secondary report of Meta's post. It does not mention the Embedded Signup limit."
+    },
+    {
+      "id": "e37",
+      "level": "sourced",
+      "claim": "public_profile is automatically granted to all apps. The email permission's review entry points to App Review and does not say it is automatic.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/permissions",
+      "sourceTitle": "Permissions Reference",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e38",
+      "level": "sourced",
+      "claim": "Data handling questions appear only after business verification is approved. Answers are evaluated right away, which can take up to 30 seconds. The app icon must be 1024x1024 and contain no Meta trademarks or logos.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/resp-plat-initiatives/individual-processes/app-review/submission-guide",
+      "sourceTitle": "App Review submission guide",
+      "sourceKind": "official_docs"
     }
   ],
-  "changelog": []
+  "changelog": [
+    {
+      "at": "2026-10-28",
+      "change": "Said the WhatsApp onboarding limit starts at 10 a week and reaches 200 after verification and review. Noted that the Embedded Signup page still lists Access Verification, which Meta retired.",
+      "reason": "The blocker said only '10 (or 200 after review)'. Meta's page names three steps for 200, one of them now retired. Production notes and the WhatsApp tier mentioned only the 200 cap.",
+      "evidenceIds": [
+        "e20",
+        "e22",
+        "e36"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Fixed the date of the forum report on App Review waits.",
+      "reason": "The request was pending since May 21, 2026 and the post came 13 days later, so early June, not May.",
+      "evidenceIds": [
+        "e31"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Added that a logged API call can take up to 2 days to show, and that Graph API Explorer calls count.",
+      "reason": "The submission guide says both. Without this you may retry too early.",
+      "evidenceIds": [
+        "e6"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Made screencast captions conditional and English UI 'if you can'.",
+      "reason": "The submission guide asks for captions only when the app is not in English or parts are not self-explanatory.",
+      "evidenceIds": [
+        "e5"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Removed email from the no-review Log in only tier and said it needs App Review for Advanced Access.",
+      "reason": "The Permissions Reference says only public_profile is automatic. The email entry points to App Review.",
+      "evidenceIds": [
+        "e37"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Upgraded the redirect URI claim from inferred to sourced and named the exact setting.",
+      "reason": "The manual login flow page names Valid OAuth redirect URIs under Client OAuth Settings and says the exchange must reuse the same redirect_uri.",
+      "evidenceIds": [
+        "e35"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Cited the submission guide for 'answers are checked right away' and for the 1024x1024 icon rule.",
+      "reason": "The App Review content page cited before does not say either. The submission guide does.",
+      "evidenceIds": [
+        "e38"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Added that people with a role in a Business that claimed the app also count as having a role.",
+      "reason": "The App Review page says so.",
+      "evidenceIds": [
+        "e4"
+      ]
+    }
+  ]
 }

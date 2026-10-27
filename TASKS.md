@@ -45,8 +45,8 @@ No 100-app catalog (decision, 2026-10-28). The 7 seeds are the library; the live
 
 ## Phase 5: Seed guides (150 min)
 
-- [ ] **5.1 First pass.** If key present: generate v1 for all 7 seeds → `verification/raw/<slug>.v1.json`.
-- [ ] **5.2 Deep research.** Spawn `oauth-researcher` per seed (max 3 at once): google-gmail, meta, microsoft-outlook, salesforce, github, slack, linkedin (this order: hardest and most distinct first, so a short night still gets them). Each writes `verification/notes/<slug>.md` and `data/guides/<slug>.json`.
+- [x] **5.1 First pass.** If key present: generate v1 for all 7 seeds → `verification/raw/<slug>.v1.json`.
+- [x] **5.2 Deep research.** Spawn `oauth-researcher` per seed (max 3 at once): google-gmail, meta, microsoft-outlook, salesforce, github, slack, linkedin (this order: hardest and most distinct first, so a short night still gets them). Each writes `verification/notes/<slug>.md` and `data/guides/<slug>.json`.
   - Accept: all seed files pass schema tests; each has drafts relevant to that app (e.g. Google: scope justifications + demo video script); render each guide page and read it top to bottom as the developer would. Fix anything confusing.
 
 ## Phase 6: Verification and eval (130 min)

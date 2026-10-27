@@ -46,3 +46,10 @@
 - verified: `npm test` 104 pass incl. mock route stream ending in done; `npm run build` ok; `MOCK_AGENT=1 npm run start` + curl: all pages 200, unknown slug 404, SSE ends with done, md endpoint ok; Playwright (cached browser): checking a step sets ?done=s1, chip sets ?use=, tier updates, home -> generate -> guide flow works; screenshots in docs/screenshots at 375 and 1280.
 - fixes found by looking: global link color overrode nav utilities (scoped to class-less links), sidebar tier now captioned as "your tier for <chips>", generate timer no longer renders Date.now() on the server (intermittent hydration warning).
 - next: Phase 4 code review; Phase 5 research agents running (google-gmail, meta, microsoft-outlook).
+
+## 2026-10-28T01:30Z Tasks 5.1 to 5.2: Seed guides
+- changed: data/guides/{google-gmail,meta,microsoft-outlook,salesforce,github,slack,linkedin}.json and verification/notes/*.md from oauth-researcher subagents (max 3 at once, hardest first).
+- verified: validate-guide prints ok for all 7 (28 to 44 evidence items each, nothing tested); `npm test` 115 pass incl. per-seed schema tests; all 7 pages render with no console errors and no overflow at 375px; read Slack and Google guides top to bottom.
+- tiers: Google 4, Meta 3, Microsoft 3 (+gate), LinkedIn 3, Slack 2 (read+write chips show 3), Salesforce 2 (+gate), GitHub 2 (+gate).
+- note: the Salesforce researcher read JS-only official docs through the human's Chrome tab (read-only); later briefs forbid the browser extension.
+- next: claim-verifier runs (Google done; Meta, Microsoft, GitHub running), then Slack, Salesforce, LinkedIn.
