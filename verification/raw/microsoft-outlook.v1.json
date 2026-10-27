@@ -1,0 +1,509 @@
+{
+  "app": {
+    "name": "Microsoft Outlook (Outlook mail and calendar via Microsoft Graph)",
+    "provider": "Microsoft",
+    "website": "https://learn.microsoft.com/en-us/graph/outlook-mail-concept-overview",
+    "category": "Email and calendar",
+    "developerPortalUrl": "https://entra.microsoft.com"
+  },
+  "oauth": {
+    "support": "oauth2_oidc",
+    "pkce": "supported",
+    "alternatives": "Microsoft Graph is the current API. Use delegated permissions (acting as the signed-in user) for user-connected agents. Application permissions (no user) need tenant admin consent and are not suited to personal inboxes.",
+    "appTypes": [
+      {
+        "name": "Multitenant app (work/school accounts, or plus personal accounts)",
+        "whenToUse": "Use this for an agent product. Users from any organization, and personal Outlook.com accounts if you pick that option, can connect. Set sign-in audience to common."
+      },
+      {
+        "name": "Single-tenant app",
+        "whenToUse": "Use only for internal tools. Only users in your own tenant (organization directory) can sign in."
+      }
+    ],
+    "evidenceIds": [
+      "e1",
+      "e2",
+      "e5"
+    ]
+  },
+  "verdict": {
+    "tier": 2,
+    "label": "Self-serve, optional review",
+    "summary": "You register a multitenant app in Microsoft Entra and any user can connect with no Microsoft approval, but unverified publishers hit warnings and org admins can block consent. Publisher verification (free, quick) is the practical gate for enterprise customers.",
+    "nextStep": "Register a multitenant app at entra.microsoft.com (App registrations) with offline_access and Mail.Read, then start publisher verification in parallel.",
+    "customerSideGate": true,
+    "customerSideGateNote": "Tenant admins can disable user consent, limit it to verified publishers and low-impact permissions, or require an admin consent workflow. Expect enterprise users to need admin approval for mail-write scopes.",
+    "confidence": "medium",
+    "evidenceIds": [
+      "e1",
+      "e2",
+      "e3",
+      "e4"
+    ]
+  },
+  "composio": {
+    "managedApp": "available",
+    "note": "Composio lists Outlook under managed OAuth, so you can start today. Moving to your own Entra app later only affects new connections. Existing users must reconnect.",
+    "evidenceIds": [
+      "e6"
+    ]
+  },
+  "stages": [
+    {
+      "id": "prototype",
+      "name": "Prototype on Composio managed app or your own unverified app",
+      "whoCanConnect": "Users in your own tenant. Users in other tenants can connect only where consent is allowed, and may see an unverified publisher warning or be blocked.",
+      "handsOnHours": {
+        "min": 1,
+        "max": 3
+      },
+      "waitDays": {
+        "min": 0,
+        "max": 0
+      },
+      "reviewRequired": false,
+      "notes": "No Microsoft review exists for basic use.",
+      "evidenceIds": [
+        "e1",
+        "e3"
+      ]
+    },
+    {
+      "id": "production",
+      "name": "Production with your own verified app",
+      "whoCanConnect": "Any user whose tenant allows consent for your permissions. Personal Microsoft accounts need no publisher verification.",
+      "handsOnHours": {
+        "min": 4,
+        "max": 12
+      },
+      "waitDays": {
+        "min": 0,
+        "max": 14
+      },
+      "providerStatedWaitDays": {
+        "min": 0,
+        "max": 1
+      },
+      "reviewRequired": false,
+      "notes": "Microsoft says verification can finish in minutes if prerequisites are met. The wait is mostly getting a verified Partner Center account, which can take longer. The wait range is an estimate, not a sourced number. Microsoft 365 App Certification is optional and is a separate, longer program.",
+      "evidenceIds": [
+        "e2",
+        "e3",
+        "e4"
+      ]
+    }
+  ],
+  "scopeTiers": [
+    {
+      "name": "Sign-in and offline",
+      "exampleScopes": [
+        "openid",
+        "profile",
+        "offline_access",
+        "User.Read"
+      ],
+      "reviewLevel": "none",
+      "useCases": [
+        "read",
+        "offline"
+      ],
+      "effect": "Users can consent themselves. offline_access returns a refresh token.",
+      "evidenceIds": [
+        "e5"
+      ]
+    },
+    {
+      "name": "Mail and calendar read",
+      "exampleScopes": [
+        "Mail.Read",
+        "Calendars.Read"
+      ],
+      "reviewLevel": "light",
+      "useCases": [
+        "read"
+      ],
+      "effect": "Beyond basic sign-in, so unverified multitenant apps can see the risky-app warning or be blocked when step-up consent is on. Publisher verification fixes this.",
+      "evidenceIds": [
+        "e2",
+        "e3"
+      ]
+    },
+    {
+      "name": "Mail and calendar write",
+      "exampleScopes": [
+        "Mail.ReadWrite",
+        "Mail.Send",
+        "Calendars.ReadWrite"
+      ],
+      "reviewLevel": "light",
+      "useCases": [
+        "write"
+      ],
+      "effect": "Same as above, and tenant admins often require admin consent for these in locked-down tenants.",
+      "evidenceIds": [
+        "e2",
+        "e4"
+      ]
+    },
+    {
+      "name": "Tenant-wide or all-mailbox access",
+      "exampleScopes": [
+        "Mail.Read (application permission)",
+        "Mail.ReadWrite (application permission)"
+      ],
+      "reviewLevel": "light",
+      "useCases": [
+        "admin",
+        "read",
+        "offline"
+      ],
+      "effect": "Needs admin consent by a tenant admin. No Microsoft review, but customers must trust you.",
+      "evidenceIds": [
+        "e4"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "r1",
+      "item": "Microsoft Entra work or school account to register the app",
+      "stage": "prototype",
+      "detail": "Needed to register apps and later to publisher verify. Apps registered with a personal Microsoft account cannot be verified.",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "id": "r2",
+      "item": "HTTPS redirect URI on your domain, exact match",
+      "stage": "production",
+      "detail": "Register your callback URL under Authentication. The redirect URI must exactly match a registered one. Localhost is fine for dev.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e5"
+      ]
+    },
+    {
+      "id": "r3",
+      "item": "Verified Microsoft AI Cloud Partner Program account (partner global account)",
+      "stage": "production",
+      "detail": "Free. Its email domain must match your app publisher domain or be a DNS-verified custom domain in the tenant. Not *.onmicrosoft.com.",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "id": "r4",
+      "item": "Admin roles and MFA for the person verifying",
+      "stage": "production",
+      "detail": "Application Administrator or Cloud Application Administrator in Entra, plus CPP Partner Admin or Account Admin in Partner Center, signed in with MFA.",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e2"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "stage": "prototype",
+      "title": "Register the app",
+      "detail": "Go to entra.microsoft.com, Entra ID, App registrations, New registration. Choose multitenant plus personal accounts if you want Outlook.com users. Add a Web redirect URI.",
+      "owner": "you",
+      "estimate": "20 min",
+      "url": "https://entra.microsoft.com",
+      "evidenceIds": [
+        "e5"
+      ]
+    },
+    {
+      "id": "s2",
+      "stage": "prototype",
+      "title": "Create a client secret or certificate",
+      "detail": "Under Certificates and secrets, add a secret. Store it server side. Web apps need it for the token call.",
+      "owner": "you",
+      "estimate": "10 min",
+      "evidenceIds": [
+        "e5"
+      ]
+    },
+    {
+      "id": "s3",
+      "stage": "prototype",
+      "title": "Add delegated permissions",
+      "detail": "Under API permissions, add Microsoft Graph delegated permissions: offline_access, User.Read, Mail.Read (add write scopes only if needed).",
+      "owner": "you",
+      "estimate": "10 min",
+      "evidenceIds": [
+        "e5"
+      ]
+    },
+    {
+      "id": "s4",
+      "stage": "prototype",
+      "title": "Test the auth code flow",
+      "detail": "Send users to /common/oauth2/v2.0/authorize with scope including offline_access, then redeem the code at /token. Confirm you receive a refresh_token.",
+      "owner": "agent",
+      "estimate": "1-2 hours",
+      "evidenceIds": [
+        "e5",
+        "e7"
+      ]
+    },
+    {
+      "id": "s5",
+      "stage": "production",
+      "title": "Set the publisher domain and branding",
+      "detail": "Under Branding and properties, set a custom publisher domain (not onmicrosoft.com), logo, homepage, privacy and terms URLs.",
+      "owner": "you",
+      "estimate": "1 hour",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "id": "s6",
+      "stage": "production",
+      "title": "Get a verified Partner Center account",
+      "detail": "Enroll in the Microsoft AI Cloud Partner Program and complete verification. Use the partner global account, not a location ID.",
+      "owner": "you",
+      "estimate": "1-7 days wait",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "id": "s7",
+      "stage": "production",
+      "title": "Mark the app as publisher verified",
+      "detail": "In the app registration, Branding and properties, add the Partner One ID under Publisher domain and verification. Sign in with MFA.",
+      "owner": "you",
+      "estimate": "30 min",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "id": "s8",
+      "stage": "production",
+      "title": "Test in an external tenant with user consent restricted",
+      "detail": "Check that a user from another org sees a blue verified badge and that the admin consent workflow request path works.",
+      "owner": "you",
+      "estimate": "2 hours",
+      "evidenceIds": [
+        "e3",
+        "e4"
+      ]
+    },
+    {
+      "id": "s9",
+      "stage": "production",
+      "title": "Move Composio connections to your app",
+      "detail": "Add your client ID and secret as a custom auth config in Composio. Existing users must reconnect.",
+      "owner": "agent",
+      "estimate": "1 hour",
+      "evidenceIds": [
+        "e6"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "symptom": "Consent screen warns the app is from an unverified publisher, or users cannot consent",
+      "cause": "Multitenant app registered after Nov 2020, unverified, requesting more than basic sign-in, with risk-based step-up consent on.",
+      "fix": "Complete publisher verification.",
+      "escalation": "Microsoft Entra publisher verification troubleshooting docs; Microsoft Q&A tag microsoft-entra.",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "symptom": "User sees 'Approval required' or 'Need admin approval'",
+      "cause": "The user's tenant disabled user consent or limits it to verified publishers and low-impact permissions.",
+      "fix": "Ask the customer admin to grant tenant-wide consent or approve the request via the admin consent workflow. Request fewer scopes.",
+      "escalation": "The customer's Entra admin.",
+      "evidenceIds": [
+        "e4"
+      ]
+    },
+    {
+      "symptom": "Publisher verification fails",
+      "cause": "Using a location Partner One ID, a personal-account-registered app, an onmicrosoft.com domain, or missing roles or MFA.",
+      "fix": "Use the partner global account, register with a work account, set a verified custom domain, and use an account with required roles.",
+      "escalation": "Partner Center support.",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "symptom": "No refresh token returned",
+      "cause": "offline_access scope was not requested.",
+      "fix": "Add offline_access to the scope parameter.",
+      "escalation": "Microsoft Graph docs.",
+      "evidenceIds": [
+        "e5"
+      ]
+    },
+    {
+      "symptom": "Redirect URI mismatch error",
+      "cause": "The redirect URI differs from a registered one.",
+      "fix": "Register the exact URL.",
+      "escalation": "Entra app registration page.",
+      "evidenceIds": [
+        "e5"
+      ]
+    }
+  ],
+  "agentAssist": {
+    "didForYou": [
+      "Read Microsoft publisher verification, Graph delegated auth, and user/admin consent docs",
+      "Probed the Microsoft authorize endpoint and portal",
+      "Checked Composio managed OAuth for Outlook"
+    ],
+    "canDoForYou": [
+      "Draft publisher domain, privacy policy and app description text",
+      "Build and test the auth code flow with offline_access",
+      "Set up the Composio custom auth config"
+    ],
+    "youMustDo": [
+      "Register the app in Entra",
+      "Create the Partner Center account and do the verification with MFA",
+      "Verify DNS for your domain",
+      "Accept Microsoft terms"
+    ]
+  },
+  "drafts": [
+    {
+      "kind": "scope_justification",
+      "title": "Scope justification (for customer admins)",
+      "body": "Our assistant reads your users' Outlook mail and calendar to summarize and draft replies. We request Mail.Read and Calendars.Read to show message and event content. We request Mail.ReadWrite or Mail.Send only when a user turns on drafting or sending. We request offline_access so the assistant can sync without asking the user to sign in again. We store tokens encrypted and delete them when the user disconnects. Users can revoke access at any time."
+    }
+  ],
+  "uncertainties": [
+    {
+      "question": "Exact refresh token lifetime and revocation rules",
+      "why": "The fetched Graph page was truncated and states only that refresh tokens are long lived.",
+      "howToResolve": "Read the Microsoft identity platform refresh token docs."
+    },
+    {
+      "question": "Real-world wait for Partner Center verification",
+      "why": "No source gave a timeline beyond 'minutes' once prerequisites are met.",
+      "howToResolve": "Start enrollment early and track it."
+    },
+    {
+      "question": "Whether Microsoft 365 App Certification is needed by large customers",
+      "why": "Not researched in depth. It is optional per docs.",
+      "howToResolve": "Check Microsoft 365 App Certification docs."
+    },
+    {
+      "question": "Recent changes in the last 18 months",
+      "why": "Pages I read did not list dated changes.",
+      "howToResolve": "Check Microsoft Entra What's new."
+    },
+    {
+      "question": "Product choice",
+      "why": "Outlook mail and calendar via Microsoft Graph was chosen. Alternatives are Exchange EWS (being retired) and Outlook REST (retired).",
+      "howToResolve": "Confirm which API you need."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "e1",
+      "level": "sourced",
+      "claim": "Microsoft Graph uses OAuth 2.0 authorization code flow with the Microsoft identity platform, and the app registers in Microsoft Entra ID.",
+      "sourceUrl": "https://learn.microsoft.com/en-us/graph/auth-v2-user",
+      "sourceTitle": "Get access on behalf of a user",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e2",
+      "level": "sourced",
+      "claim": "Publisher verification is free, needs a verified Partner Center account, work/school registration, a custom publisher domain and MFA, and can finish in minutes.",
+      "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity-platform/publisher-verification-overview",
+      "sourceTitle": "Publisher verification overview",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e3",
+      "level": "sourced",
+      "claim": "Since Nov 2020, with step-up consent on, users cannot consent to new unverified multitenant apps requesting beyond basic sign-in; a warning appears.",
+      "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity-platform/publisher-verification-overview",
+      "sourceTitle": "Publisher verification overview",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e4",
+      "level": "sourced",
+      "claim": "Admins can disable user consent, limit it to verified publishers and low-impact permissions, or run an admin consent workflow.",
+      "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/user-admin-consent-overview",
+      "sourceTitle": "Overview of user and admin consent",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e5",
+      "level": "sourced",
+      "claim": "offline_access yields a refresh token; redirect URI must exactly match; localhost is allowed in examples; tenant value common covers personal and work accounts.",
+      "sourceUrl": "https://learn.microsoft.com/en-us/graph/auth-v2-user",
+      "sourceTitle": "Get access on behalf of a user",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e6",
+      "level": "sourced",
+      "claim": "Composio lists Outlook under managed OAuth.",
+      "sourceUrl": "https://docs.composio.dev/toolkits/managed-auth",
+      "sourceTitle": "Composio managed auth",
+      "sourceKind": "composio_docs",
+      "retrievedAt": "2026-10-27",
+      "note": "From check_composio_managed result; page not opened."
+    },
+    {
+      "id": "e7",
+      "level": "probed",
+      "claim": "Authorization endpoint is live and shows sign-in; client ID is checked after sign-in. No discovery doc at the bare host path.",
+      "sourceUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=oauth-guide-probe-invalid&redirect_uri=https%3A%2F%2Fexample.com%2Fcallback&state=probe&scope=offline_access+Mail.Read",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Endpoint live, sign-in page shown."
+    },
+    {
+      "id": "e_probe_1",
+      "level": "probed",
+      "claim": "No OAuth discovery document at https://login.microsoftonline.com/.well-known/openid-configuration (HTTP 404).",
+      "sourceUrl": "https://login.microsoftonline.com/.well-known/openid-configuration",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Recorded automatically from the probe this run made."
+    },
+    {
+      "id": "e_probe_2",
+      "level": "probed",
+      "claim": "Developer portal at https://entra.microsoft.com answers a signed-out visitor with HTTP 200. The page may still ask you to sign in once it loads in a browser.",
+      "sourceUrl": "https://entra.microsoft.com",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Recorded automatically from the probe this run made."
+    }
+  ],
+  "schemaVersion": 1,
+  "slug": "microsoft-outlook-s1xssr",
+  "input": {
+    "query": "Microsoft Outlook",
+    "kind": "name"
+  },
+  "origin": "live",
+  "generatedAt": "2026-10-27T20:40:04.636Z",
+  "generator": {
+    "model": "claude-sonnet-5-5",
+    "promptVersion": "v1",
+    "durationMs": 45534
+  },
+  "changelog": []
+}

@@ -1,0 +1,569 @@
+{
+  "app": {
+    "name": "Meta (Facebook Login and Graph API: Pages, Instagram)",
+    "provider": "Meta Platforms",
+    "website": "https://developers.facebook.com",
+    "category": "Social / Marketing",
+    "developerPortalUrl": "https://developers.facebook.com/apps/"
+  },
+  "oauth": {
+    "support": "oauth2",
+    "pkce": "unknown",
+    "alternatives": "This guide covers Facebook Login with the Graph API. Meta is also several other products (Instagram, WhatsApp, Threads, Ads). Each has its own flow.",
+    "appTypes": [
+      {
+        "name": "Business type app (Facebook Login, multi-tenant)",
+        "whenToUse": "Use this for an agent product where many users connect their own Facebook Pages or Instagram professional accounts. Any user outside your app roles needs approved permissions."
+      },
+      {
+        "name": "Facebook Login for Business",
+        "whenToUse": "Consider it if your customers are businesses who grant access to assets (Pages, ad accounts) through Business Manager. Not verified this run; check the docs."
+      },
+      {
+        "name": "Instagram Business Login / WhatsApp Cloud API",
+        "whenToUse": "Separate products with their own flows. Pick them only if you need Instagram without a Facebook Page, or WhatsApp messaging. Not researched in depth."
+      }
+    ],
+    "evidenceIds": [
+      "e5",
+      "e6",
+      "e_probe_1"
+    ]
+  },
+  "verdict": {
+    "tier": 3,
+    "label": "Review required",
+    "summary": "Meta chose to run this as the Facebook Login and Graph API (Pages, Instagram) guide. App Review plus Business Verification must pass before anyone without a role on your app can grant permissions.",
+    "nextStep": "Create a Business type app at developers.facebook.com/apps, then start Business Verification in Settings > Basic while you build the prototype.",
+    "customerSideGate": false,
+    "customerSideGateNote": "Users need a role on the Page or Business asset they connect. Business Manager admins may restrict app access, but I did not confirm a formal admin-consent flow.",
+    "confidence": "medium",
+    "evidenceIds": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "composio": {
+    "managedApp": "available",
+    "note": "Composio lists Facebook under managed OAuth, so you can start today without your own app. Moving to your own app later only affects new connections. Existing users must reconnect.",
+    "evidenceIds": [
+      "e8"
+    ]
+  },
+  "stages": [
+    {
+      "id": "prototype",
+      "name": "Prototype (app roles only)",
+      "whoCanConnect": "Only people with a role on your app (admin, developer, tester). They can grant any permission with no review.",
+      "handsOnHours": {
+        "min": 2,
+        "max": 6
+      },
+      "waitDays": {
+        "min": 0,
+        "max": 0
+      },
+      "reviewRequired": false,
+      "notes": "Add testers under App Roles. Every feature is active for them.",
+      "evidenceIds": [
+        "e1",
+        "e2"
+      ]
+    },
+    {
+      "id": "production",
+      "name": "Production (Advanced Access)",
+      "whoCanConnect": "Any user, after your business is verified and each permission is approved.",
+      "handsOnHours": {
+        "min": 15,
+        "max": 40
+      },
+      "waitDays": {
+        "min": 10,
+        "max": 45
+      },
+      "providerStatedWaitDays": {
+        "min": 0,
+        "max": 20
+      },
+      "reviewRequired": true,
+      "notes": "Community and secondary sources report business verification in 3 to 14 business days and app review around 10 to 20 days, and each rejection restarts the clock. These were search results I did not open, so treat the numbers as unverified.",
+      "evidenceIds": [
+        "e1",
+        "e2",
+        "e3",
+        "e9"
+      ]
+    }
+  ],
+  "scopeTiers": [
+    {
+      "name": "Basic login",
+      "exampleScopes": [
+        "public_profile",
+        "email"
+      ],
+      "reviewLevel": "none",
+      "useCases": [
+        "read"
+      ],
+      "effect": "Standard Access. Works only for users with a role on your app until you get Advanced Access.",
+      "evidenceIds": [
+        "e1",
+        "e2"
+      ]
+    },
+    {
+      "name": "Page and Instagram read",
+      "exampleScopes": [
+        "pages_show_list",
+        "pages_read_engagement",
+        "instagram_basic"
+      ],
+      "reviewLevel": "review",
+      "useCases": [
+        "read",
+        "offline"
+      ],
+      "effect": "Needs Advanced Access: app review, Business Verification and data handling questions. A Page token from a long-lived user token does not expire, which suits background agents.",
+      "evidenceIds": [
+        "e1",
+        "e3",
+        "e4"
+      ]
+    },
+    {
+      "name": "Page and Instagram write or messaging",
+      "exampleScopes": [
+        "pages_manage_posts",
+        "pages_messaging",
+        "instagram_manage_messages",
+        "pages_manage_metadata"
+      ],
+      "reviewLevel": "review",
+      "useCases": [
+        "write",
+        "offline"
+      ],
+      "effect": "Each permission is reviewed on its own with a screencast showing the use. Scope names come from my background knowledge and the permissions reference should be checked.",
+      "evidenceIds": [
+        "e3"
+      ]
+    },
+    {
+      "name": "Business assets",
+      "exampleScopes": [
+        "business_management"
+      ],
+      "reviewLevel": "review",
+      "useCases": [
+        "admin"
+      ],
+      "effect": "Needs Advanced Access. Apps that let other businesses grant access to their data must be tied to a verified Business.",
+      "evidenceIds": [
+        "e1"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "r1",
+      "item": "Facebook developer account and a Business type app",
+      "stage": "prototype",
+      "detail": "Sign in at developers.facebook.com and create the app. Add testers under App Roles.",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e7",
+        "e1"
+      ]
+    },
+    {
+      "id": "r2",
+      "item": "Valid OAuth redirect URIs",
+      "stage": "prototype",
+      "detail": "Add your callback under Facebook Login > Settings > Valid OAuth redirect URIs. It must match what you send.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e5"
+      ]
+    },
+    {
+      "id": "r3",
+      "item": "Privacy policy URL, app icon, category, business email",
+      "stage": "production",
+      "detail": "Set these in App Settings. They are required to submit for review.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e3"
+      ]
+    },
+    {
+      "id": "r4",
+      "item": "Verified Business",
+      "stage": "production",
+      "detail": "Connect the app to a Business you administer, then complete verification in Business Manager with legal documents. Only a Business Admin can finish it.",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "id": "r5",
+      "item": "Data handling questions",
+      "stage": "production",
+      "detail": "Answered during app review once the business is verified.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e3"
+      ]
+    },
+    {
+      "id": "r6",
+      "item": "Working test access and screencast per permission",
+      "stage": "production",
+      "detail": "Reviewers must be able to log in and test every permission. If they cannot, the whole submission is rejected.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e2",
+        "e3"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "stage": "prototype",
+      "title": "Create the app",
+      "detail": "Go to developers.facebook.com/apps, click Create App, choose a Business type with Facebook Login, and link a Business Portfolio.",
+      "owner": "you",
+      "estimate": "30 min",
+      "url": "https://developers.facebook.com/apps/",
+      "evidenceIds": [
+        "e7"
+      ]
+    },
+    {
+      "id": "s2",
+      "stage": "prototype",
+      "title": "Set the redirect URI",
+      "detail": "In Facebook Login > Settings, add your HTTPS callback to Valid OAuth redirect URIs. Send the same value in the authorize call and the code exchange.",
+      "owner": "you",
+      "estimate": "15 min",
+      "evidenceIds": [
+        "e5"
+      ]
+    },
+    {
+      "id": "s3",
+      "stage": "prototype",
+      "title": "Build the flow with testers",
+      "detail": "Redirect to the www.facebook.com/vNN/dialog/oauth URL with client_id, redirect_uri, state and scope. Exchange the code on your server at graph.facebook.com/oauth/access_token. Add testers under App Roles.",
+      "owner": "you",
+      "estimate": "2 to 4 hours",
+      "evidenceIds": [
+        "e5",
+        "e1"
+      ]
+    },
+    {
+      "id": "s4",
+      "stage": "prototype",
+      "title": "Get long-lived tokens",
+      "detail": "Exchange the user token with grant_type=fb_exchange_token on your server (about 60 days). Then call me/accounts for Page tokens that do not expire.",
+      "owner": "agent",
+      "estimate": "1 to 2 hours",
+      "evidenceIds": [
+        "e4"
+      ]
+    },
+    {
+      "id": "s5",
+      "stage": "production",
+      "title": "Start Business Verification",
+      "detail": "In Settings > Basic > Verification, click Start Verification and finish it in Business Manager. Have legal name, address and documents ready.",
+      "owner": "you",
+      "estimate": "1 to 2 hours",
+      "url": "https://developers.facebook.com/documentation/development/release/business-verification",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "id": "s6",
+      "stage": "production",
+      "title": "Fill App Settings",
+      "detail": "Upload the icon, privacy policy URL, category and business email. Add the platforms (website).",
+      "owner": "you",
+      "estimate": "30 min",
+      "evidenceIds": [
+        "e3"
+      ]
+    },
+    {
+      "id": "s7",
+      "stage": "production",
+      "title": "Record screencasts and write test steps",
+      "detail": "For each permission, show the login, the consent and the feature using the data. Provide a test account and written steps.",
+      "owner": "you",
+      "estimate": "4 to 10 hours",
+      "evidenceIds": [
+        "e2",
+        "e3"
+      ]
+    },
+    {
+      "id": "s8",
+      "stage": "production",
+      "title": "Request permissions and answer data handling questions",
+      "detail": "In App Review > Permissions and Features, request Advanced Access for only the permissions you need. Answer the data handling questions.",
+      "owner": "you",
+      "estimate": "2 to 4 hours",
+      "evidenceIds": [
+        "e3"
+      ]
+    },
+    {
+      "id": "s9",
+      "stage": "production",
+      "title": "Wait for review and fix rejections",
+      "detail": "Meta tests your app. Read each rejection note, fix the issue, and resubmit.",
+      "owner": "provider",
+      "estimate": "About 1 to 4 weeks (community reports)",
+      "evidenceIds": [
+        "e3",
+        "e9"
+      ]
+    },
+    {
+      "id": "s10",
+      "stage": "production",
+      "title": "Switch app mode to Live and move off Composio",
+      "detail": "Set the app to Live, put your app ID and secret into Composio auth config, and ask existing users to reconnect.",
+      "owner": "you",
+      "estimate": "1 hour",
+      "evidenceIds": [
+        "e8"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "symptom": "Users outside your team see a 'Feature unavailable' or login-unavailable screen",
+      "cause": "The permission lacks Advanced Access, or the business is not verified. Users from other Businesses cannot grant permissions until then.",
+      "fix": "Complete Business Verification and get each permission approved, then set the app Live.",
+      "escalation": "Meta developer support in the App Dashboard, or the developer community forum.",
+      "evidenceIds": [
+        "e1",
+        "e2"
+      ]
+    },
+    {
+      "symptom": "Whole submission rejected",
+      "cause": "Reviewers could not log in or test your app.",
+      "fix": "Give a working test account and clear steps. Keep the app reachable during review.",
+      "escalation": "Reply through the review rejection thread, or open a Direct Support case.",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "symptom": "One permission is denied while others pass",
+      "cause": "Reviewers could not test the feature that needs it, or it is not needed.",
+      "fix": "Request only needed permissions. Show each one in the screencast.",
+      "escalation": "Use the App Review FAQs and resubmit.",
+      "evidenceIds": [
+        "e2",
+        "e3"
+      ]
+    },
+    {
+      "symptom": "Business Verification rejected or stuck",
+      "cause": "Commonly a legal name or address mismatch with documents (community reports).",
+      "fix": "Make Business Manager details match your registration documents exactly, then resubmit.",
+      "escalation": "Business Support chat from Business Manager.",
+      "evidenceIds": [
+        "e9"
+      ]
+    },
+    {
+      "symptom": "Token errors after about 60 days",
+      "cause": "Long-lived user tokens expire, and an expired token cannot be exchanged.",
+      "fix": "Use non-expiring Page tokens where possible. Otherwise send the user through login again.",
+      "escalation": "Debug tokens with the debug_token endpoint.",
+      "evidenceIds": [
+        "e4"
+      ]
+    }
+  ],
+  "agentAssist": {
+    "didForYou": [
+      "Checked Composio managed OAuth for Facebook (available)",
+      "Read Meta docs on Business Verification, App Review, App Review content, long-lived tokens and manual login flow",
+      "Probed the Facebook OIDC discovery document, authorize endpoint and developer portal",
+      "Ran one search on review timelines (results not opened)"
+    ],
+    "canDoForYou": [
+      "Draft permission justifications and screencast scripts",
+      "Write the token exchange and Page token code",
+      "Check your privacy policy against Meta's needs",
+      "Track review status and prepare resubmissions"
+    ],
+    "youMustDo": [
+      "Create the app and accept Meta terms",
+      "Complete Business Verification with legal documents",
+      "Record the screencasts",
+      "Submit for review and set the app Live"
+    ]
+  },
+  "drafts": [
+    {
+      "kind": "scope_justification",
+      "title": "Permission justification (pages_show_list, pages_read_engagement)",
+      "body": "Our assistant helps Page admins manage their inbox and comments. After login, pages_show_list lets the user pick which Page to connect. pages_read_engagement lets us read comments and messages on that Page to summarize them and draft replies for the user to approve. We store data only for the connected Page, never sell it, and delete it when the user disconnects or requests deletion. The screencast shows login, Page selection, and the summary view."
+    },
+    {
+      "kind": "demo_video_script",
+      "title": "Screencast outline",
+      "body": "1. Open our site and click Connect Facebook. 2. Show the Meta consent dialog with each permission. 3. Select a Page. 4. Show the feature that uses each permission, one by one, with captions naming the permission. 5. Show Disconnect and data deletion. Use a clean test account and keep the video under 3 minutes."
+    }
+  ],
+  "uncertainties": [
+    {
+      "question": "Is PKCE supported for Facebook Login?",
+      "why": "The pages I read did not mention PKCE and the probe showed no methods.",
+      "howToResolve": "Check the Facebook Login docs or test an authorize call with code_challenge."
+    },
+    {
+      "question": "Realistic review times",
+      "why": "Timelines come from search results I did not open, and they vary.",
+      "howToResolve": "Submit early and track dashboard status."
+    },
+    {
+      "question": "Which Meta product do you mean?",
+      "why": "Meta covers Facebook Login, Instagram, WhatsApp, Threads and Ads. I picked Facebook Login with Pages and Instagram.",
+      "howToResolve": "Tell me the product and I will rerun the research."
+    },
+    {
+      "question": "Is there a separate Tech Provider verification for apps serving other businesses?",
+      "why": "A result mentioned Tech Provider Access Verification but I did not open the official page.",
+      "howToResolve": "Check the App Dashboard for this prompt."
+    },
+    {
+      "question": "Can customer Business admins block your app?",
+      "why": "Not confirmed in the docs I read.",
+      "howToResolve": "Search Business Manager help for app access controls."
+    },
+    {
+      "question": "Current permission names and refresh behavior",
+      "why": "Meta does not issue standard refresh tokens in what I read. Scope names are from background knowledge.",
+      "howToResolve": "Check the permissions reference and the latest Graph API version (v26.0 per docs)."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "e1",
+      "level": "sourced",
+      "claim": "Advanced Access requires Business Verification. Users from other Businesses cannot grant these permissions until verified. Users with an app role can grant any permission without verification.",
+      "sourceUrl": "https://developers.facebook.com/docs/development/release/business-verification",
+      "sourceTitle": "Business Verification",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e2",
+      "level": "sourced",
+      "claim": "Apps used by anyone without a role on the app must pass App Review. Unapproved permissions work only for role holders. If reviewers cannot test the app, the submission is rejected.",
+      "sourceUrl": "https://developers.facebook.com/docs/app-review",
+      "sourceTitle": "App Review process",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e3",
+      "level": "sourced",
+      "claim": "App Review has app verification and permissions review. Advanced access needs business verification and data handling questions. App settings need icon, privacy policy URL, category and business email.",
+      "sourceUrl": "https://developers.facebook.com/documentation/resp-plat-initiatives/individual-processes/app-review/content",
+      "sourceTitle": "Complete your App Review submission",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e4",
+      "level": "sourced",
+      "claim": "Default tokens last hours. Long-lived user tokens last about 60 days. Long-lived Page tokens have no expiry date. Expired tokens cannot be exchanged.",
+      "sourceUrl": "https://developers.facebook.com/docs/facebook-login/guides/access-tokens/get-long-lived",
+      "sourceTitle": "Long-lived access tokens",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e5",
+      "level": "inferred",
+      "claim": "Login uses a redirect to www.facebook.com/vNN/dialog/oauth. Redirect URIs are set in the dashboard under Valid OAuth redirect URIs. The code exchange is server side with the app secret.",
+      "sourceUrl": "https://developers.facebook.com/docs/facebook-login/guides/advanced/manual-flow",
+      "sourceTitle": "Manually Build a Login Flow",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27",
+      "note": "Not opened during research (search result only). Check the link."
+    },
+    {
+      "id": "e6",
+      "level": "probed",
+      "claim": "Facebook publishes an OIDC discovery document.",
+      "sourceUrl": "https://www.facebook.com/.well-known/openid-configuration",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Discovery document found. Authorization endpoint: https://facebook.com/dialog/oauth/. No PKCE methods listed."
+    },
+    {
+      "id": "e7",
+      "level": "probed",
+      "claim": "The developer portal is reachable at developers.facebook.com/apps.",
+      "sourceUrl": "https://developers.facebook.com/apps/",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "HTTP 200 for a signed-out visitor. It may ask for sign in in a browser."
+    },
+    {
+      "id": "e8",
+      "level": "sourced",
+      "claim": "Composio lists Facebook under managed OAuth.",
+      "sourceUrl": "https://docs.composio.dev/toolkits/managed-auth",
+      "sourceTitle": "Composio managed auth",
+      "sourceKind": "composio_docs",
+      "retrievedAt": "2026-10-27",
+      "note": "Reported by the check_composio_managed tool: status available. I did not open the page."
+    },
+    {
+      "id": "e9",
+      "level": "inferred",
+      "claim": "Business verification takes about 3 to 14 business days and app review about 10 to 20 days, with rejections adding time.",
+      "retrievedAt": "2026-10-27",
+      "note": "Based on community and consultant search results (saurabhdhar.com, adwize.ai, anylinga.com) that I did not open. They cite Meta as saying up to 14 business days for verification. Unverified against official pages."
+    },
+    {
+      "id": "e_probe_1",
+      "level": "probed",
+      "claim": "Authorization endpoint at www.facebook.com responded with HTTP 200. The response did not show how it treats an unknown client.",
+      "sourceUrl": "https://www.facebook.com/v21.0/dialog/oauth?response_type=code&client_id=oauth-guide-probe-invalid&redirect_uri=https%3A%2F%2Fexample.com%2Fcallback&state=probe&scope=pages_show_list",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Recorded automatically from the probe this run made."
+    }
+  ],
+  "schemaVersion": 1,
+  "slug": "meta-ilkguv",
+  "input": {
+    "query": "Meta",
+    "kind": "name"
+  },
+  "origin": "live",
+  "generatedAt": "2026-10-27T20:40:04.636Z",
+  "generator": {
+    "model": "claude-sonnet-5-5",
+    "promptVersion": "v1",
+    "durationMs": 60188
+  },
+  "changelog": []
+}

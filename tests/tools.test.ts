@@ -67,6 +67,8 @@ describe("auditEvidence", () => {
     expect(guide.evidence.find((e) => e.id === "e4")?.level).toBe("probed");
     expect(downgraded).toBe(1);
     expect(auditEvidence(g, fetched, []).downgraded).toBe(2);
+    const tested = { ...g, evidence: [{ ...g.evidence[1]!, level: "tested" as const }] };
+    expect(auditEvidence(tested, fetched, []).guide.evidence[0]!.level).toBe("inferred");
   });
 });
 
@@ -91,7 +93,7 @@ describe("addProbeEvidence", () => {
       "2026-10-28",
     );
     expect(out.evidence).toHaveLength(g.evidence.length + 1);
-    expect(out.evidence.at(-1)).toMatchObject({ id: "e_probe_1", level: "probed", sourceKind: "probe" });
-    expect(out.oauth.evidenceIds).toContain("e_probe_1");
+    expect(out.evidence.at(-1)).toMatchObject({ id: "e_autoprobe_1", level: "probed", sourceKind: "probe" });
+    expect(out.oauth.evidenceIds).toContain("e_autoprobe_1");
   });
 });

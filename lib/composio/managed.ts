@@ -10,6 +10,8 @@ const MANAGED_AUTH_PAGE = "https://docs.composio.dev/toolkits/managed-auth";
 
 export type ManagedStatus = "available" | "not_available" | "unknown";
 export type ManagedResult = { status: ManagedStatus; url: string; note: string; toolkit?: string };
+/** `fetchedUrl` is set only when a page was actually loaded, so evidence can cite it honestly. */
+export type ManagedCheck = ManagedResult & { fetchedUrl?: string };
 export type ToolkitRow = { name: string; slug: string; managed: boolean };
 
 /** Parses "| [Gmail](/toolkits/gmail.md) | `GMAIL` |" rows under the managed and bring-your-own headings. */
@@ -70,10 +72,11 @@ async function loadRows(): Promise<ToolkitRow[]> {
   return rows;
 }
 
-export async function checkComposioManaged(appName: string, apiKey?: string): Promise<ManagedResult> {
+export async function checkComposioManaged(appName: string, apiKey?: string): Promise<ManagedCheck> {
   try {
     const rows = await loadRows();
-    const result = managedResultFor(rows, appName);
+    if (rows.length === 0) return { status: "unknown", url: MANAGED_AUTH_PAGE, note: "Could not load Composio's managed-auth list." };
+    const result: ManagedCheck = { ...managedResultFor(rows, appName), fetchedUrl: MANAGED_AUTH_PAGE };
     if (!apiKey || !result.toolkit) return result;
     return (await checkWithApi(result.toolkit, apiKey)) ?? result;
   } catch {

@@ -10,8 +10,10 @@ export type AuditResult = { guide: Guide; downgraded: number };
 export function auditEvidence(guide: Guide, fetchedUrls: Set<string>, probeUrls: string[]): AuditResult {
   const probePaths = new Set(probeUrls.map(pathKey));
   let downgraded = 0;
-  const evidence = guide.evidence.map((e) => {
-    if (e.level === "sourced" && e.sourceUrl && !fetchedUrls.has(canonicalUrl(e.sourceUrl))) {
+  const evidence = guide.evidence.map((original) => {
+    // Live guides cannot be tested; treat a "tested" claim as sourced so the same page check applies.
+    const e = original.level === "tested" ? { ...original, level: "sourced" as const } : original;
+    if (e.level === "sourced" && (!e.sourceUrl || !fetchedUrls.has(canonicalUrl(e.sourceUrl)))) {
       downgraded++;
       return { ...e, level: "inferred" as const, note: joinNote(e.note, "Not opened during research (search result only). Check the link.") };
     }
@@ -44,7 +46,7 @@ export function addProbeEvidence(guide: Guide, probes: { url: string; summary: s
   const missing = probes.filter((p) => !cited.has(pathKey(p.url)));
   if (missing.length === 0) return guide;
   const added = missing.map((probe, index) => ({
-    id: `e_probe_${index + 1}`,
+    id: `e_autoprobe_${index + 1}`,
     level: "probed" as const,
     claim: probe.summary,
     sourceUrl: probe.url,
