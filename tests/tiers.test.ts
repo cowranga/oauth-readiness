@@ -1,13 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { attemptDepth } from "@/lib/guide/attempt";
-import { matchingScopeTierIndexes, tierForUseCases } from "@/lib/guide/tiers";
+import { lightestTierForUseCases, matchingScopeTierIndexes, tierForUseCases } from "@/lib/guide/tiers";
 import { fixtureGuide } from "./helpers";
 
 describe("tierForUseCases", () => {
   const g = fixtureGuide();
-  it("uses the easiest tier per chip, hardest across chips", () => {
+  it("takes the hardest matching scope tier", () => {
     expect(tierForUseCases(g, ["read", "write"])).toBe(1);
     expect(tierForUseCases(g, ["read", "admin"])).toBe(2);
+    const mixed = { ...g, scopeTiers: [...g.scopeTiers, { ...g.scopeTiers[0]!, name: "Read everything", reviewLevel: "review_plus_audit" as const }] };
+    expect(tierForUseCases(mixed, ["read"])).toBe(4);
+    expect(lightestTierForUseCases(mixed, ["read"])).toBe(1);
   });
   it("falls back to the verdict tier when nothing matches", () => {
     expect(tierForUseCases(g, [])).toBe(g.verdict.tier);

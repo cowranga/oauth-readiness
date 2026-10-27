@@ -9,7 +9,7 @@ import { formatDays, formatHours } from "@/lib/guide/markdown";
 import { effortTotals, nextStep, parseDone, parseUseCases, progressQuery, stepProgress } from "@/lib/guide/progress";
 import { STAGE_IDS, USE_CASES, type Evidence, type Guide, type StageId, type UseCase } from "@/lib/guide/schema";
 import { safeHref } from "@/lib/guide/url";
-import { matchingScopeTierIndexes, REVIEW_LEVEL_LABEL, TIERS, tierForUseCases, USE_CASE_LABEL } from "@/lib/guide/tiers";
+import { lightestTierForUseCases, matchingScopeTierIndexes, REVIEW_LEVEL_LABEL, TIERS, tierForUseCases, USE_CASE_LABEL } from "@/lib/guide/tiers";
 
 type Props = { guide: Guide; initialDone?: string; initialUse?: string; children: React.ReactNode };
 
@@ -39,6 +39,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
   };
 
   const yourTier = tierForUseCases(guide, useCases);
+  const bestCaseTier = lightestTierForUseCases(guide, useCases);
   const highlighted = new Set(matchingScopeTierIndexes(guide, useCases));
   const next = nextStep(guide, done);
   const progress = stepProgress(guide, done);
@@ -134,6 +135,11 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
                 <span className="block text-sm text-muted">{TIERS[yourTier].meaning}</span>
               </span>
             </div>
+            {bestCaseTier < yourTier ? (
+              <p className="mt-2 text-sm text-muted">
+                This is the hardest case among the marked rows. If the lighter scopes cover what your agent does, you may only need tier {bestCaseTier} ({TIERS[bestCaseTier].label}).
+              </p>
+            ) : null}
           </section>
         ) : null}
 

@@ -61,19 +61,27 @@ export function tierLabel(tier: Tier): string {
 }
 
 /**
- * The tier a developer lands in for the chips they selected.
- * Per chip, take the easiest scope tier that serves it (you would pick the lightest scope that works),
- * then the hardest across chips. Falls back to the guide's overall tier when nothing matches.
+ * "Your tier": the hardest scope tier that serves any selected chip (docs/GUIDE_SCHEMA.md).
+ * Conservative on purpose: "read" on Google matches both Calendar (review) and Gmail (review + audit).
+ * Falls back to the guide's overall tier when nothing matches.
  */
 export function tierForUseCases(guide: Pick<Guide, "scopeTiers" | "verdict">, selected: UseCase[]): Tier {
+  const matching = guide.scopeTiers.filter((scopeTier) => scopeTier.useCases.some((u) => selected.includes(u)));
+  if (matching.length === 0) return guide.verdict.tier;
+  return Math.max(...matching.map((s) => REVIEW_LEVEL_TIER[s.reviewLevel])) as Tier;
+}
+
+/**
+ * The best case for the same chips: for each chip the lightest scope tier that serves it, then the hardest of those.
+ * When this is lower than tierForUseCases, the guide says you may get away with the lighter scopes.
+ */
+export function lightestTierForUseCases(guide: Pick<Guide, "scopeTiers" | "verdict">, selected: UseCase[]): Tier {
   const perChip: Tier[] = [];
   for (const useCase of selected) {
     const serving = guide.scopeTiers.filter((scopeTier) => scopeTier.useCases.includes(useCase));
-    if (serving.length === 0) continue;
-    perChip.push(Math.min(...serving.map((s) => REVIEW_LEVEL_TIER[s.reviewLevel])) as Tier);
+    if (serving.length > 0) perChip.push(Math.min(...serving.map((s) => REVIEW_LEVEL_TIER[s.reviewLevel])) as Tier);
   }
-  if (perChip.length === 0) return guide.verdict.tier;
-  return Math.max(...perChip) as Tier;
+  return perChip.length === 0 ? guide.verdict.tier : (Math.max(...perChip) as Tier);
 }
 
 /** Scope tiers to highlight for the selected chips. */

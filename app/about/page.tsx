@@ -96,8 +96,8 @@ export default function AboutPage(): React.ReactElement {
         </ul>
         <p>
           The same provider can be tier 1 or tier 4 depending on what you ask for. On each guide, pick what your agent needs (read, write,
-          act while offline, admin) and the guide shows your tier: for each need it takes the lightest scope that does the job, then the
-          hardest of those. <strong>Customer-side gate</strong> means your users&apos; admins may also have to approve your app, even after the
+          act while offline, admin) and the guide shows your tier: the hardest scope tier that matches what you picked. When lighter scopes
+          might be enough, the guide says so. <strong>Customer-side gate</strong> means your users&apos; admins may also have to approve your app, even after the
           provider does.
         </p>
       </Section>
