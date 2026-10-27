@@ -42,26 +42,28 @@
   "verdict": {
     "tier": 2,
     "label": "Self-serve, optional review",
-    "summary": "GitHub does not review your app: once you make a GitHub App public, any GitHub user can install and authorize it, and only the optional Marketplace listing has requirements. The deciding factor is on your customer's side, because an org owner must install your GitHub App (or approve your OAuth app) before it can reach org repositories.",
+    "summary": "GitHub does not review your app: once you make a GitHub App public, any GitHub user can install and authorize it, and only the optional Marketplace listing goes through a GitHub review. The deciding factor is on your customer's side, because an org owner must install your GitHub App (or approve your OAuth app) before it can reach org repositories.",
     "nextStep": "Sign in to GitHub, open github.com/settings/apps/new, and register a GitHub App with read-only Contents, Issues, and Pull requests permissions, your callback URL, and expiring user tokens left on.",
     "customerSideGate": true,
-    "customerSideGateNote": "For a GitHub App, an org owner must install it, or a repo admin can if you request no organization permissions and not Repository administration. For an OAuth app, OAuth app access restrictions are on by default in new orgs, so an owner must approve it. Personal repos need no approval.",
+    "customerSideGateNote": "For a GitHub App, an org owner must install it, or a repo admin can if you request no organization permissions and not Repository administration, unless the owner has blocked repo admins from installing apps. For an OAuth app, OAuth app access restrictions are on by default in new orgs, so an owner must approve it. Personal repos need no approval.",
     "confidence": "high",
     "evidenceIds": [
       "e2",
       "e10",
       "e13",
       "e14",
-      "e19"
+      "e19",
+      "e33"
     ]
   },
   "composio": {
     "managedApp": "available",
-    "note": "Composio lists GitHub with managed OAuth, so you can prototype without your own app. Users then see Composio on the consent screen, you share its rate limit, and you get its default permissions. Bring your own GitHub App when you need your name on the install page, specific permissions, or your own rate limit. Switching only affects new connections; existing users keep the old connection until they reconnect.",
+    "note": "Composio lists GitHub with managed OAuth, so you can prototype without your own app. Users then see Composio on the consent screen, you share its rate limit, and you get its default permissions. Bring your own GitHub App when you need your name on the install page, specific permissions, or your own rate limit. You add its client ID and secret to a Composio auth config, and you must send users to your app's install page yourself. Switching only affects new connections; existing users keep the old connection until they reconnect.",
     "evidenceIds": [
       "e25",
       "e26",
-      "e27"
+      "e27",
+      "e34"
     ]
   },
   "stages": [
@@ -117,11 +119,12 @@
         "max": 0
       },
       "reviewRequired": false,
-      "notes": "Production needs no GitHub approval. If you list on Marketplace, you submit the listing and GitHub states no review timeline. Paid plans need 100 installs and a verified publisher org.",
+      "notes": "Production needs no GitHub approval. If you list on Marketplace, GitHub reviews the listing and an onboarding expert contacts you, with no stated timeline. Your app keeps working while you wait. Paid plans need 100 installs and a verified publisher org.",
       "evidenceIds": [
         "e16",
         "e18",
-        "e19"
+        "e19",
+        "e32"
       ]
     }
   ],
@@ -422,7 +425,7 @@
       "id": "s9",
       "stage": "limited",
       "title": "Plan for rate limits",
-      "detail": "User tokens share the user's 5,000 requests per hour with their other apps. Use installation tokens for heavy background work; they scale up to 12,500 per hour. Keep content creation under about 80 per minute.",
+      "detail": "User tokens share the user's 5,000 requests per hour with their other apps. Use installation tokens for heavy background work; they scale up to 12,500 per hour, or 15,000 for installs on Enterprise Cloud orgs. Keep content creation under about 80 per minute.",
       "owner": "agent",
       "estimate": "1 to 2 hours",
       "evidenceIds": [
@@ -445,24 +448,26 @@
       "id": "s11",
       "stage": "production",
       "title": "Optional: list on GitHub Marketplace",
-      "detail": "From the app settings open the Marketplace listing, fill the description, logo, screenshots, pricing (free is fine), privacy policy and support links, and submit. Paid plans need a verified publisher org and 100 installs.",
+      "detail": "From the app settings open the Marketplace listing, fill the description, logo, screenshots, pricing (free is fine), privacy policy and support links, then click Request publish. Paid plans need a verified publisher org and 100 installs.",
       "owner": "you",
       "estimate": "1 to 3 hours",
       "url": "https://docs.github.com/en/apps/github-marketplace/creating-apps-for-github-marketplace/requirements-for-listing-an-app",
       "evidenceIds": [
         "e18",
-        "e19"
+        "e19",
+        "e32"
       ]
     },
     {
       "id": "s12",
       "stage": "production",
       "title": "Wait for the Marketplace listing decision",
-      "detail": "Only if you submitted a listing. GitHub states no timeline. Your app keeps working for all users while you wait.",
+      "detail": "Only if you submitted a listing. GitHub reviews it and an onboarding expert contacts you. GitHub states no timeline. Your app keeps working for all users while you wait.",
       "owner": "provider",
       "estimate": "unknown",
       "evidenceIds": [
-        "e19"
+        "e19",
+        "e32"
       ]
     }
   ],
@@ -505,8 +510,8 @@
       ]
     },
     {
-      "symptom": "Older tokens stop working after users reconnect many times.",
-      "cause": "GitHub keeps at most 10 tokens per user, app, and scope combination and revokes older ones.",
+      "symptom": "Some stored tokens stop working after users reconnect many times.",
+      "cause": "GitHub keeps at most 10 tokens per user, app, and scope combination. Past that it revokes unused or least recently used tokens.",
       "fix": "Reuse one stored token per user instead of creating a new one on each login.",
       "evidenceIds": [
         "e9"
@@ -588,7 +593,7 @@
   "uncertainties": [
     {
       "question": "How long does a GitHub Marketplace listing review take?",
-      "why": "The requirements and overview pages describe submitting a listing but give no timeline.",
+      "why": "The submission page says an onboarding expert contacts you after you request publication, but no page gives a timeline.",
       "howToResolve": "Submit a free listing and record the dates, or ask GitHub Support."
     },
     {
@@ -683,7 +688,7 @@
     {
       "id": "e9",
       "level": "sourced",
-      "claim": "GitHub keeps at most 10 tokens per user, app, and scope combination and revokes older ones past that. It also limits token creation to 10 per hour per combination.",
+      "claim": "GitHub keeps at most 10 tokens per user, app, and scope combination. Creating an 11th revokes one by a set order: never-used tokens first, then the least recently used. Token creation is also limited to 10 per hour per combination; past that, GitHub asks the user to re-authorize instead of revoking.",
       "sourceUrl": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps",
       "sourceTitle": "Authorizing OAuth apps",
       "sourceKind": "official_docs",
@@ -711,11 +716,12 @@
     {
       "id": "e12",
       "level": "sourced",
-      "claim": "You register a GitHub App under Settings, Developer settings, GitHub Apps. The name is up to 34 characters and unique across GitHub. You can add up to 10 callback URLs. Expiring user tokens are on by default, device flow is off, and you choose whether the app installs only on your account or on any account. One account can own up to 100 GitHub Apps.",
+      "claim": "You register a GitHub App under Settings, Developer settings, GitHub Apps. The name is up to 34 characters and unique across GitHub. You can add up to 10 callback URLs. You choose whether the app installs only on your account or on any account. One account can own up to 100 GitHub Apps.",
       "sourceUrl": "https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app",
       "sourceTitle": "Registering a GitHub App",
       "sourceKind": "official_docs",
-      "retrievedAt": "2026-10-28"
+      "retrievedAt": "2026-10-28",
+      "note": "The page does not state form defaults. It tells you to deselect Expire user authorization tokens and webhook Active if you do not want them, and to select Enable Device Flow if you do, which implies tokens expire and webhooks are on by default and device flow is off."
     },
     {
       "id": "e13",
@@ -729,7 +735,7 @@
     {
       "id": "e14",
       "level": "sourced",
-      "claim": "Repository admins can install a third-party GitHub App in their org only if it requests no organization permissions and not Repository administration. Members and outside collaborators can request an install, and owners get notified. Installers choose all repositories or selected ones.",
+      "claim": "Repository admins can install a third-party GitHub App in their org only if it requests no organization permissions and not Repository administration. Members and outside collaborators can request an install, and owners get notified. Installers choose all repositories or selected ones. Owners can block repo admins from installing apps, and then only an owner can install.",
       "sourceUrl": "https://docs.github.com/en/apps/using-github-apps/installing-a-github-app-from-a-third-party",
       "sourceTitle": "Installing a GitHub App from a third party",
       "sourceKind": "official_docs",
@@ -738,7 +744,7 @@
     {
       "id": "e15",
       "level": "sourced",
-      "claim": "App access requests are enabled by default in organizations. Owners can limit who may request apps. Blocking requests from members is in public preview and also stops repo admins from installing apps.",
+      "claim": "App access requests are enabled by default in organizations, so members and outside collaborators can request unapproved apps. Blocking requests from members is in public preview. If an owner both blocks requests and stops repo admins from installing apps, repo admins can neither install nor request.",
       "sourceUrl": "https://docs.github.com/en/organizations/managing-programmatic-access-to-your-organization/limiting-oauth-app-and-github-app-access-requests",
       "sourceTitle": "Limiting OAuth app and GitHub App access requests",
       "sourceKind": "official_docs",
@@ -885,7 +891,92 @@
       "claim": "How long an org owner takes to approve or install your app depends on each customer. GitHub gives no timeline, so the wait can range from minutes to never.",
       "retrievedAt": "2026-10-28",
       "note": "Owner approval is a customer decision (e10, e14, e15). No source gives a duration."
+    },
+    {
+      "id": "e32",
+      "level": "sourced",
+      "claim": "When you request publication of a Marketplace listing, GitHub sends it for review and an onboarding expert contacts you. No timeline is given.",
+      "sourceUrl": "https://docs.github.com/en/apps/github-marketplace/listing-an-app-on-github-marketplace/submitting-your-listing-for-publication",
+      "sourceTitle": "Submitting your listing for publication",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-28"
+    },
+    {
+      "id": "e33",
+      "level": "sourced",
+      "claim": "GitHub tells installers to make sure they trust an app's owner before installing it. Org owners can install apps, repo admins can install apps with no org permissions and no Repository administration, and owners can block repo admins from installing apps.",
+      "sourceUrl": "https://docs.github.com/en/apps/using-github-apps/installing-a-github-app-from-github-marketplace-for-your-organizations",
+      "sourceTitle": "Installing a GitHub App from GitHub Marketplace for your organizations",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-28"
+    },
+    {
+      "id": "e34",
+      "level": "sourced",
+      "claim": "Composio's GitHub toolkit uses OAuth2. You can bring your own GitHub App by adding its client ID and secret to the auth config. Users must still install the app and pick repositories, and Composio does not give them the install link, so you must.",
+      "sourceUrl": "https://docs.composio.dev/toolkits/github",
+      "sourceTitle": "Composio GitHub toolkit",
+      "sourceKind": "composio_docs",
+      "retrievedAt": "2026-10-28"
     }
   ],
-  "changelog": []
+  "changelog": [
+    {
+      "at": "2026-10-28",
+      "change": "Marketplace listing now described as reviewed by GitHub: after Request publish, an onboarding expert contacts you. Updated verdict summary, production notes, s11, s12.",
+      "reason": "The guide said only that you submit the listing. GitHub's submission page says the listing is sent for review.",
+      "evidenceIds": [
+        "e32"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Corrected e15: blocking access requests alone does not stop repo admins from installing apps. That needs a separate member privilege setting.",
+      "reason": "The access requests page treats repo admin installs as a separate setting and says both must be off to block repo admins.",
+      "evidenceIds": [
+        "e15"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Customer-side gate note and e14 now say owners can block repo admins from installing apps.",
+      "reason": "Both install pages say owners can turn off repo admin installs, which makes the owner the only path.",
+      "evidenceIds": [
+        "e14",
+        "e33"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Narrowed e12: the registration page implies, but does not state, the form defaults for expiring tokens, webhooks, and device flow. Moved this to the note.",
+      "reason": "The page gives instructions to deselect or select these boxes, not their defaults.",
+      "evidenceIds": [
+        "e12"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Narrowed the token cap blocker and e9: GitHub revokes unused or least recently used tokens, not simply the oldest.",
+      "reason": "The authorizing page gives an eviction order, and the hourly cap triggers a re-authorization prompt rather than revocation.",
+      "evidenceIds": [
+        "e9"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Composio note now says a bring-your-own GitHub App works, but you must send users to the install page yourself.",
+      "reason": "Composio's GitHub toolkit page says it does not provide the install link.",
+      "evidenceIds": [
+        "e34"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Added the 15,000 per hour Enterprise Cloud installation limit to s9.",
+      "reason": "The rate limit page gives it, and e16 already cited it.",
+      "evidenceIds": [
+        "e16"
+      ]
+    }
+  ]
 }
