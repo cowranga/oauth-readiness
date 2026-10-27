@@ -47,6 +47,16 @@ v1 got the tier exactly right for 5 of 7 apps, and within one tier for all 7. Bo
 
 Prompt v2 did not fix the two tier misses (docs/EVAL.md). I then tried enforcing the research minimum in code. Runs did more research but reached the same tiers, and took about twice as long, so I reverted it. Lesson 13: depth of search was not the cause. The fix that worked overnight was an independent verifier, so live guides need a short verification pass, not more research.
 
+## From a human cross-check of a live guide (Linear)
+
+Lesson 14: the Composio section of a live guide cited the managed-auth list for two claims. The list supports one of them ("a managed app exists"). The other ("existing users must reconnect") came from our own prompt, and it also overstated Composio's docs, which say existing users keep their connection until they re-authenticate or you import their credentials. The same overstatement was in 6 of the 7 seeds; Slack's verifier had caught it. It also left out that Composio supports API-key auth for Linear.
+
+Changes:
+- Code: `check_composio_managed` now also reads the toolkit's own Composio page (auth schemes) and the switching-rule page. The server builds the Composio evidence from those pages and overrides the model's citations and managed status.
+- Prompt v2.1: state the switching rule as the tool returns it, and mention other Composio auth schemes.
+- Seeds: corrected the sentence in 6 guides, with changelog entries.
+- Checked with one live Linear run. Both claims are now sourced to the pages that say them.
+
 ## Originally not yet measured
 
 Prompt v2 has not been run live. The API account ran out of credits before the v2 re-runs (see PROGRESS.md, Blocked). `scripts/live-tests.sh` runs v2 on Microsoft and LinkedIn, the two apps v1 under-tiered, and refreshes `docs/EVAL.md`. Until then, the v2 changes are untested hypotheses.

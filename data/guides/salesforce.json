@@ -69,7 +69,7 @@
   },
   "composio": {
     "managedApp": "available",
-    "note": "Composio lists Salesforce with managed OAuth, so you can try it today without your own app. Users then see Composio's app, and Composio's own FAQ says a customer admin may need to approve or install it before users can connect. Composio names private Salesforce subdomains as a reason to bring your own app. When you switch to your own auth config, only new connections use it; existing users stay on the old one until they reconnect.",
+    "note": "Composio lists Salesforce with managed OAuth, so you can try it today without your own app. Users then see Composio's app, and Composio's own FAQ says a customer admin may need to approve or install it before users can connect. Composio names private Salesforce subdomains as a reason to bring your own app. When you switch to your own auth config, only new connections use it; existing users keep their current connection until they re-authenticate, or until you import their credentials where Composio supports it.",
     "evidenceIds": [
       "e21",
       "e22",
@@ -1053,6 +1053,14 @@
       "reason": "Found on Composio's Salesforce toolkit FAQ while checking managed app status.",
       "evidenceIds": [
         "e29"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Composio note: replaced \"When you switch to your own auth config, only new connections use it; existing users stay on the old one until they reconnect.\" with the switching rule as Composio states it, including importing credentials.",
+      "reason": "A reviewer cross-checked Composio's docs: existing users stay on the old connection until they re-authenticate or you import their credentials, so \"must reconnect\" overstated it.",
+      "evidenceIds": [
+        "e22"
       ]
     }
   ]

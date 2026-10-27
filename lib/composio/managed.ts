@@ -10,8 +10,36 @@ const MANAGED_AUTH_PAGE = "https://docs.composio.dev/toolkits/managed-auth";
 
 export type ManagedStatus = "available" | "not_available" | "unknown";
 export type ManagedResult = { status: ManagedStatus; url: string; note: string; toolkit?: string };
-/** `fetchedUrl` is set only when a page was actually loaded, so evidence can cite it honestly. */
-export type ManagedCheck = ManagedResult & { fetchedUrl?: string };
+export const SWITCH_RULE_PAGE = "https://docs.composio.dev/docs/white-labeling-authentication";
+export const SWITCH_RULE_CLAIM =
+  "Switching to your own auth config only affects new connections. Existing users keep their current connection until they re-authenticate, or until you import their credentials where Composio supports it.";
+
+/**
+ * `fetchedUrl` is set only when a page was actually loaded, so evidence can cite it honestly.
+ * `authSchemes` and `toolkitPageUrl` come from the toolkit's own docs page; `switchRuleUrl` is set when the
+ * switching rule was read on Composio's page during this check.
+ */
+export type ManagedCheck = ManagedResult & { fetchedUrl?: string; authSchemes?: string[]; toolkitPageUrl?: string; switchRuleUrl?: string };
+
+/** Reads "- **Auth:** OAUTH2, API_KEY" from a toolkit page such as /toolkits/linear.md. */
+export function parseToolkitAuthSchemes(markdown: string): string[] {
+  const line = markdown.match(/^\s*-\s*\*\*Auth:\*\*\s*(.+)$/m)?.[1] ?? "";
+  return line.split(",").map((s) => s.trim()).filter((s) => /^[A-Z0-9_]+$/.test(s));
+}
+
+/** Evidence the server records for the Composio section, from pages this check actually opened. */
+export function composioEvidence(check: ManagedCheck, date: string): { id: string; level: "sourced"; claim: string; sourceUrl: string; sourceTitle: string; sourceKind: "composio_docs"; retrievedAt: string }[] {
+  const items = [];
+  const statusUrl = check.toolkitPageUrl ?? check.fetchedUrl;
+  if (statusUrl && check.status !== "unknown") {
+    const schemes = check.authSchemes?.length ? ` Composio supports these auth schemes for it: ${check.authSchemes.join(", ")}.` : "";
+    items.push({ id: "e_composio_status", claim: `${check.note}${schemes}`, sourceUrl: statusUrl, sourceTitle: "Composio toolkit docs" });
+  }
+  if (check.switchRuleUrl) {
+    items.push({ id: "e_composio_switch", claim: SWITCH_RULE_CLAIM, sourceUrl: check.switchRuleUrl, sourceTitle: "Composio: White-labeling authentication" });
+  }
+  return items.map((item) => ({ ...item, level: "sourced" as const, sourceKind: "composio_docs" as const, retrievedAt: date }));
+}
 export type ToolkitRow = { name: string; slug: string; managed: boolean };
 
 /** Parses "| [Gmail](/toolkits/gmail.md) | `GMAIL` |" rows under the managed and bring-your-own headings. */
@@ -63,6 +91,23 @@ export function managedResultFor(rows: ToolkitRow[], appName: string): ManagedRe
 
 // ponytail: per-instance cache, refetched on cold start -> cache in the store with a daily TTL
 let cached: { at: number; rows: ToolkitRow[] } | undefined;
+let switchRuleSeen: number | undefined;
+
+// The switching rule is checked against Composio's live page so the guide can cite it as sourced.
+async function readSwitchRule(): Promise<string | undefined> {
+  if (switchRuleSeen && Date.now() - switchRuleSeen < 3_600_000) return SWITCH_RULE_PAGE;
+  const response = await safeFetch(SWITCH_RULE_PAGE, { maxBytes: 1_500_000 }).catch(() => undefined);
+  if (response?.status !== 200 || !/re-authenticate or you import/i.test(response.body)) return undefined;
+  switchRuleSeen = Date.now();
+  return SWITCH_RULE_PAGE;
+}
+
+async function readToolkitPage(toolkit: string): Promise<{ url: string; schemes: string[] } | undefined> {
+  const slug = toolkit.toLowerCase();
+  const response = await safeFetch(`https://docs.composio.dev/toolkits/${slug}.md`, { maxBytes: 300_000 }).catch(() => undefined);
+  if (response?.status !== 200) return undefined;
+  return { url: `https://docs.composio.dev/toolkits/${slug}`, schemes: parseToolkitAuthSchemes(response.body) };
+}
 
 async function loadRows(): Promise<ToolkitRow[]> {
   if (cached && Date.now() - cached.at < 3_600_000) return cached.rows;
@@ -76,9 +121,12 @@ export async function checkComposioManaged(appName: string, apiKey?: string): Pr
   try {
     const rows = await loadRows();
     if (rows.length === 0) return { status: "unknown", url: MANAGED_AUTH_PAGE, note: "Could not load Composio's managed-auth list." };
-    const result: ManagedCheck = { ...managedResultFor(rows, appName), fetchedUrl: MANAGED_AUTH_PAGE };
+    const listed = managedResultFor(rows, appName);
+    const [page, switchRuleUrl] = await Promise.all([listed.toolkit ? readToolkitPage(listed.toolkit) : undefined, readSwitchRule()]);
+    const result: ManagedCheck = { ...listed, fetchedUrl: MANAGED_AUTH_PAGE, authSchemes: page?.schemes, toolkitPageUrl: page?.url, switchRuleUrl };
     if (!apiKey || !result.toolkit) return result;
-    return (await checkWithApi(result.toolkit, apiKey)) ?? result;
+    const fromApi = await checkWithApi(result.toolkit, apiKey);
+    return fromApi ? { ...result, ...fromApi } : result;
   } catch {
     return { status: "unknown", url: MANAGED_AUTH_PAGE, note: "Could not load Composio's managed-auth list." };
   }

@@ -3,6 +3,7 @@ import { guideContentSchema, type Guide, type GuideContent } from "../guide/sche
 import { postprocess } from "../guide/postprocess";
 import type { NormalizedInput } from "../input/normalize";
 import { MAX_PROBE_REQUESTS } from "../probe/oauth";
+import { composioEvidence } from "../composio/managed";
 import { addProbeEvidence, auditEvidence } from "./audit";
 import type { EmitEvent } from "./events";
 import { NOT_FOUND_PREFIX, PROMPT_VERSION, repairMessage, researchUserMessage, SYSTEM_PROMPT, WRAP_UP_MESSAGE } from "./prompts";
@@ -174,11 +175,18 @@ function finish(
   run: { started: number; usage: RunUsage; toolCalls: number; ctx: ToolContext },
 ): RunResult {
   const durationMs = Date.now() - run.started;
-  // A deterministic tool result beats the model's restatement of it (BeReal live test: tool said unknown, model wrote not_available).
-  const composio = run.ctx.composioStatus ? { ...content.composio, managedApp: run.ctx.composioStatus } : content.composio;
+  // The Composio section rests on what the tool actually read, not on the model's citation of it
+  // (BeReal live test: the model overwrote "unknown"; Linear: the switching rule was cited to a page that does not say it).
+  const date = new Date(run.started).toISOString().slice(0, 10);
+  const check = run.ctx.composio;
+  const serverEvidence = check ? composioEvidence(check, date) : [];
+  const composio = check
+    ? { ...content.composio, managedApp: check.status, evidenceIds: serverEvidence.length ? serverEvidence.map((e) => e.id) : content.composio.evidenceIds }
+    : content.composio;
   const assembled: Guide = {
     ...content,
     composio,
+    evidence: [...content.evidence.filter((e) => !serverEvidence.some((s) => s.id === e.id)), ...serverEvidence],
     schemaVersion: 1,
     slug: options.slug,
     input: { query: input.query, kind: input.kind },

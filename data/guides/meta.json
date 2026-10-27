@@ -62,7 +62,7 @@
   },
   "composio": {
     "managedApp": "available",
-    "note": "Composio lists Facebook, Instagram, and WhatsApp with managed OAuth, so you can start today without your own Meta app. Users then see Composio's app on the consent screen and you share its rate limits and scopes. When you switch to your own app, only new connections use it; existing users keep the old connection until they reconnect.",
+    "note": "Composio lists Facebook, Instagram, and WhatsApp with managed OAuth, so you can start today without your own Meta app. Users then see Composio's app on the consent screen and you share its rate limits and scopes. When you switch to your own auth config, only new connections use it; existing users keep their current connection until they re-authenticate, or until you import their credentials where Composio supports it.",
     "evidenceIds": [
       "e27",
       "e28",
@@ -1082,6 +1082,14 @@
       "reason": "The App Review page says so.",
       "evidenceIds": [
         "e4"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Composio note: replaced \"When you switch to your own app, only new connections use it; existing users keep the old connection until they reconnect.\" with the switching rule as Composio states it, including importing credentials.",
+      "reason": "A reviewer cross-checked Composio's docs: existing users stay on the old connection until they re-authenticate or you import their credentials, so \"must reconnect\" overstated it.",
+      "evidenceIds": [
+        "e28"
       ]
     }
   ]

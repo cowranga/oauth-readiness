@@ -1,6 +1,6 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
-import { checkComposioManaged } from "../composio/managed";
+import { checkComposioManaged, SWITCH_RULE_CLAIM, type ManagedCheck } from "../composio/managed";
 import { guideContentJsonSchema } from "../guide/schema";
 import { htmlTitle, htmlToText } from "../net/htmlText";
 import { safeFetch, SafeFetchError } from "../net/safeFetch";
@@ -17,8 +17,8 @@ export type ToolContext = {
   /** Probe URLs and what they showed; probed evidence must point at one of these. */
   probes: { url: string; summary: string }[];
   probeRequestsLeft: number;
-  /** What check_composio_managed returned; it overrides the model's managedApp field. */
-  composioStatus?: "available" | "not_available" | "unknown";
+  /** What check_composio_managed returned; the server builds the Composio evidence from it. */
+  composio?: ManagedCheck;
 };
 
 export type ToolResult = { content: string; isError?: boolean };
@@ -159,9 +159,16 @@ async function composio(input: unknown, ctx: ToolContext): Promise<ToolResult> {
   const parsed = composioInput.safeParse(input);
   if (!parsed.success) return { content: "check_composio_managed needs {appName}.", isError: true };
   const result = await checkComposioManaged(parsed.data.appName, ctx.composioApiKey);
-  if (result.fetchedUrl) ctx.fetchedUrls.add(canonicalUrl(result.fetchedUrl));
-  ctx.composioStatus = result.status;
+  for (const url of [result.fetchedUrl, result.toolkitPageUrl, result.switchRuleUrl]) if (url) ctx.fetchedUrls.add(canonicalUrl(url));
+  ctx.composio = result;
   ctx.emit({ type: "finding", message: `Composio managed app: ${result.status.replace("_", " ")}. ${result.note}` });
-  const forModel = { status: result.status, url: result.url, note: result.note, toolkit: result.toolkit };
-  return { content: JSON.stringify({ ...forModel, citeAs: result.fetchedUrl ? "sourced, sourceKind composio_docs" : "inferred" }) };
+  const forModel = {
+    status: result.status,
+    note: result.note,
+    toolkit: result.toolkit,
+    composioAuthSchemes: result.authSchemes,
+    switchingRule: result.switchRuleUrl ? SWITCH_RULE_CLAIM : undefined,
+    howToCite: "The server attaches the Composio evidence itself. Write composio.note from these facts only; mention other Composio auth schemes (for example API_KEY) if listed.",
+  };
+  return { content: JSON.stringify(forModel) };
 }

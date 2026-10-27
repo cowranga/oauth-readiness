@@ -58,7 +58,7 @@
   },
   "composio": {
     "managedApp": "available",
-    "note": "Composio lists GitHub with managed OAuth, so you can prototype without your own app. Users then see Composio on the consent screen, you share its rate limit, and you get its default permissions. Bring your own GitHub App when you need your name on the install page, specific permissions, or your own rate limit. You add its client ID and secret to a Composio auth config, and you must send users to your app's install page yourself. Switching only affects new connections; existing users keep the old connection until they reconnect.",
+    "note": "Composio lists GitHub with managed OAuth, so you can prototype without your own app. Users then see Composio on the consent screen, you share its rate limit, and you get its default permissions. Bring your own GitHub App when you need your name on the install page, specific permissions, or your own rate limit. You add its client ID and secret to a Composio auth config, and you must send users to your app's install page yourself. When you switch to your own auth config, only new connections use it; existing users keep their current connection until they re-authenticate, or until you import their credentials where Composio supports it.",
     "evidenceIds": [
       "e25",
       "e26",
@@ -976,6 +976,14 @@
       "reason": "The rate limit page gives it, and e16 already cited it.",
       "evidenceIds": [
         "e16"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Composio note: replaced \"Switching only affects new connections; existing users keep the old connection until they reconnect.\" with the switching rule as Composio states it, including importing credentials.",
+      "reason": "A reviewer cross-checked Composio's docs: existing users stay on the old connection until they re-authenticate or you import their credentials, so \"must reconnect\" overstated it.",
+      "evidenceIds": [
+        "e27"
       ]
     }
   ]

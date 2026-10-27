@@ -69,7 +69,7 @@
   },
   "composio": {
     "managedApp": "available",
-    "note": "Composio lists LinkedIn with managed OAuth, so you can prototype today without your own app. Users then see Composio on the consent screen, you share its rate limits, and you get its default scopes. We could not confirm which LinkedIn products Composio's managed app holds, so check the toolkit page before you rely on analytics or Page scopes. LinkedIn Ads is a separate Composio toolkit that needs your own app. When you switch to your own auth config, only new connections use it; existing users stay on the managed app until they reconnect.",
+    "note": "Composio lists LinkedIn with managed OAuth, so you can prototype today without your own app. Users then see Composio on the consent screen, you share its rate limits, and you get its default scopes. We could not confirm which LinkedIn products Composio's managed app holds, so check the toolkit page before you rely on analytics or Page scopes. LinkedIn Ads is a separate Composio toolkit that needs your own app. When you switch to your own auth config, only new connections use it; existing users keep their current connection until they re-authenticate, or until you import their credentials where Composio supports it.",
     "evidenceIds": [
       "e34",
       "e35",
@@ -1289,6 +1289,14 @@
       "reason": "It confirms managed OAuth and a shared, rate-limited default app, and does not list default scopes, which matches the open uncertainty.",
       "evidenceIds": [
         "e49"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Composio note: replaced \"When you switch to your own auth config, only new connections use it; existing users stay on the managed app until they reconnect.\" with the switching rule as Composio states it, including importing credentials.",
+      "reason": "A reviewer cross-checked Composio's docs: existing users stay on the old connection until they re-authenticate or you import their credentials, so \"must reconnect\" overstated it.",
+      "evidenceIds": [
+        "e35"
       ]
     }
   ]

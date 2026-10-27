@@ -85,3 +85,7 @@
 ## 2026-10-28 morning: research-minimum gate experiment (reverted)
 - tried: loop sends back an early submit_guide once until 2 searches + 5 pages. v3 runs (live attempts 21, 22): Microsoft 112.4s tier 2 (in=79076 out=17829), LinkedIn 127.4s tier 5 (in=103501 out=22927). Both sent back once, then met the minimum.
 - result: same tiers as v2, key facts still missing, runs about twice as long. Reverted the code; kept verification/raw/*.v3.json and recorded it in EVAL.md and LESSONS.md (lesson 13).
+
+## 2026-10-28: Composio claims after a human cross-check of the Linear guide
+- changed: lib/composio/managed.ts reads the toolkit page (auth schemes) and the switching-rule page; lib/agent/run.ts builds Composio evidence server-side; prompt v2.1; 6 seed notes corrected with changelog entries; LESSONS lesson 14.
+- verified: `npm test` 123 pass; validate-guide ok for all seeds; live run 23 "Linear": 64.1s tier 2, in=19434 out=8057 cacheRead=43236 cacheWrite=37496, 2 searches; Composio note names API_KEY and the exact switching rule, both sourced to pages fetched in the run.

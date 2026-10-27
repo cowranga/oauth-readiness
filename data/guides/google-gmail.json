@@ -56,7 +56,7 @@
   },
   "composio": {
     "managedApp": "available",
-    "note": "Gmail and Google Calendar are on Composio's managed OAuth list, so you can build and demo today with no Google app of your own. Users then see a Google consent screen that says Composio, and you share quota with other Composio users. When you switch to your own verified app, only new connections use it. Existing users must reconnect.",
+    "note": "Gmail and Google Calendar are on Composio's managed OAuth list, so you can build and demo today with no Google app of your own. Users then see a Google consent screen that says Composio, and you share quota with other Composio users. When you switch to your own verified app, only new connections use it; existing users keep their current connection until they re-authenticate, or until you import their credentials where Composio supports it.",
     "evidenceIds": [
       "e23",
       "e24",
@@ -970,6 +970,14 @@
         "e35",
         "e33",
         "e1"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Composio note: replaced \"Existing users must reconnect.\" with the switching rule as Composio states it, including importing credentials.",
+      "reason": "A reviewer cross-checked Composio's docs: existing users stay on the old connection until they re-authenticate or you import their credentials, so \"must reconnect\" overstated it.",
+      "evidenceIds": [
+        "e24"
       ]
     }
   ]

@@ -39,3 +39,4 @@
 - 2026-10-28 | Salesforce verifier read developer.salesforce.com through the public text-reader proxy r.jina.ai (blocked to plain fetches); read-only, public URL only | why: the official page is otherwise unreadable without a browser | note in handoff
 - 2026-10-28 | Reverted the research-minimum gate after measuring it | why: same tiers, still missing facts, runs 112 to 127s instead of about 60s | rejected: keeping it
 - 2026-10-28 | Evidence badges are <details>; containers that hold them are <div>, not <p> | why: <details> inside <p> is invalid HTML and caused hydration errors in dev (8 on a guide page) | rejected: rendering badges as spans with JS popovers
+- 2026-10-28 | The server, not the model, decides the Composio section's status and evidence | why: Linear cross-check showed a claim cited to a page that does not say it | rejected: prompt-only fix

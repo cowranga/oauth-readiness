@@ -97,3 +97,26 @@ describe("addProbeEvidence", () => {
     expect(out.oauth.evidenceIds).toContain("e_autoprobe_1");
   });
 });
+
+describe("Composio toolkit page and server-built evidence", () => {
+  it("reads auth schemes from a toolkit page", async () => {
+    const { parseToolkitAuthSchemes } = await import("@/lib/composio/managed");
+    const page = "# Linear\n\n- **Category:** project management\n- **Auth:** OAUTH2, API_KEY\n- **Composio-managed OAuth available?** Yes\n";
+    expect(parseToolkitAuthSchemes(page)).toEqual(["OAUTH2", "API_KEY"]);
+    expect(parseToolkitAuthSchemes("no auth line")).toEqual([]);
+  });
+
+  it("cites the toolkit page and the switching rule only when they were read", async () => {
+    const { composioEvidence } = await import("@/lib/composio/managed");
+    const base = { status: "available" as const, url: "u", note: "Linear (LINEAR) is listed under Composio-managed OAuth." };
+    const full = composioEvidence(
+      { ...base, toolkitPageUrl: "https://docs.composio.dev/toolkits/linear", authSchemes: ["OAUTH2", "API_KEY"], switchRuleUrl: "https://docs.composio.dev/docs/white-labeling-authentication" },
+      "2026-10-28",
+    );
+    expect(full.map((e) => e.id)).toEqual(["e_composio_status", "e_composio_switch"]);
+    expect(full[0]!.claim).toContain("OAUTH2, API_KEY");
+    expect(full[1]!.claim).toMatch(/re-authenticate, or until you import/);
+    expect(composioEvidence({ ...base }, "2026-10-28")).toEqual([]);
+    expect(composioEvidence({ ...base, status: "unknown", fetchedUrl: "https://docs.composio.dev/toolkits/managed-auth" }, "2026-10-28")).toEqual([]);
+  });
+});

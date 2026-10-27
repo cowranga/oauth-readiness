@@ -61,6 +61,14 @@
         "e31",
         "e4"
       ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Composio note: replaced \"If you switch to your own app later, existing connections keep using the managed app, and users must reconnect to move to yours.\" with the switching rule as Composio states it, including importing credentials.",
+      "reason": "A reviewer cross-checked Composio's docs: existing users stay on the old connection until they re-authenticate or you import their credentials, so \"must reconnect\" overstated it.",
+      "evidenceIds": [
+        "e22"
+      ]
     }
   ],
   "app": {
@@ -113,7 +121,7 @@
   },
   "composio": {
     "managedApp": "available",
-    "note": "Composio's managed Outlook app lets you prototype today with no Entra registration. Your customers' admins would then approve Composio's app, not yours. If you switch to your own app later, existing connections keep using the managed app, and users must reconnect to move to yours. Bring your own app for your name on the consent screen, custom scopes, and your own rate quota.",
+    "note": "Composio's managed Outlook app lets you prototype today with no Entra registration. Your customers' admins would then approve Composio's app, not yours. When you switch to your own auth config, only new connections use it; existing users keep their current connection until they re-authenticate, or until you import their credentials where Composio supports it. Bring your own app for your name on the consent screen, custom scopes, and your own rate quota.",
     "evidenceIds": [
       "e21",
       "e22",
@@ -925,7 +933,7 @@
     {
       "id": "e22",
       "level": "sourced",
-      "claim": "When you switch a toolkit to your own auth config in Composio, existing connections keep refreshing with their original config. To move a user to your app, they reconnect.",
+      "claim": "Switching to your own auth config affects only new connections; existing users keep their current connection until they re-authenticate or you import their credentials where supported.",
       "retrievedAt": "2026-10-28",
       "sourceUrl": "https://docs.composio.dev/docs/white-labeling-authentication",
       "sourceTitle": "White-labeling authentication",

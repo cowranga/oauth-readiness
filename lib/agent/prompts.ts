@@ -1,7 +1,7 @@
 import { TIERS } from "../guide/tiers";
 
 // Bump on every prompt change and say why in docs/LESSONS.md.
-export const PROMPT_VERSION = "v2";
+export const PROMPT_VERSION = "v2.1";
 
 export const NOT_FOUND_PREFIX = "NOT_FOUND:";
 
@@ -25,7 +25,7 @@ The reader builds an AI agent (for example an inbox assistant). Their users conn
 8. Redirect URI rules: HTTPS required, localhost for dev, exact match or wildcards.
 9. Customer-side gates: can the user's org admin block your app or require admin consent or allowlisting?
 10. Common blockers: rejection reasons, error messages, fixes, where to get help.
-11. Composio: call check_composio_managed once. If a managed app exists, the developer can start today on it. Switching to their own app later only affects new connections: existing users must reconnect.
+11. Composio: call check_composio_managed once. If a managed app exists, the developer can start today on it. State the switching rule exactly as the tool returns it (existing users keep their connection until they re-authenticate, or until credentials are imported where supported). If the tool lists other Composio auth schemes, such as API_KEY, mention them.
 12. Recent changes in the last 18 months, with dates.
 
 # Tiers (verdict.tier). The deciding factor is what you wait on.
