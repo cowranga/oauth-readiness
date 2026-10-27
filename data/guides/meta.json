@@ -21,19 +21,19 @@
   "oauth": {
     "support": "oauth2",
     "pkce": "unknown",
-    "alternatives": "For your own accounts only, you can use tokens for people with a role on your app or a system user in your business portfolio. There is no Instagram API for personal accounts.",
+    "alternatives": "For your own accounts, use tokens for app role users or a system user in your business portfolio. Personal Instagram accounts have no API.",
     "appTypes": [
       {
         "name": "Use case: Manage everything on your Page (Facebook Login for Business)",
-        "whenToUse": "Your users connect Facebook Pages, and Instagram accounts linked to those Pages. Adds pages_show_list and business_management."
+        "whenToUse": "Users connect Facebook Pages and linked Instagram accounts. Adds pages_show_list and business_management."
       },
       {
         "name": "Use case: Instagram API with Instagram Login",
-        "whenToUse": "Your users have Instagram business or creator accounts and may not have a Facebook Page. Uses instagram_business_* permissions on graph.instagram.com."
+        "whenToUse": "Instagram business or creator accounts without a Page. Uses instagram_business_* on graph.instagram.com."
       },
       {
         "name": "Use case: WhatsApp, onboarded as a Tech Provider",
-        "whenToUse": "Your users connect their WhatsApp Business accounts through Embedded Signup and you send messages for them."
+        "whenToUse": "Users connect WhatsApp Business accounts through Embedded Signup."
       }
     ],
     "evidenceIds": [
@@ -47,10 +47,10 @@
   "verdict": {
     "tier": 3,
     "label": "Review required",
-    "summary": "Users without a role on your app can only grant a permission after it gets Advanced Access, which needs App Review per permission plus Business Verification. Plan for about 1 to 8 weeks of waiting, and far less hands-on work.",
-    "nextStep": "Create a Meta app with the use cases you need, connect a business portfolio, and start Business Verification today while you build against your own test Page.",
+    "summary": "Users without an app role can grant a permission only after it gets Advanced Access. That needs App Review per permission plus Business Verification. Plan for 1 to 8 weeks of waiting.",
+    "nextStep": "Create the Meta app, connect a business portfolio, and start Business Verification today.",
     "customerSideGate": true,
-    "customerSideGateNote": "The person connecting must have the right task on the Facebook Page or be an admin of their business portfolio. For WhatsApp, the client's business admin runs Embedded Signup and adds a payment method.",
+    "customerSideGateNote": "The connecting user needs a task on the Page or admin rights on their business portfolio. For WhatsApp, the client's admin runs Embedded Signup and adds a payment method.",
     "confidence": "high",
     "evidenceIds": [
       "e1",
@@ -62,7 +62,7 @@
   },
   "composio": {
     "managedApp": "available",
-    "note": "Composio lists Facebook, Instagram, and WhatsApp with managed OAuth, so you can start today without your own Meta app. Users then see Composio's app on the consent screen and you share its rate limits and scopes. When you switch to your own auth config, only new connections use it; existing users keep their current connection until they re-authenticate, or until you import their credentials where Composio supports it.",
+    "note": "Composio provides managed OAuth for Facebook, Instagram, and WhatsApp. Users see Composio's app on the consent screen, and you share its rate limits and scopes. After you switch to your own auth config, existing users keep their connection until they re-authenticate, or until you import their credentials where Composio supports it.",
     "evidenceIds": [
       "e27",
       "e28",
@@ -73,7 +73,7 @@
     {
       "id": "prototype",
       "name": "Prototype",
-      "whoCanConnect": "Only people with a role on your app (admin, developer, tester). They can grant any permission your use cases include.",
+      "whoCanConnect": "Only people with an app role (admin, developer, tester).",
       "handsOnHours": {
         "min": 2,
         "max": 6
@@ -83,7 +83,7 @@
         "max": 0
       },
       "reviewRequired": false,
-      "notes": "Standard Access is automatic. Use your own test Page, Instagram professional account, or a WhatsApp test number.",
+      "notes": "Standard Access is automatic. Use your own test Page, Instagram professional account, or WhatsApp test number.",
       "evidenceIds": [
         "e1",
         "e13"
@@ -92,7 +92,7 @@
     {
       "id": "limited",
       "name": "Limited beta",
-      "whoCanConnect": "Design partners you add as testers in App Roles, after they accept the invite with their Facebook account.",
+      "whoCanConnect": "Design partners you add as testers in App Roles.",
       "handsOnHours": {
         "min": 1,
         "max": 3
@@ -102,7 +102,7 @@
         "max": 2
       },
       "reviewRequired": false,
-      "notes": "Each beta user must accept a role on your app. This does not scale and is not meant for production. We did not confirm a tester count limit. For WhatsApp, Embedded Signup for client businesses needs Advanced Access first, so a WhatsApp beta is limited to numbers you own.",
+      "notes": "Each beta user must accept a role invite. The tester limit is unconfirmed. A WhatsApp beta covers only numbers you own until you get Advanced Access.",
       "evidenceIds": [
         "e1",
         "e4",
@@ -112,7 +112,7 @@
     {
       "id": "production",
       "name": "Production",
-      "whoCanConnect": "Any Facebook Page admin, Instagram professional account, or WhatsApp business, for the permissions that have Advanced Access.",
+      "whoCanConnect": "Any Page admin, Instagram professional account, or WhatsApp business, for Advanced Access permissions.",
       "handsOnHours": {
         "min": 12,
         "max": 30
@@ -126,7 +126,7 @@
         "max": 7
       },
       "reviewRequired": true,
-      "notes": "Meta says App Review takes about a week. A forum report shows the dashboard estimating about 10 days. Business verification comes first and a WhatsApp partner reports up to 14 business days for it. Each rejection adds another review cycle. WhatsApp onboarding starts at 10 new customers a week and rises to 200 after verification and review.",
+      "notes": "Meta says App Review takes about a week. A forum report shows a 10 day estimate. A WhatsApp partner reports up to 14 business days for business verification. Each rejection adds a cycle.",
       "evidenceIds": [
         "e7",
         "e10",
@@ -147,7 +147,7 @@
       "useCases": [
         "read"
       ],
-      "effect": "public_profile is granted to every app. Enough to identify the user, not to touch their Pages or messages. The email permission is not automatic: its entry points to App Review, so plan to request Advanced Access for it.",
+      "effect": "public_profile is granted to every app and identifies the user only. email needs Advanced Access.",
       "evidenceIds": [
         "e1",
         "e37"
@@ -164,7 +164,7 @@
         "read",
         "offline"
       ],
-      "effect": "Needs App Review and Business Verification. Long-lived Page tokens have no expiry date, which fits background agents.",
+      "effect": "Needs App Review and Business Verification. Long-lived Page tokens do not expire, which fits background agents.",
       "evidenceIds": [
         "e16",
         "e1",
@@ -183,7 +183,7 @@
         "write",
         "offline"
       ],
-      "effect": "Each permission is reviewed on its own with a screencast of the action. pages_manage_posts depends on the read permissions, so you submit those too.",
+      "effect": "One screencast per permission. pages_manage_posts depends on the read permissions, so submit those too.",
       "evidenceIds": [
         "e16",
         "e5"
@@ -202,7 +202,7 @@
         "read",
         "write"
       ],
-      "effect": "Needs App Review and Business Verification. Only business or creator accounts can connect. Personal accounts cannot.",
+      "effect": "Needs App Review and Business Verification. Personal accounts cannot connect.",
       "evidenceIds": [
         "e14",
         "e17",
@@ -221,7 +221,7 @@
         "write",
         "offline"
       ],
-      "effect": "Tech Provider onboarding: business verification first, then App Review with two videos. You start at 10 new client businesses a week, raised to 200 after verification and review. More needs Meta Business Partner status.",
+      "effect": "Business verification, then App Review with two videos. Limit: 10 new clients a week, 200 after verification and review. More needs Meta Business Partner status.",
       "evidenceIds": [
         "e18",
         "e19",
@@ -239,7 +239,7 @@
       "useCases": [
         "admin"
       ],
-      "effect": "Reads and writes Business Manager assets. Needs App Review. The Page use case adds it by default, so be ready to justify it or explain it as a dependency.",
+      "effect": "Reads and writes Business Manager assets. Needs App Review. The Page use case adds it by default.",
       "evidenceIds": [
         "e13",
         "e16"
@@ -249,9 +249,9 @@
   "requirements": [
     {
       "id": "r1",
-      "item": "Meta developer account and an app with the right use cases",
+      "item": "Meta app with the right use cases",
       "stage": "prototype",
-      "detail": "Use cases cannot be removed later, so pick them on purpose.",
+      "detail": "You cannot remove use cases later.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e13",
@@ -262,7 +262,7 @@
       "id": "r2",
       "item": "Business portfolio connected to the app",
       "stage": "prototype",
-      "detail": "Required when your app accesses data you do not own. You can connect it at creation or later.",
+      "detail": "Required to access data you do not own.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e13"
@@ -282,7 +282,7 @@
       "id": "r4",
       "item": "Verified business",
       "stage": "production",
-      "detail": "Only a Business Admin can finish it. Documents must match your Business Info and website.",
+      "detail": "A Business Admin finishes it. Documents must match Business Info and your website.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e3",
@@ -304,7 +304,7 @@
       "id": "r6",
       "item": "Data deletion instructions URL or callback",
       "stage": "production",
-      "detail": "Set in Basic Settings. A callback must use HTTPS.",
+      "detail": "Set in **Basic Settings**. A callback must use HTTPS.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e11"
@@ -312,7 +312,7 @@
     },
     {
       "id": "r7",
-      "item": "One successful API call per requested permission in the last 30 days",
+      "item": "One API call per permission in the last 30 days",
       "stage": "production",
       "detail": "The request button stays grayed out until Meta logs a call.",
       "agentCanHelp": true,
@@ -322,9 +322,9 @@
     },
     {
       "id": "r8",
-      "item": "One screen recording per permission and test instructions for reviewers",
+      "item": "Screen recording per permission and reviewer instructions",
       "stage": "production",
-      "detail": "Reviewers use their own test accounts. The app must be reachable by them.",
+      "detail": "Reviewers use their own test accounts.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e5",
@@ -336,7 +336,7 @@
       "id": "r9",
       "item": "Data handling questions answered",
       "stage": "production",
-      "detail": "Meta asks these only after business verification passes.",
+      "detail": "Meta asks these after business verification passes.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e10"
@@ -346,7 +346,7 @@
       "id": "r10",
       "item": "Annual Data Use Checkup",
       "stage": "production",
-      "detail": "Needed before going Live and every year after to keep access.",
+      "detail": "Required before going Live and every year after.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e12"
@@ -358,7 +358,7 @@
       "id": "s1",
       "stage": "prototype",
       "title": "Create the Meta app",
-      "detail": "Sign in at developers.facebook.com/apps and click Create App. Enter a name and contact email. Pick your use cases: Manage everything on your Page, Instagram API, and/or WhatsApp. Incompatible ones are greyed out. Connect or create a business portfolio. You should land on the app dashboard.",
+      "detail": "At developers.facebook.com/apps, click **Create App**. Pick use cases: Manage everything on your Page, Instagram API, and/or WhatsApp. Connect a business portfolio.",
       "owner": "you",
       "estimate": "20 to 40 min",
       "url": "https://developers.facebook.com/apps/",
@@ -370,8 +370,8 @@
     {
       "id": "s2",
       "stage": "prototype",
-      "title": "Start Business Verification now",
-      "detail": "It takes the longest and review cannot finish without it. A Business Admin starts it from the app's verification settings or Security Center. See the document checklist draft.",
+      "title": "Start Business Verification",
+      "detail": "It takes longest and blocks review. A Business Admin starts it from verification settings or Security Center. See the checklist below.",
       "owner": "you",
       "estimate": "1 to 2 hours",
       "url": "https://developers.facebook.com/docs/development/release/business-verification",
@@ -384,7 +384,7 @@
       "id": "s3",
       "stage": "prototype",
       "title": "Add your redirect URI",
-      "detail": "In the Facebook Login (or Facebook Login for Business) settings, add your HTTPS callback URL under Valid OAuth redirect URIs, for example your Composio or app callback. Send exactly that value in the authorize request and the code exchange.",
+      "detail": "In Facebook Login settings, add your HTTPS callback under **Valid OAuth redirect URIs**. Use exactly that value in the authorize request and code exchange.",
       "owner": "you",
       "estimate": "15 min",
       "evidenceIds": [
@@ -394,8 +394,8 @@
     {
       "id": "s4",
       "stage": "prototype",
-      "title": "Build the connect flow and token storage",
-      "detail": "Redirect to www.facebook.com/v26.0/dialog/oauth with client_id, redirect_uri, state, and scope. On your server, exchange the code, then swap for a long-lived user token (about 60 days) and fetch long-lived Page tokens, which have no expiry date. There are no refresh tokens, so plan a reconnect prompt.",
+      "title": "Build the connect flow",
+      "detail": "Redirect to www.facebook.com/v26.0/dialog/oauth with client_id, redirect_uri, state, and scope. Exchange the code for a long-lived user token (about 60 days) and fetch long-lived Page tokens. There are no refresh tokens.",
       "owner": "agent",
       "estimate": "2 to 4 hours",
       "evidenceIds": [
@@ -408,7 +408,7 @@
       "id": "s5",
       "stage": "prototype",
       "title": "Call every permission once",
-      "detail": "With your own test Page and accounts, make at least one successful API call per permission you will request. Meta needs this logged within 30 days of submitting, and logging can take up to 2 days. The Graph API Explorer works too.",
+      "detail": "Make one successful call per permission, or use the Graph API Explorer. Meta needs it logged within 30 days of submitting. Logging takes up to 2 days.",
       "owner": "agent",
       "estimate": "30 to 60 min",
       "evidenceIds": [
@@ -419,7 +419,7 @@
       "id": "s6",
       "stage": "limited",
       "title": "Add beta users as testers",
-      "detail": "In App Roles, add each design partner as a tester. They accept the invite in their Facebook account. They can then connect their own Pages without review.",
+      "detail": "In **App Roles**, add each design partner as a tester. After they accept, they can connect without review.",
       "owner": "you",
       "estimate": "10 min per user",
       "evidenceIds": [
@@ -431,7 +431,7 @@
       "id": "s7",
       "stage": "production",
       "title": "Fill App Settings",
-      "detail": "In Settings > Basic, upload a 1024x1024 icon without Meta logos, and add the privacy policy URL, data deletion instructions or callback URL, category, contact email, and platforms.",
+      "detail": "In **Settings > Basic**, add the icon, privacy policy URL, data deletion URL or callback, category, contact email, and platforms.",
       "owner": "you",
       "estimate": "30 to 60 min",
       "evidenceIds": [
@@ -443,8 +443,8 @@
     {
       "id": "s8",
       "stage": "production",
-      "title": "Answer the data handling questions",
-      "detail": "After business verification passes, Meta asks how you process, share, and protect data. Answers are checked right away.",
+      "title": "Answer data handling questions",
+      "detail": "Meta asks how you process, share, and protect data. Answers are checked right away.",
       "owner": "you",
       "estimate": "30 min",
       "evidenceIds": [
@@ -456,7 +456,7 @@
       "id": "s9",
       "stage": "production",
       "title": "Record one screencast per permission",
-      "detail": "Show a user granting the permission and your app using it. 1080p or higher, screen width 1440 or less, English UI if you can, no audio, a large cursor. Add captions where the UI is not in English or not self-explanatory. Request only permissions you can show.",
+      "detail": "Show the grant and your app using it. 1080p or higher, width 1440 or less, English UI, no audio, large cursor, captions.",
       "owner": "you",
       "estimate": "2 to 6 hours",
       "evidenceIds": [
@@ -468,8 +468,8 @@
     {
       "id": "s10",
       "stage": "production",
-      "title": "Write usage descriptions and submit",
-      "detail": "In App Review, request Advanced Access per permission. Write a specific description for each, add reviewer test instructions, attach the recordings, and submit. Do not switch to Live mode or change settings while in review.",
+      "title": "Submit App Review",
+      "detail": "Request Advanced Access per permission with a description, reviewer instructions, and recording. Do not switch to Live or change settings during review.",
       "owner": "you",
       "estimate": "1 to 3 hours",
       "evidenceIds": [
@@ -481,8 +481,8 @@
     {
       "id": "s11",
       "stage": "production",
-      "title": "Wait for the review decision",
-      "detail": "Meta says about a week. Watch the contact email. If a permission is rejected, fix what the notice names and resubmit.",
+      "title": "Wait for the decision",
+      "detail": "If a permission is rejected, fix what the notice names and resubmit.",
       "owner": "provider",
       "estimate": "1 to 3 weeks per cycle",
       "evidenceIds": [
@@ -493,8 +493,8 @@
     {
       "id": "s12",
       "stage": "production",
-      "title": "Onboard as a WhatsApp Tech Provider",
-      "detail": "Only if you need WhatsApp. In Use cases > Customize > WhatsApp, choose Tech Provider onboarding. Submit the two videos, set up webhooks, and use Embedded Signup v4 for clients.",
+      "title": "Onboard as WhatsApp Tech Provider",
+      "detail": "WhatsApp only. In **Use cases > Customize > WhatsApp**, choose Tech Provider. Submit two videos, set up webhooks, and use Embedded Signup v4.",
       "owner": "you",
       "estimate": "4 to 8 hours",
       "url": "https://developers.facebook.com/docs/whatsapp/solution-providers/get-started-for-tech-providers",
@@ -507,8 +507,8 @@
     {
       "id": "s13",
       "stage": "production",
-      "title": "Go Live and schedule the Data Use Checkup",
-      "detail": "Complete the Data Use Checkup, switch the app to Live, and confirm each permission shows Advanced Access. Put the yearly checkup on your calendar.",
+      "title": "Go Live",
+      "detail": "Complete the Data Use Checkup, switch to Live, and confirm Advanced Access per permission.",
       "owner": "you",
       "estimate": "30 min",
       "evidenceIds": [
@@ -519,51 +519,51 @@
   ],
   "blockers": [
     {
-      "symptom": "The Request advanced access button is grayed out.",
-      "cause": "Meta has not logged a successful API call for that permission in the last 30 days.",
-      "fix": "Make one successful call with that permission from your test account or the Graph API Explorer. Logging can take up to 2 days. Then retry.",
+      "symptom": "**Request advanced access** is grayed out.",
+      "cause": "Meta has not logged a successful call for that permission in 30 days.",
+      "fix": "Make one call, wait up to 2 days, and retry.",
       "evidenceIds": [
         "e6"
       ]
     },
     {
-      "symptom": "Your whole submission is rejected.",
-      "cause": "Reviewers could not access your app or follow your instructions.",
-      "fix": "Give a public URL or step-by-step access instructions that work with the reviewer's own test account.",
-      "escalation": "App Review support through the Meta developer support page.",
+      "symptom": "The whole submission is rejected.",
+      "cause": "Reviewers could not reach your app or follow your instructions.",
+      "fix": "Give a public URL or access steps for the reviewer's test account.",
+      "escalation": "Meta developer support page.",
       "evidenceIds": [
         "e4",
         "e8"
       ]
     },
     {
-      "symptom": "A single permission is rejected.",
-      "cause": "Missing or unclear screencast, a copied usage description, or a use that does not match allowed usage.",
-      "fix": "Re-record showing the grant and the exact use, rewrite the description for that permission, and resubmit only it.",
+      "symptom": "One permission is rejected.",
+      "cause": "Unclear screencast, copied description, or a use outside allowed usage.",
+      "fix": "Re-record the grant and use, rewrite the description, and resubmit.",
       "evidenceIds": [
         "e5",
         "e9"
       ]
     },
     {
-      "symptom": "Real users cannot grant permissions or see missing-permission errors.",
-      "cause": "The permission still has Standard Access, which only covers people with a role on your app.",
-      "fix": "Add them as testers for now, or get Advanced Access through App Review.",
+      "symptom": "Real users get missing-permission errors.",
+      "cause": "It has only Standard Access, which covers app roles.",
+      "fix": "Add them as testers, or get Advanced Access.",
       "evidenceIds": [
         "e1"
       ]
     },
     {
       "symptom": "Business verification is rejected.",
-      "cause": "Legal name, address, or phone on documents does not match Business Info or the website, or the email is not on your domain.",
-      "fix": "Make the website, Business Info, and documents match exactly, use a domain email, and resubmit.",
-      "escalation": "Meta Business Help Center support chat.",
+      "cause": "Name, address, or phone does not match Business Info or the website, or the email is off-domain.",
+      "fix": "Match all three exactly, use a domain email, and resubmit.",
+      "escalation": "Meta Business Help Center chat.",
       "evidenceIds": [
         "e30"
       ]
     },
     {
-      "symptom": "WhatsApp calls on a client's account fail with error code 200.",
+      "symptom": "WhatsApp calls on a client account fail with error code 200.",
       "cause": "No Advanced Access for whatsapp_business_management.",
       "fix": "Complete Tech Provider App Review for that permission.",
       "evidenceIds": [
@@ -571,9 +571,9 @@
       ]
     },
     {
-      "symptom": "Embedded Signup stops onboarding new WhatsApp clients for the week.",
-      "cause": "You hit the limit of new businesses per rolling 7 days: 10 by default, 200 after Business Verification and App Review.",
-      "fix": "Finish verification and review to reach 200. Meta's Embedded Signup page also lists Access Verification, which Meta has since retired, so check the limit shown in WhatsApp Manager. Above 200, apply to be a Meta Business Partner.",
+      "symptom": "Embedded Signup stops onboarding new clients for the week.",
+      "cause": "You hit the rolling 7 day limit: 10 by default, 200 after Business Verification and App Review.",
+      "fix": "Finish verification and review. Access Verification is retired, so check the limit in WhatsApp Manager. Above 200, apply to be a Meta Business Partner.",
       "evidenceIds": [
         "e20",
         "e22",
@@ -581,18 +581,18 @@
       ]
     },
     {
-      "symptom": "A user's Instagram account cannot connect.",
-      "cause": "It is a personal account. There is no Instagram API for personal accounts since December 4, 2024.",
-      "fix": "Ask the user to switch to a business or creator account in the Instagram app.",
+      "symptom": "An Instagram account cannot connect.",
+      "cause": "Personal accounts have had no Instagram API since December 4, 2024.",
+      "fix": "Ask the user to switch to a business or creator account.",
       "evidenceIds": [
         "e15",
         "e14"
       ]
     },
     {
-      "symptom": "Your agent's Facebook token stops working after about two months.",
-      "cause": "Long-lived user tokens last about 60 days and expired tokens cannot be exchanged.",
-      "fix": "Use long-lived Page tokens for Page work, and prompt the user to reconnect before the user token expires.",
+      "symptom": "The Facebook token stops working after about two months.",
+      "cause": "User tokens last about 60 days and cannot be exchanged after expiry.",
+      "fix": "Use Page tokens and prompt a reconnect before expiry.",
       "evidenceIds": [
         "e23"
       ]
@@ -600,79 +600,79 @@
   ],
   "agentAssist": {
     "didForYou": [
-      "Read about 25 official Meta and Composio pages and recorded each claim with its source.",
-      "Probed the v26.0 OAuth dialog with an invalid client ID: it is live and shows an Invalid app ID page.",
-      "Checked the developer portal URL: it loads and needs a signed-in developer account to show apps.",
-      "Drafted a permission justification, a screencast script, and a business verification checklist."
+      "Read about 25 official Meta and Composio pages.",
+      "Probed the v26.0 OAuth dialog: a fake client ID shows Invalid app ID.",
+      "Checked the developer portal: it requires sign-in.",
+      "Drafted a justification, a screencast script, and a verification checklist."
     ],
     "canDoForYou": [
-      "Write the OAuth flow, token exchange, and Page token storage code.",
-      "Make the one API call per permission that Meta requires before you can request review.",
-      "Draft usage descriptions, reviewer test instructions, and data handling answers for you to check.",
-      "Check that your website, Business Info, and documents use the same name, address, and phone.",
-      "Fill App Settings fields in a browser while you watch, after you sign in."
+      "Write the OAuth flow and token storage code.",
+      "Make the required API call per permission.",
+      "Draft usage descriptions, reviewer instructions, and data handling answers.",
+      "Check that your website, Business Info, and documents match.",
+      "Fill App Settings in a browser after you sign in."
     ],
     "youMustDo": [
-      "Sign in to Meta, pass any security checks, and create the app.",
-      "Run Business Verification as a Business Admin and upload legal documents.",
+      "Sign in to Meta and create the app.",
+      "Run Business Verification as a Business Admin.",
       "Record the screencasts.",
-      "Publish a privacy policy and data deletion instructions you stand behind.",
-      "Submit App Review and accept Meta's Platform Terms.",
-      "Complete the Data Use Checkup every year."
+      "Publish a privacy policy and data deletion instructions.",
+      "Submit App Review and accept the Platform Terms.",
+      "Complete the yearly Data Use Checkup."
     ]
   },
   "drafts": [
     {
       "kind": "scope_justification",
       "title": "pages_read_engagement usage description",
-      "body": "DRAFT, edit before use.\n\n[App name] is an AI assistant for small businesses. A Page admin connects their Facebook Page so the assistant can summarize new posts, comments, and engagement, and suggest replies.\n\nWe use pages_read_engagement to read the posts, comments, and Page metadata of Pages the user manages and chose to connect. We show this content in the [App name] dashboard as a daily summary and use it to draft replies the admin approves before anything is posted.\n\nWe request pages_show_list as a dependency so the user can pick which Page to connect.\n\nWe do not sell this data or use it for ads. We keep it only while the Page is connected, and the user can delete it at [data deletion URL].\n\nTo test: go to [URL], sign in with [test login steps], click Connect Facebook Page, grant access, and open Daily summary."
+      "body": "DRAFT, edit before use.\n\n[App name] is an AI assistant for small businesses. A Page admin connects their Page so the assistant can summarize posts, comments, and engagement, and suggest replies.\n\nWe use pages_read_engagement to read posts, comments, and metadata of connected Pages. We show a daily summary and draft replies the admin approves before posting.\n\nWe request pages_show_list so the user can pick a Page.\n\nWe do not sell this data or use it for ads. We keep it only while the Page is connected. Users delete it at [data deletion URL].\n\nTo test: go to [URL], sign in with [test login steps], click Connect Facebook Page, grant access, and open Daily summary."
     },
     {
       "kind": "demo_video_script",
       "title": "App Review screencast for pages_read_engagement",
-      "body": "DRAFT. One recording per permission. 1080p or higher, browser width 1440 or less, English UI, no audio, large cursor, captions added in editing.\n\n1. (0:00) Caption: \"This shows how [App name] uses pages_read_engagement.\" Show the logged-out home page at its public URL.\n2. (0:10) Sign in to [App name] with the test account. Caption the steps.\n3. (0:20) Click Connect Facebook Page. Show the Facebook login dialog with your app name.\n4. (0:35) Log in with a Facebook test user who manages a test Page. Show the permission screen listing the Page access. Click Continue.\n5. (0:55) Back in [App name], choose the test Page from the list. Caption: \"pages_show_list lets the user pick a Page.\"\n6. (1:10) Open Daily summary. Show the Page's recent posts and comments in the app. Caption: \"Post content read with pages_read_engagement.\"\n7. (1:30) Show a drafted reply and the admin approving it. Caption that nothing posts without approval.\n8. (1:45) Open Settings > Disconnect and show how to remove data.\n\nRepeat this structure for each other permission. Show only what that permission does."
+      "body": "DRAFT. One recording per permission.\n\n1. (0:00) Caption: \"This shows how [App name] uses pages_read_engagement.\" Show the public home page.\n2. (0:10) Sign in with the test account.\n3. (0:20) Click Connect Facebook Page. Show the dialog with your app name.\n4. (0:35) Log in as a test user who manages a test Page. Click Continue on the permission screen.\n5. (0:55) Choose the test Page. Caption: \"pages_show_list lets the user pick a Page.\"\n6. (1:10) Open Daily summary. Caption: \"Read with pages_read_engagement.\"\n7. (1:30) Approve a drafted reply. Caption that nothing posts without approval.\n8. (1:45) Show Settings > Disconnect and data removal.\n\nRepeat for each permission."
     },
     {
       "kind": "other",
       "title": "Business verification document checklist",
-      "body": "DRAFT. Check Meta's current accepted list in the Business Help Center before uploading.\n\n- Legal business name: certificate of incorporation, business license, or tax registration in the company's name (not the owner's).\n- Address or phone: a recent utility bill or bank statement showing the legal name and the same address or phone.\n- Website: live, HTTPS, showing the same legal name, address, and phone as Business Info.\n- Email: an address on your website's domain to receive the code, or domain verification done in Business Settings.\n- Business Info in the portfolio: legal name, address, phone, website typed exactly as on the documents.\n- A Business Admin who will do the upload. Partners cannot upload for you.\n- No expired documents."
+      "body": "DRAFT. Check Meta's accepted list in the Business Help Center before uploading.\n\n- Legal name: certificate of incorporation, business license, or tax registration in the company's name.\n- Address or phone: a recent utility bill or bank statement with the legal name and same address or phone.\n- Website: live, HTTPS, with the same legal name, address, and phone as Business Info.\n- Email: an address on your domain, or domain verification in Business Settings.\n- Business Info: legal name, address, phone, website exactly as on the documents.\n- A Business Admin to upload. Partners cannot upload for you.\n- No expired documents."
     },
     {
       "kind": "privacy_policy_checklist",
       "title": "Privacy policy and data deletion checklist for Meta",
-      "body": "DRAFT.\n\n- Public URL, reachable without login.\n- Names your company and how to contact you.\n- Lists the Meta data you collect (Page content, Instagram messages, WhatsApp messages) and why.\n- Says who you share it with, including your AI model provider.\n- States how long you keep it.\n- Explains how a user requests deletion, and links your data deletion instructions URL (or describes the callback).\n- Matches what you say in the data handling questions."
+      "body": "DRAFT.\n\n- Public URL, no login.\n- Names your company and contact.\n- Lists the Meta data you collect (Page content, Instagram messages, WhatsApp messages) and why.\n- Names who you share it with, including your AI model provider.\n- States retention.\n- Explains deletion requests and links your data deletion URL or describes the callback.\n- Matches your data handling answers."
     }
   ],
   "uncertainties": [
     {
-      "question": "How long does App Review really take?",
-      "why": "Meta's guide says a week. A forum report shows the dashboard estimating about 10 days and a review still open at 13 days. We found no official numbers on resubmission cycles.",
-      "howToResolve": "Record dates on your own first submission and add them to this guide as tested."
+      "question": "How long does App Review take?",
+      "why": "Meta says a week. A forum report shows a review open at 13 days.",
+      "howToResolve": "Record your submission dates and add them as tested."
     },
     {
-      "question": "Which documents does Business Verification accept today, and how long does it take?",
-      "why": "Meta's Business Help Center page did not render for us. The list here comes from a WhatsApp partner's docs.",
-      "howToResolve": "Open the Business Help Center article on verification documents while signed in and compare."
+      "question": "Which documents does Business Verification accept, and how long does it take?",
+      "why": "Meta's Help Center page did not render. This list comes from a WhatsApp partner's docs.",
+      "howToResolve": "Compare with the Help Center article while signed in."
     },
     {
-      "question": "Is Access Verification still part of the WhatsApp onboarding limit?",
-      "why": "The Access Verification page says it is no longer required, and a news report dates the retirement to October 9, 2026. The Embedded Signup page still lists it as one of three steps to raise the limit to 200.",
-      "howToResolve": "Check the limit shown in your WhatsApp Manager after review, or ask Meta developer support."
+      "question": "Does Access Verification still affect the WhatsApp limit?",
+      "why": "Meta says it is retired (October 9, 2026, per a news report), but the Embedded Signup page still lists it.",
+      "howToResolve": "Check WhatsApp Manager after review, or ask Meta developer support."
     },
     {
-      "question": "How long do Instagram Login tokens last and can they be refreshed?",
-      "why": "We did not read the Instagram Login token page in this run.",
-      "howToResolve": "Read the Instagram Platform access token docs before building background jobs."
+      "question": "How long do Instagram Login tokens last, and can they be refreshed?",
+      "why": "This run did not read the Instagram token page.",
+      "howToResolve": "Read the Instagram access token docs before building background jobs."
     },
     {
-      "question": "Does the Facebook Login dialog support PKCE, and is there a tester count limit?",
-      "why": "Neither was confirmed in the pages we read.",
-      "howToResolve": "Check the Facebook Login manual flow docs and the App Roles page in your dashboard."
+      "question": "Does Facebook Login support PKCE, and is there a tester limit?",
+      "why": "Neither was confirmed.",
+      "howToResolve": "Check the manual flow docs and the App Roles page."
     },
     {
-      "question": "What exactly does Composio's managed WhatsApp auth cover?",
-      "why": "The managed table lists WhatsApp but not which permissions or flows.",
-      "howToResolve": "Check the WhatsApp toolkit page or the toolkit API's composio_managed_auth_schemes field."
+      "question": "What does Composio's managed WhatsApp auth cover?",
+      "why": "The managed table does not list permissions or flows.",
+      "howToResolve": "Check the WhatsApp toolkit page or the composio_managed_auth_schemes field."
     }
   ],
   "evidence": [

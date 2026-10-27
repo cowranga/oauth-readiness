@@ -21,15 +21,15 @@
   "oauth": {
     "support": "oauth2",
     "pkce": "supported",
-    "alternatives": "Personal access tokens (classic or fine-grained) work for one user's own scripts, not for letting many users connect.",
+    "alternatives": "Personal access tokens suit one user's own scripts, not many users.",
     "appTypes": [
       {
         "name": "GitHub App (recommended)",
-        "whenToUse": "Default for an agent product. Fine-grained permissions such as read-only contents, the installer picks repos, user tokens expire after 8 hours with a refresh token, and it is exempt from org OAuth app restrictions. Org access needs an install by an owner or repo admin."
+        "whenToUse": "Default for agents. Fine-grained permissions, installer-picked repos, 8-hour user tokens with refresh. Exempt from org OAuth app restrictions."
       },
       {
         "name": "OAuth app",
-        "whenToUse": "Use only if you need enterprise-level resources, or you need the agent to reach every repo the user can reach without an install step. Scopes are broad (repo is full read and write) and org owners must approve the app in orgs with OAuth app restrictions, which are on by default."
+        "whenToUse": "Only for enterprise-level resources or all-repo access without an install. `repo` is full read and write. Org owners must approve it by default."
       }
     ],
     "evidenceIds": [
@@ -42,10 +42,10 @@
   "verdict": {
     "tier": 2,
     "label": "Self-serve, optional review",
-    "summary": "GitHub does not review your app: once you make a GitHub App public, any GitHub user can install and authorize it, and only the optional Marketplace listing goes through a GitHub review. The deciding factor is on your customer's side, because an org owner must install your GitHub App (or approve your OAuth app) before it can reach org repositories.",
-    "nextStep": "Sign in to GitHub, open github.com/settings/apps/new, and register a GitHub App with read-only Contents, Issues, and Pull requests permissions, your callback URL, and expiring user tokens left on.",
+    "summary": "GitHub does not review your app. Any user can install a public GitHub App. The deciding factor is the customer: an org owner must install it for org repos.",
+    "nextStep": "Register a GitHub App at github.com/settings/apps/new with read-only Contents, Issues, and Pull requests.",
     "customerSideGate": true,
-    "customerSideGateNote": "For a GitHub App, an org owner must install it, or a repo admin can if you request no organization permissions and not Repository administration, unless the owner has blocked repo admins from installing apps. For an OAuth app, OAuth app access restrictions are on by default in new orgs, so an owner must approve it. Personal repos need no approval.",
+    "customerSideGateNote": "An org owner installs a GitHub App. A repo admin can instead if you request no organization permissions or Repository administration, unless the owner blocks it. OAuth apps need owner approval in new orgs.",
     "confidence": "high",
     "evidenceIds": [
       "e2",
@@ -58,7 +58,7 @@
   },
   "composio": {
     "managedApp": "available",
-    "note": "Composio lists GitHub with managed OAuth, so you can prototype without your own app. Users then see Composio on the consent screen, you share its rate limit, and you get its default permissions. Bring your own GitHub App when you need your name on the install page, specific permissions, or your own rate limit. You add its client ID and secret to a Composio auth config, and you must send users to your app's install page yourself. When you switch to your own auth config, only new connections use it; existing users keep their current connection until they re-authenticate, or until you import their credentials where Composio supports it.",
+    "note": "Composio provides managed OAuth for GitHub. Users see Composio on the consent screen, and you share its rate limit and default permissions. Bring your own GitHub App for your own name, permissions, or rate limit: add its client ID and secret to an auth config, and link users to your install page. Only new connections use the new auth config. Existing users keep theirs until they re-authenticate or you import their credentials.",
     "evidenceIds": [
       "e25",
       "e26",
@@ -70,7 +70,7 @@
     {
       "id": "prototype",
       "name": "Prototype",
-      "whoCanConnect": "You and your own org, with the app set to install only on your account.",
+      "whoCanConnect": "You and your own org. The app installs only on your account.",
       "handsOnHours": {
         "min": 1,
         "max": 3
@@ -80,7 +80,7 @@
         "max": 0
       },
       "reviewRequired": false,
-      "notes": "No review. A private GitHub App installs only on the account that owns it.",
+      "notes": "No review. A private GitHub App installs only on its owner account.",
       "evidenceIds": [
         "e12",
         "e13"
@@ -89,7 +89,7 @@
     {
       "id": "limited",
       "name": "Limited beta",
-      "whoCanConnect": "Any GitHub user, once you switch the app to any account. Org repos need an install by that org's owner or a repo admin.",
+      "whoCanConnect": "Any GitHub user. Org repos need an install by an owner or repo admin.",
       "handsOnHours": {
         "min": 2,
         "max": 6
@@ -99,7 +99,7 @@
         "max": 0
       },
       "reviewRequired": false,
-      "notes": "GitHub adds no wait. Each customer org may wait on its owner to install or approve the app, which GitHub gives no timeline for.",
+      "notes": "GitHub adds no wait. Each customer org may wait on its owner, with no timeline.",
       "evidenceIds": [
         "e13",
         "e14",
@@ -109,7 +109,7 @@
     {
       "id": "production",
       "name": "Production",
-      "whoCanConnect": "Anyone on GitHub. Optional Marketplace listing for discovery.",
+      "whoCanConnect": "Anyone on GitHub. Marketplace listing is optional.",
       "handsOnHours": {
         "min": 2,
         "max": 8
@@ -119,7 +119,7 @@
         "max": 0
       },
       "reviewRequired": false,
-      "notes": "Production needs no GitHub approval. If you list on Marketplace, GitHub reviews the listing and an onboarding expert contacts you, with no stated timeline. Your app keeps working while you wait. Paid plans need 100 installs and a verified publisher org.",
+      "notes": "No GitHub approval. Marketplace listings get a review with no stated timeline; your app works meanwhile. Paid plans need 100 installs and a verified publisher org.",
       "evidenceIds": [
         "e16",
         "e18",
@@ -140,7 +140,7 @@
       "useCases": [
         "read"
       ],
-      "effect": "No review and no org approval. Any user can sign in.",
+      "effect": "No review and no org approval.",
       "evidenceIds": [
         "e11",
         "e20"
@@ -159,7 +159,7 @@
       "useCases": [
         "read"
       ],
-      "effect": "No GitHub review. Org repos need the app installed by an owner or repo admin. With an OAuth app you must ask for repo, which is full read and write.",
+      "effect": "Org repos need an owner or repo admin install. OAuth apps must request `repo` (full read and write).",
       "evidenceIds": [
         "e14",
         "e20",
@@ -179,7 +179,7 @@
       "useCases": [
         "write"
       ],
-      "effect": "No GitHub review. Owners and repo admins see the write permissions on the install screen, so expect more questions from security-minded orgs.",
+      "effect": "Write permissions show on the install screen. Security-minded orgs ask more questions.",
       "evidenceIds": [
         "e12",
         "e14",
@@ -197,7 +197,7 @@
       "useCases": [
         "offline"
       ],
-      "effect": "No review. Store and rotate refresh tokens; each refresh kills the old pair. Installation tokens let the app act as a bot without any user.",
+      "effect": "Rotate refresh tokens; each refresh kills the old pair. Installation tokens act as a bot without a user.",
       "evidenceIds": [
         "e4",
         "e8",
@@ -215,7 +215,7 @@
       "useCases": [
         "admin"
       ],
-      "effect": "No GitHub review, but only an org owner can install the app. Repo admins can no longer install it for you.",
+      "effect": "Only an org owner can install the app. Repo admins cannot.",
       "evidenceIds": [
         "e14",
         "e20"
@@ -227,7 +227,7 @@
       "id": "r1",
       "item": "A GitHub account (personal or organization) to own the app",
       "stage": "prototype",
-      "detail": "Use an organization account if you may ever sell on Marketplace. Paid listings must be org-owned.",
+      "detail": "Use an organization if you may sell on Marketplace. Paid listings must be org-owned.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e12",
@@ -247,7 +247,7 @@
       "id": "r3",
       "item": "Homepage URL",
       "stage": "prototype",
-      "detail": "A public repo or your account URL is fine if you have no site yet.",
+      "detail": "A public repo or your account URL works if you have no site.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e12"
@@ -257,7 +257,7 @@
       "id": "r4",
       "item": "Callback URLs (up to 10)",
       "stage": "prototype",
-      "detail": "Add your production and local URLs. For local work use 127.0.0.1; the port may differ. Keep wildcard matching off unless you control every subdomain.",
+      "detail": "Add production and local URLs. Locally use 127.0.0.1, any port. Keep wildcard matching off.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e7",
@@ -269,7 +269,7 @@
       "id": "r5",
       "item": "Minimum permissions list",
       "stage": "prototype",
-      "detail": "Pick read-only where you can. Avoid organization permissions and Repository administration so repo admins can install the app.",
+      "detail": "Read-only where possible. Skip org permissions and Repository administration.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e14",
@@ -291,7 +291,7 @@
       "id": "r7",
       "item": "Webhook URL and secret, or webhooks turned off",
       "stage": "limited",
-      "detail": "Webhooks are on by default. Turn them off if you do not need events yet.",
+      "detail": "Webhooks are on by default. Turn them off if you do not need events.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e12"
@@ -301,7 +301,7 @@
       "id": "r8",
       "item": "Privacy policy and support contact",
       "stage": "production",
-      "detail": "Required for a Marketplace listing. Good practice for org owners reviewing your app either way.",
+      "detail": "Required for Marketplace. Org owners check for them.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e19"
@@ -324,7 +324,7 @@
       "id": "s1",
       "stage": "prototype",
       "title": "Register a GitHub App",
-      "detail": "Sign in and open github.com/settings/apps/new (or your org's Settings, Developer settings, GitHub Apps, New GitHub App). Enter the name, homepage URL, and callback URL. Leave Expire user authorization tokens checked. Set Where can this GitHub App be installed to Only on this account for now. Click Create GitHub App. You land on the app's settings page with an App ID and Client ID.",
+      "detail": "Open github.com/settings/apps/new, or for an org go to **Settings > Developer settings > GitHub Apps > New GitHub App**. Enter name, homepage URL, and callback URL. Keep **Expire user authorization tokens** checked, choose **Only on this account**, and click **Create GitHub App**. The settings page shows the App ID and Client ID.",
       "owner": "you",
       "estimate": "10 to 20 min",
       "url": "https://github.com/settings/apps/new",
@@ -336,8 +336,8 @@
     {
       "id": "s2",
       "stage": "prototype",
-      "title": "Choose the smallest permissions",
-      "detail": "Under Permissions set Metadata read, Contents read, Issues read, Pull requests read. Add write only for actions your agent takes. Skip organization permissions and Repository administration so repo admins can install the app without an owner.",
+      "title": "Choose minimal permissions",
+      "detail": "Set Metadata, Contents, Issues, and Pull requests to read. Add write only where the agent acts.",
       "owner": "you",
       "estimate": "10 min",
       "evidenceIds": [
@@ -348,8 +348,8 @@
     {
       "id": "s3",
       "stage": "prototype",
-      "title": "Generate a client secret and a private key",
-      "detail": "On the app settings page click Generate a new client secret, then Generate a private key. Store both in your secret manager. Never commit them.",
+      "title": "Generate secret and private key",
+      "detail": "Click **Generate a new client secret** and **Generate a private key**. Store both in a secret manager.",
       "owner": "you",
       "estimate": "5 min",
       "evidenceIds": [
@@ -360,8 +360,8 @@
     {
       "id": "s4",
       "stage": "prototype",
-      "title": "Build the user sign-in flow with PKCE",
-      "detail": "Send users to https://github.com/login/oauth/authorize with client_id, redirect_uri, state, and a code_challenge using S256. Exchange the code at the token endpoint with the code_verifier. Save the access token and refresh token, and refresh before the 8 hour expiry.",
+      "title": "Build sign-in with PKCE",
+      "detail": "Redirect to https://github.com/login/oauth/authorize with client_id, redirect_uri, state, and an S256 code_challenge. Exchange the code with the code_verifier. Refresh before the 8-hour expiry.",
       "owner": "agent",
       "estimate": "1 to 2 hours",
       "url": "https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app",
@@ -375,8 +375,8 @@
     {
       "id": "s5",
       "stage": "prototype",
-      "title": "Install the app on your account and test",
-      "detail": "From the app page click Install App, pick your account, and choose selected repositories. Sign in through your flow and call GET /user/installations to confirm the token sees the right repos.",
+      "title": "Install and test",
+      "detail": "Click **Install App** and choose selected repositories. Call `GET /user/installations` to confirm the token sees them.",
       "owner": "you",
       "estimate": "15 min",
       "evidenceIds": [
@@ -388,7 +388,7 @@
       "id": "s6",
       "stage": "limited",
       "title": "Make the app public",
-      "detail": "In the app's Advanced settings, make it public (installable on any account). Any GitHub user can now install and authorize it. There is no GitHub review.",
+      "detail": "In **Advanced**, make the app public. GitHub does not review this.",
       "owner": "you",
       "estimate": "5 min",
       "url": "https://docs.github.com/en/apps/creating-github-apps/setting-up-a-github-app/making-a-github-app-public-or-private",
@@ -399,8 +399,8 @@
     {
       "id": "s7",
       "stage": "limited",
-      "title": "Handle the install step in your onboarding",
-      "detail": "After sign-in, check GET /user/installations. If the user's org has no install, send them to your app's install page. Show the org owner message draft for users who can only request an install.",
+      "title": "Handle install in onboarding",
+      "detail": "Call `GET /user/installations` after sign-in. If the org has no install, link to your install page or show the owner draft.",
       "owner": "agent",
       "estimate": "1 to 3 hours",
       "evidenceIds": [
@@ -412,8 +412,8 @@
     {
       "id": "s8",
       "stage": "limited",
-      "title": "Wait for each customer's org owner",
-      "detail": "Members and outside collaborators can request an install; the owner is notified and decides. You cannot speed this up from GitHub's side. Send the owner the draft message.",
+      "title": "Wait for org owners",
+      "detail": "Members and outside collaborators can request an install. The org owner decides. You cannot speed this up. Send the owner the draft message.",
       "owner": "provider",
       "estimate": "minutes to weeks, per customer",
       "evidenceIds": [
@@ -425,7 +425,7 @@
       "id": "s9",
       "stage": "limited",
       "title": "Plan for rate limits",
-      "detail": "User tokens share the user's 5,000 requests per hour with their other apps. Use installation tokens for heavy background work; they scale up to 12,500 per hour, or 15,000 for installs on Enterprise Cloud orgs. Keep content creation under about 80 per minute.",
+      "detail": "User tokens share 5,000 requests per hour across the user's apps. Installation tokens get up to 12,500, or 15,000 on Enterprise Cloud. Keep content creation under about 80 per minute.",
       "owner": "agent",
       "estimate": "1 to 2 hours",
       "evidenceIds": [
@@ -436,8 +436,8 @@
     {
       "id": "s10",
       "stage": "production",
-      "title": "Publish a privacy policy and support contact",
-      "detail": "Put both on your site and link them from the app's description. Org owners look for them before they install.",
+      "title": "Publish privacy and support pages",
+      "detail": "Link both from the app description.",
       "owner": "you",
       "estimate": "1 to 3 hours",
       "evidenceIds": [
@@ -447,8 +447,8 @@
     {
       "id": "s11",
       "stage": "production",
-      "title": "Optional: list on GitHub Marketplace",
-      "detail": "From the app settings open the Marketplace listing, fill the description, logo, screenshots, pricing (free is fine), privacy policy and support links, then click Request publish. Paid plans need a verified publisher org and 100 installs.",
+      "title": "Optional: list on Marketplace",
+      "detail": "Add description, logo, screenshots, pricing (free works), and privacy and support links. Click **Request publish**. Paid plans need a verified publisher org and 100 installs.",
       "owner": "you",
       "estimate": "1 to 3 hours",
       "url": "https://docs.github.com/en/apps/github-marketplace/creating-apps-for-github-marketplace/requirements-for-listing-an-app",
@@ -461,8 +461,8 @@
     {
       "id": "s12",
       "stage": "production",
-      "title": "Wait for the Marketplace listing decision",
-      "detail": "Only if you submitted a listing. GitHub reviews it and an onboarding expert contacts you. GitHub states no timeline. Your app keeps working for all users while you wait.",
+      "title": "Wait for Marketplace decision",
+      "detail": "Only if you listed. An onboarding expert contacts you. No stated timeline.",
       "owner": "provider",
       "estimate": "unknown",
       "evidenceIds": [
@@ -473,18 +473,18 @@
   ],
   "blockers": [
     {
-      "symptom": "Users in an org see Request instead of Install, or your agent sees none of the org's repos.",
-      "cause": "Only org owners can install, and repo admins cannot install apps that ask for org permissions or Repository administration.",
-      "fix": "Drop org permissions and Repository administration if you can. Otherwise send the owner the approval request draft.",
+      "symptom": "Org users see **Request** instead of **Install**, or your agent sees no org repos.",
+      "cause": "Org permissions or Repository administration block repo admin installs.",
+      "fix": "Drop those permissions, or send the owner the approval draft.",
       "escalation": "The customer's org owner.",
       "evidenceIds": [
         "e14"
       ]
     },
     {
-      "symptom": "An OAuth app works for personal repos but not for org repos.",
-      "cause": "OAuth app access restrictions are on by default for new orgs, so an owner must approve the app.",
-      "fix": "Ask the user to request approval, or switch to a GitHub App, which is exempt from this policy.",
+      "symptom": "An OAuth app works for personal repos but not org repos.",
+      "cause": "OAuth app access restrictions are on by default in new orgs.",
+      "fix": "Ask the user to request owner approval, or switch to a GitHub App, which is exempt.",
       "escalation": "The customer's org owner.",
       "evidenceIds": [
         "e2",
@@ -494,7 +494,7 @@
     {
       "symptom": "The callback receives error=redirect_uri_mismatch.",
       "cause": "The redirect_uri does not match a registered callback URL.",
-      "fix": "Add the exact URL as one of up to 10 callback URLs, or omit redirect_uri to use the first one. For local work use 127.0.0.1; the port may differ.",
+      "fix": "Register the exact URL (up to 10), or omit redirect_uri to use the first.",
       "evidenceIds": [
         "e7",
         "e12",
@@ -502,25 +502,25 @@
       ]
     },
     {
-      "symptom": "Refresh fails with bad_refresh_token, or users are suddenly logged out.",
-      "cause": "Refresh tokens rotate. Reusing an old one, or letting it sit unused for 6 months, breaks it.",
-      "fix": "Save the new refresh token on every refresh, atomically. If it fails, send the user through sign-in again.",
+      "symptom": "Refresh fails with bad_refresh_token, or users are logged out.",
+      "cause": "Refresh tokens rotate and break if reused or unused for 6 months.",
+      "fix": "Save each new refresh token atomically; on failure, re-run sign-in.",
       "evidenceIds": [
         "e8"
       ]
     },
     {
-      "symptom": "Some stored tokens stop working after users reconnect many times.",
-      "cause": "GitHub keeps at most 10 tokens per user, app, and scope combination. Past that it revokes unused or least recently used tokens.",
-      "fix": "Reuse one stored token per user instead of creating a new one on each login.",
+      "symptom": "Stored tokens stop working after users reconnect many times.",
+      "cause": "GitHub keeps at most 10 tokens per user, app, and scope, revoking the least recently used.",
+      "fix": "Reuse one stored token per user.",
       "evidenceIds": [
         "e9"
       ]
     },
     {
       "symptom": "403 or 429 responses with rate limit headers.",
-      "cause": "User tokens share 5,000 requests per hour across all the user's apps, and secondary limits cap bursts and content creation.",
-      "fix": "Move bulk reads to installation tokens, back off on retry-after, and slow down write bursts.",
+      "cause": "User tokens share 5,000 requests per hour, and secondary limits cap bursts.",
+      "fix": "Move bulk reads to installation tokens, honor retry-after, and slow write bursts.",
       "evidenceIds": [
         "e16",
         "e17"
@@ -537,8 +537,8 @@
     },
     {
       "symptom": "Authorization codes arrive at unexpected subdomains or paths.",
-      "cause": "Apps with one callback URL from before Aug 3, 2026 have wildcard redirect matching turned on by default.",
-      "fix": "Open each callback URL in the app settings and turn wildcard matching off unless you need it.",
+      "cause": "Apps with one callback URL from before Aug 3, 2026 have wildcard redirect matching on by default.",
+      "fix": "Turn wildcard matching off on each callback URL unless you need it.",
       "evidenceIds": [
         "e21",
         "e22"
@@ -547,69 +547,69 @@
   ],
   "agentAssist": {
     "didForYou": [
-      "Read about 19 official GitHub and Composio pages and recorded each claim with its source.",
-      "Probed the authorize endpoint with an invalid client ID: it is live and sends signed-out visitors to sign in.",
-      "Checked the developer portal at github.com/settings/apps/new: it exists and needs a signed-in account.",
-      "Drafted an org owner approval request, a Marketplace description, and a permission rationale."
+      "Read about 19 official GitHub and Composio pages and cited each claim.",
+      "Probed the authorize endpoint with an invalid client ID. It is live and requires sign-in.",
+      "Checked github.com/settings/apps/new. It exists and needs sign-in.",
+      "Drafted an org owner request, a Marketplace description, and a permission rationale."
     ],
     "canDoForYou": [
-      "Write the sign-in flow with PKCE, token storage, and refresh rotation.",
-      "Write the install check and the install or request redirect in your onboarding.",
-      "Pick the smallest permission set for your agent's actions.",
-      "Fill the GitHub App form in a browser while you watch, after you sign in.",
-      "Draft your privacy policy outline and Marketplace listing text."
+      "Write PKCE sign-in, token storage, and refresh rotation.",
+      "Write the install check and redirect in onboarding.",
+      "Pick minimal permissions for your agent's actions.",
+      "Fill the GitHub App form in a browser after you sign in.",
+      "Draft privacy policy outline and Marketplace text."
     ],
     "youMustDo": [
       "Sign in to GitHub and pass 2FA.",
-      "Create the app and generate the client secret and private key.",
-      "Decide which account owns the app (personal or org).",
-      "Publish a privacy policy and support contact you stand behind.",
+      "Create the app, client secret, and private key.",
+      "Choose the owning account (personal or org).",
+      "Publish a privacy policy and support contact.",
       "Accept the Marketplace Developer Agreement if you list.",
-      "Talk to customer org owners who need to install the app."
+      "Work with customer org owners on installs."
     ]
   },
   "drafts": [
     {
       "kind": "other",
-      "title": "Message to an org owner asking to install the app",
-      "body": "Hi <owner name>,\n\nI'd like to use <App name> with our repositories in <org name>. It needs to be installed on the org by an owner.\n\nWhat it can access:\n- Only the repositories you select during install (you can pick just <repo names>).\n- Read: code, issues, pull requests, and metadata.\n- Write: issues and pull requests, so it can open issues, comment, and propose changes as pull requests. It never pushes to protected branches.\n- No organization permissions and no repository administration.\n\nWhy: <one sentence on the task, for example \"it triages new issues and opens fix PRs for us to review\">.\n\nYou can review or remove it any time under Organization settings, GitHub Apps. Install link: <https://github.com/apps/your-app/installations/new>\nPrivacy policy: <url>\n\nThanks,\n<your name>"
+      "title": "Org owner install request",
+      "body": "Hi <owner name>,\n\nI want to use <App name> on our <org name> repositories. An owner must install it.\n\nAccess:\n- Only repositories you select (for example <repo names>).\n- Read: code, issues, pull requests, metadata.\n- Write: issues and pull requests. It never pushes to protected branches.\n- No organization permissions or repository administration.\n\nWhy: <one sentence on the task, for example \"it triages new issues and opens fix PRs for us to review\">.\n\nRemove it any time under Organization settings, GitHub Apps. Install link: <https://github.com/apps/your-app/installations/new>\nPrivacy policy: <url>\n\nThanks,\n<your name>"
     },
     {
       "kind": "app_description",
-      "title": "GitHub Marketplace listing description",
-      "body": "<App name> is a coding agent that works in the repositories you choose. It reads code, issues, and pull requests, then opens issues, leaves comments, and proposes changes as pull requests for your team to review.\n\nWhat you control:\n- You pick which repositories it can see when you install it.\n- It asks for the smallest permissions it needs: read code and metadata, read and write issues and pull requests.\n- Every change arrives as a pull request. Nothing merges without a person.\n\nGetting started: install the app, pick repositories, and sign in at <your site>.\n\nSupport: <support email or URL>. Privacy policy: <url>."
+      "title": "Marketplace listing description",
+      "body": "<App name> is a coding agent for repositories you choose. It reads code, issues, and pull requests, and proposes changes as pull requests.\n\nWhat you control:\n- Which repositories it sees.\n- Minimal permissions: read code, read and write issues and pull requests.\n- Nothing merges without a person.\n\nGetting started: install, pick repositories, and sign in at <your site>.\n\nSupport: <support email or URL>. Privacy policy: <url>."
     },
     {
       "kind": "scope_justification",
-      "title": "Permission rationale (for your docs and owner questions)",
-      "body": "Metadata (read): required by GitHub for all apps; lists repositories the app can see.\nContents (read): the agent reads code to answer questions and plan changes.\nContents (write): only if the agent pushes branches for pull requests. Remove if it only comments.\nIssues (read and write): the agent reads issues and opens or comments on them.\nPull requests (read and write): the agent opens pull requests and replies to review comments.\nNot requested: organization permissions, Repository administration, Workflows. Leaving these out lets repo admins install the app without an org owner."
+      "title": "Permission rationale",
+      "body": "Metadata (read): required; lists visible repositories.\nContents (read): reads code to plan changes.\nContents (write): only to push PR branches.\nIssues (read and write): reads, opens, and comments on issues.\nPull requests (read and write): opens PRs and replies to reviews.\nNot requested: organization permissions, Repository administration, Workflows, so repo admins can install."
     },
     {
       "kind": "privacy_policy_checklist",
-      "title": "Privacy policy checklist for a GitHub agent",
-      "body": "- What GitHub data you read (code, issues, pull requests) and why.\n- Whether code is sent to an AI model provider, which one, and whether it is used for training.\n- How long you keep code, tokens, and logs, and how you delete them.\n- How a user revokes access (uninstall the app or revoke authorization in GitHub settings) and what happens to their data then.\n- Where data is stored and who can access it.\n- Contact email for privacy questions."
+      "title": "Privacy policy checklist",
+      "body": "- GitHub data read (code, issues, pull requests) and why.\n- Which AI provider receives code, and whether it trains on it.\n- Retention and deletion of code, tokens, and logs.\n- How to revoke access and what happens to data.\n- Storage location and who has access.\n- Privacy contact email."
     }
   ],
   "uncertainties": [
     {
-      "question": "How long does a GitHub Marketplace listing review take?",
-      "why": "The submission page says an onboarding expert contacts you after you request publication, but no page gives a timeline.",
+      "question": "How long does Marketplace listing review take?",
+      "why": "GitHub says an onboarding expert contacts you but gives no timeline.",
       "howToResolve": "Submit a free listing and record the dates, or ask GitHub Support."
     },
     {
-      "question": "Do enterprise policies change the default OAuth app restrictions or block GitHub App installs across all orgs in an enterprise?",
+      "question": "Do enterprise policies change OAuth app restrictions or block GitHub App installs across an enterprise?",
       "why": "The pages read cover org-level controls only.",
-      "howToResolve": "Read the GitHub Enterprise Cloud policy docs for apps, or ask an enterprise customer's admin."
+      "howToResolve": "Read the Enterprise Cloud app policy docs, or ask an enterprise admin."
     },
     {
-      "question": "How long do customer org owners take to approve installs?",
-      "why": "It depends on each customer. No source gives a duration.",
-      "howToResolve": "Track request-to-install time across your first beta customers."
+      "question": "How long do org owners take to approve installs?",
+      "why": "It varies by customer and no source gives a duration.",
+      "howToResolve": "Track request-to-install time across beta customers."
     },
     {
-      "question": "What does the authorize endpoint show a signed-in user for an invalid client ID?",
-      "why": "The probe was signed out, so GitHub sent it to the sign-in page before checking the client ID.",
-      "howToResolve": "Open the probe URL while signed in during your own setup and note the error page."
+      "question": "What does a signed-in user see for an invalid client ID?",
+      "why": "The signed-out probe hit the sign-in page before the client ID check.",
+      "howToResolve": "Open the probe URL while signed in during setup and note the error."
     }
   ],
   "evidence": [

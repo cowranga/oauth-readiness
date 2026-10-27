@@ -21,19 +21,19 @@
   "oauth": {
     "support": "oauth2_oidc",
     "pkce": "supported",
-    "alternatives": "Integration users with the JWT bearer or client credentials flow, set up per customer org by that org's admin. This does not scale to many customers.",
+    "alternatives": "Integration users with the JWT bearer or client credentials flow, set up by each customer admin. This does not scale.",
     "appTypes": [
       {
         "name": "External Client App, Local",
-        "whenToUse": "Prototype in your own Developer Edition org. It only works for users of the org where you created it."
+        "whenToUse": "Prototype. Only users of your own org can connect."
       },
       {
-        "name": "External Client App, Packaged (in a 2GP managed package)",
-        "whenToUse": "Production for an agent product. Each customer admin installs your package, which brings the app into their org and lets them set its policies."
+        "name": "External Client App, Packaged (2GP)",
+        "whenToUse": "Production. Each customer admin installs your package and sets its policies."
       },
       {
         "name": "Connected App (legacy)",
-        "whenToUse": "Only if you already have one. New ones cannot be created since Spring '26 without asking Salesforce Support, and since September 2025 most users cannot use one their org has not installed."
+        "whenToUse": "Only if you have one. New ones need Salesforce Support since Spring '26. Uninstalled ones are blocked for most users since September 2025."
       }
     ],
     "evidenceIds": [
@@ -47,10 +47,10 @@
   "verdict": {
     "tier": 2,
     "label": "Self-serve, optional review",
-    "summary": "Salesforce does not approve your app: you ship an External Client App in a managed package and each customer's admin installs it, which is the gate in every deal. Security review is only needed to list on AgentExchange, to reach Group or Professional Edition orgs without the API add-on, or to remove the install notice that says your package is not authorized for distribution.",
-    "nextStep": "Sign up for a free Developer Edition org and create a Local External Client App with the api and refresh_token scopes and PKCE required.",
+    "summary": "Salesforce does not approve your app. Each customer admin must install your managed package. Security review is only for AgentExchange, Group or Professional orgs without the API add-on, or removing the install notice.",
+    "nextStep": "Get a free Developer Edition org and create a Local External Client App.",
     "customerSideGate": true,
-    "customerSideGateNote": "A customer admin must install your package and decide who may use it (self-authorize or pre-authorized profiles and permission sets). Admins can also set the refresh token policy, and orgs with API Access Control only allow allowlisted apps, with no user-level bypass since late 2025. The customer's edition must include API access.",
+    "customerSideGateNote": "The customer admin installs your package, picks who may use it, and sets the refresh token policy. With API Access Control on, only allowlisted apps work, with no user bypass since late 2025.",
     "confidence": "medium",
     "evidenceIds": [
       "e3",
@@ -69,7 +69,7 @@
   },
   "composio": {
     "managedApp": "available",
-    "note": "Composio lists Salesforce with managed OAuth, so you can try it today without your own app. Users then see Composio's app, and Composio's own FAQ says a customer admin may need to approve or install it before users can connect. Composio names private Salesforce subdomains as a reason to bring your own app. When you switch to your own auth config, only new connections use it; existing users keep their current connection until they re-authenticate, or until you import their credentials where Composio supports it.",
+    "note": "Composio offers managed OAuth for Salesforce, so you can start without your own app. A customer admin may need to approve or install Composio's app first. Private Salesforce subdomains need your own app. If you switch auth configs, only new connections use it. Existing users keep theirs until they re-authenticate.",
     "evidenceIds": [
       "e21",
       "e22",
@@ -82,7 +82,7 @@
     {
       "id": "prototype",
       "name": "Prototype",
-      "whoCanConnect": "You and other users of your own Developer Edition org, through a Local External Client App.",
+      "whoCanConnect": "Users of your own Developer Edition org.",
       "handsOnHours": {
         "min": 2,
         "max": 5
@@ -92,7 +92,7 @@
         "max": 0
       },
       "reviewRequired": false,
-      "notes": "Developer Edition is free and has API access. A Local app does not work for users of other orgs, so you cannot demo against a customer's org yet.",
+      "notes": "Developer Edition is free. A Local app does not work in other orgs.",
       "evidenceIds": [
         "e3",
         "e8",
@@ -102,7 +102,7 @@
     {
       "id": "limited",
       "name": "Limited beta",
-      "whoCanConnect": "Users in design partner orgs whose admin installed your managed package and gave them access.",
+      "whoCanConnect": "Design partner orgs whose admin installed your package.",
       "handsOnHours": {
         "min": 8,
         "max": 20
@@ -112,7 +112,7 @@
         "max": null
       },
       "reviewRequired": false,
-      "notes": "No Salesforce wait. Most of the work is packaging: Dev Hub, namespace, a Packaged app, Salesforce CLI, a package version. The real wait is each customer's own approval to install a third-party package, which we could not measure. Customers see a warning that the package is not authorized.",
+      "notes": "No Salesforce wait. The work is packaging. The real wait is each customer's approval to install a third-party package, which we could not measure.",
       "evidenceIds": [
         "e4",
         "e5",
@@ -123,7 +123,7 @@
     {
       "id": "production",
       "name": "Production",
-      "whoCanConnect": "Users in any customer org with API access (Enterprise, Performance, Unlimited, Developer, or Professional with the API add-on) whose admin installs your package. Group and Professional orgs without the add-on need a security-reviewed app.",
+      "whoCanConnect": "Any customer org with API access that installs your package.",
       "handsOnHours": {
         "min": 4,
         "max": 12
@@ -137,7 +137,7 @@
         "max": 42
       },
       "reviewRequired": false,
-      "notes": "Unlisted distribution needs no Salesforce wait. The provider-stated 4 to 6 weeks applies only if you go for an AgentExchange listing: 1 to 2 weeks to verify plus 3 to 4 weeks to test, and 2 to 3 weeks per resubmission. Salesforce says most submissions pass on the second attempt, and a consultancy says first-timers often need two or three rounds. Our estimate if you list: 2 to 4 months, including your fix time. Listing prep adds a large amount of hands-on work not counted here.",
+      "notes": "Unlisted distribution has no Salesforce wait. An AgentExchange listing takes a stated 4 to 6 weeks (1 to 2 to verify, 3 to 4 to test), plus 2 to 3 weeks per resubmission. Most pass on the second attempt; a consultancy says first-timers often need two or three. Our estimate if you list: 2 to 4 months.",
       "evidenceIds": [
         "e8",
         "e9",
@@ -160,7 +160,7 @@
       "useCases": [
         "read"
       ],
-      "effect": "Identifies the user. No review. Not enough to read CRM data.",
+      "effect": "No review. Cannot read CRM data.",
       "evidenceIds": [
         "e18",
         "e16"
@@ -176,7 +176,7 @@
         "read",
         "write"
       ],
-      "effect": "No review. What your agent can read or change is limited by the connecting user's own Salesforce permissions, and the user needs API Enabled in an edition with API access.",
+      "effect": "No review. Limited to the user's own Salesforce permissions.",
       "evidenceIds": [
         "e16",
         "e8"
@@ -192,7 +192,7 @@
       "useCases": [
         "offline"
       ],
-      "effect": "No review. The customer admin's refresh token policy decides how long access lasts. If you are a partner used by more than two production orgs, you must also turn on refresh token rotation and a 30-day idle limit.",
+      "effect": "No review. The admin's refresh token policy sets how long access lasts.",
       "evidenceIds": [
         "e16",
         "e14",
@@ -208,7 +208,7 @@
       "useCases": [
         "admin"
       ],
-      "effect": "No Salesforce review, but customer security teams are likely to push back. Ask for api plus refresh_token instead unless you need everything.",
+      "effect": "No review, but security teams push back. Use api plus refresh_token.",
       "evidenceIds": [
         "e18",
         "e26"
@@ -220,7 +220,7 @@
       "id": "r1",
       "item": "A free Developer Edition org",
       "stage": "prototype",
-      "detail": "Has API access by default. Use it to build and test.",
+      "detail": "Use it to build and test.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e8"
@@ -228,9 +228,9 @@
     },
     {
       "id": "r2",
-      "item": "An HTTPS callback URL that matches exactly",
+      "item": "An exact-match HTTPS callback URL",
       "stage": "prototype",
-      "detail": "The redirect_uri you send must equal one of the callback URLs on the app. http://localhost works for local tools.",
+      "detail": "http://localhost works for local tools.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e15",
@@ -240,9 +240,9 @@
     },
     {
       "id": "r3",
-      "item": "A Dev Hub org with a registered namespace",
+      "item": "A Dev Hub org with a namespace",
       "stage": "limited",
-      "detail": "Needed to build a managed 2GP. The namespace is permanent, so pick it with care.",
+      "detail": "Required for a managed 2GP. The namespace is permanent.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e5",
@@ -251,9 +251,9 @@
     },
     {
       "id": "r4",
-      "item": "A long-lived org that holds the app's OAuth credentials",
+      "item": "A long-lived org for the OAuth credentials",
       "stage": "limited",
-      "detail": "Consumer key and secret are global settings that stay out of the package. Keep this org alive for the life of the package.",
+      "detail": "The consumer key and secret are not packaged. Keep this org for the life of the package.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e4"
@@ -263,7 +263,7 @@
       "id": "r5",
       "item": "Customer org with API access",
       "stage": "limited",
-      "detail": "Enterprise, Performance, Unlimited, or Developer Edition, or Professional with the API add-on. Each connecting user needs API Enabled.",
+      "detail": "Enterprise, Performance, Unlimited, Developer, or Professional with the API add-on. Each user needs API Enabled.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e8"
@@ -271,9 +271,9 @@
     },
     {
       "id": "r6",
-      "item": "A customer admin who installs your package and grants access",
+      "item": "A customer admin who installs and grants access",
       "stage": "limited",
-      "detail": "They pick Permitted Users and, if pre-authorized, the profiles or permission sets. With API Access Control on, they must allowlist your app.",
+      "detail": "They set Permitted Users and profiles or permission sets.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e7",
@@ -282,9 +282,9 @@
     },
     {
       "id": "r7",
-      "item": "OAuth security controls turned on and attested",
+      "item": "OAuth security controls attested",
       "stage": "production",
-      "detail": "PKCE, refresh token rotation, 30-day idle refresh token limit, and a refresh token IP allowlist (the allowlist only if your callback is a web URL, not localhost or a custom scheme), once you are a partner used by more than two customer production orgs.",
+      "detail": "Once more than two customer production orgs use your app. The IP allowlist applies to web callback URLs only.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e14"
@@ -292,9 +292,9 @@
     },
     {
       "id": "r8",
-      "item": "ISV Partner Program enrollment and Partner Console setup",
+      "item": "ISV Partner Program and Partner Console",
       "stage": "production",
-      "detail": "Only if you want an AgentExchange listing or Group and Professional Edition access.",
+      "detail": "Only if you list on AgentExchange or need Group and Professional access.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e11",
@@ -305,7 +305,7 @@
       "id": "r9",
       "item": "Security review fee",
       "stage": "production",
-      "detail": "$999 per attempt for a paid solution, none for a free one. Only if you list.",
+      "detail": "$999 per attempt if paid, none if free.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e12",
@@ -314,9 +314,9 @@
     },
     {
       "id": "r10",
-      "item": "Reviewer test org and documentation",
+      "item": "Reviewer test org and docs",
       "stage": "production",
-      "detail": "A Developer Edition org with your released package installed, plus scanner reports and docs. Only if you list.",
+      "detail": "A Developer Edition org with your released package, scanner reports, and docs.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e11"
@@ -327,8 +327,8 @@
     {
       "id": "s1",
       "stage": "prototype",
-      "title": "Sign up for a Developer Edition org",
-      "detail": "Go to developer.salesforce.com/signup and create a free org. Confirm the email and set a password. You should land in Setup of your new org with a My Domain like yourname-dev-ed.develop.my.salesforce.com.",
+      "title": "Sign up for Developer Edition",
+      "detail": "Create a free org at developer.salesforce.com/signup. You land in Setup with a My Domain like yourname-dev-ed.develop.my.salesforce.com.",
       "owner": "you",
       "estimate": "10 min",
       "url": "https://developer.salesforce.com/signup",
@@ -340,7 +340,7 @@
       "id": "s2",
       "stage": "prototype",
       "title": "Create a Local External Client App",
-      "detail": "In Setup, search App Manager and click New External Client App. Enter a name and contact email, keep Distribution State Local, click Enable OAuth, add your callback URL, and select the api and refresh_token, offline_access scopes. Select Require PKCE and the option to issue a new refresh token on each refresh. Save. To copy the consumer key and secret later, open External Client App Manager, pick your app, and use the Settings tab (Salesforce emails you a code first).",
+      "detail": "In Setup, open App Manager and click **New External Client App**. Keep Distribution State Local, enable OAuth, add your callback URL, select api and refresh_token, offline_access, and select **Require PKCE** and refresh token rotation. The consumer key and secret are on the app's Settings tab, behind an emailed code.",
       "owner": "you",
       "estimate": "20 to 40 min",
       "evidenceIds": [
@@ -352,8 +352,8 @@
     {
       "id": "s3",
       "stage": "prototype",
-      "title": "Build the web server flow with PKCE",
-      "detail": "Send users to /services/oauth2/authorize on login.salesforce.com, or test.salesforce.com for sandboxes, or the customer's My Domain. Use an S256 code_challenge. Exchange the code with code_verifier and client_secret. Save the instance URL per connection and call the API there.",
+      "title": "Build the PKCE web server flow",
+      "detail": "Send users to /services/oauth2/authorize on login.salesforce.com, test.salesforce.com, or the customer's My Domain. Use an S256 code_challenge, and exchange the code with code_verifier and client_secret. Store the instance URL per connection.",
       "owner": "agent",
       "estimate": "2 to 4 hours",
       "evidenceIds": [
@@ -367,8 +367,8 @@
     {
       "id": "s4",
       "stage": "prototype",
-      "title": "Handle refresh token rotation and expiry",
-      "detail": "Store the new refresh token after every refresh. Serialize refreshes per connection so two jobs do not use the same token. Refresh at least every few weeks so a 30-day idle limit never expires the token. Treat a failed refresh as a reconnect prompt.",
+      "title": "Handle refresh token rotation",
+      "detail": "Store each new refresh token and serialize refreshes per connection. Refresh at least every few weeks to beat a 30-day idle limit. Treat a failed refresh as a reconnect prompt.",
       "owner": "agent",
       "estimate": "1 to 2 hours",
       "evidenceIds": [
@@ -379,8 +379,8 @@
     {
       "id": "s5",
       "stage": "limited",
-      "title": "Enable Dev Hub and register a namespace",
-      "detail": "In the org that will own your package, turn on Dev Hub in Setup (this cannot be undone). Register a namespace in a separate Developer Edition org and link it to the Dev Hub from Namespace Registries.",
+      "title": "Enable Dev Hub and namespace",
+      "detail": "Turn on Dev Hub in the owning org. This cannot be undone. Register a namespace in a separate Developer Edition org and link it from Namespace Registries.",
       "owner": "you",
       "estimate": "30 to 60 min",
       "evidenceIds": [
@@ -391,8 +391,8 @@
     {
       "id": "s6",
       "stage": "limited",
-      "title": "Create the Packaged External Client App",
-      "detail": "In the Dev Hub or another long-lived org, create a new ECA with Distribution State Packaged and the same OAuth settings as s2. Set default policies you want customers to start with. Its consumer key and secret stay in this org and are not packaged.",
+      "title": "Create the Packaged app",
+      "detail": "In a long-lived org, create an ECA with Distribution State Packaged and the OAuth settings from s2. Set default policies.",
       "owner": "you",
       "estimate": "30 min",
       "evidenceIds": [
@@ -404,8 +404,8 @@
     {
       "id": "s7",
       "stage": "limited",
-      "title": "Build a managed 2GP package version",
-      "detail": "Set up a Salesforce DX project with your namespace, retrieve the ECA metadata (ExternalClientApplication, ExtlClntAppOauthSettings, policy files) but not the global OAuth settings, then run sf package create and sf package version create. Promote the version and copy the install URL.",
+      "title": "Build a managed 2GP version",
+      "detail": "Retrieve the ECA metadata (ExternalClientApplication, ExtlClntAppOauthSettings, policy files) without the global OAuth settings. Run sf package create and sf package version create, promote, and copy the install URL.",
       "owner": "agent",
       "estimate": "2 to 6 hours",
       "evidenceIds": [
@@ -416,8 +416,8 @@
     {
       "id": "s8",
       "stage": "limited",
-      "title": "Send the install link to a design partner admin",
-      "detail": "Send the install URL with the admin email draft. Tell them they will see a notice that the package is not authorized, and why. Ask them to install in a sandbox first.",
+      "title": "Send the install link",
+      "detail": "Send the install URL and the email draft to a design partner admin. Ask them to install in a sandbox first.",
       "owner": "you",
       "estimate": "15 min",
       "evidenceIds": [
@@ -429,8 +429,8 @@
     {
       "id": "s9",
       "stage": "limited",
-      "title": "Have the customer admin set access policies",
-      "detail": "Your customer's admin opens your app's Policies tab in their org, sets Permitted Users, assigns profiles or permission sets if pre-authorized, picks a refresh token policy, and allowlists the app if API Access Control is on. Then a test user connects through your product.",
+      "title": "Have the admin set policies",
+      "detail": "On the app's Policies tab, the admin sets Permitted Users, permission sets, and the refresh token policy, and allowlists the app if needed.",
       "owner": "you",
       "estimate": "15 to 30 min per customer",
       "evidenceIds": [
@@ -442,8 +442,8 @@
     {
       "id": "s10",
       "stage": "production",
-      "title": "Turn on the four OAuth controls and attest",
-      "detail": "On your app's OAuth settings, enable PKCE, refresh token rotation, Limit Idle Refresh Token TTL to 30 Days, and, if your callback is a web URL, Enforce Refresh Token IP Allowlist with your egress IPs (256 addresses total). Test, then click Review Controls and confirm. The controls lock after that, though you can still edit the IP ranges.",
+      "title": "Turn on and attest OAuth controls",
+      "detail": "Enable PKCE, rotation, **Limit Idle Refresh Token TTL to 30 Days**, and, for web callbacks, **Enforce Refresh Token IP Allowlist** (256 addresses total). Click **Review Controls**. The controls then lock, except IP ranges.",
       "owner": "you",
       "estimate": "1 to 2 hours",
       "evidenceIds": [
@@ -453,8 +453,8 @@
     {
       "id": "s11",
       "stage": "production",
-      "title": "Decide whether to list on AgentExchange",
-      "detail": "You do not need a listing to sell. You need security review if you want a listing, want to remove the install warning, or need Group or Professional Edition customers without the API add-on.",
+      "title": "Decide on an AgentExchange listing",
+      "detail": "You do not need a listing to sell.",
       "owner": "you",
       "estimate": "30 min",
       "evidenceIds": [
@@ -467,7 +467,7 @@
       "id": "s12",
       "stage": "production",
       "title": "Prepare for security review",
-      "detail": "Enroll in the ISV Partner Program, make the package Lightning Ready, connect your packaging org to the Partner Console, and create a provider profile. Run Code Analyzer and the source scanner, fix findings or document false positives, and build a Developer Edition test org with docs. See the checklist draft.",
+      "detail": "Enroll in the ISV Partner Program, make the package Lightning Ready, and connect it to the Partner Console. Run Code Analyzer and the source scanner. See the checklist draft.",
       "owner": "agent",
       "estimate": "1 to 3 weeks",
       "evidenceIds": [
@@ -479,7 +479,7 @@
       "id": "s13",
       "stage": "production",
       "title": "Submit the security review",
-      "detail": "Submit in the Partner Console and pay $999 if the solution is paid. Salesforce states 1 to 2 weeks to verify and 3 to 4 weeks to test. If not approved, fix every instance of each finding and resubmit (2 to 3 weeks).",
+      "detail": "Submit in the Partner Console and pay the fee. If not approved, fix every instance of each finding and resubmit (2 to 3 weeks).",
       "owner": "provider",
       "estimate": "4 to 6 weeks per round",
       "evidenceIds": [
@@ -490,29 +490,29 @@
   ],
   "blockers": [
     {
-      "symptom": "You cannot find a way to create a new connected app, or creation fails.",
-      "cause": "Creating connected apps is restricted since Spring '26.",
-      "fix": "Create an External Client App instead.",
-      "escalation": "Salesforce Support, if you truly need a new connected app.",
+      "symptom": "You cannot create a new connected app.",
+      "cause": "Restricted since Spring '26.",
+      "fix": "Create an External Client App.",
+      "escalation": "Salesforce Support.",
       "evidenceIds": [
         "e1",
         "e2"
       ]
     },
     {
-      "symptom": "Connecting works for users in your own org but fails for users in a customer org.",
-      "cause": "A Local app only works in its own org, and connected apps not installed in the customer org are blocked for most users since September 2025.",
-      "fix": "Ship a Packaged app in a managed 2GP and have the customer admin install it.",
+      "symptom": "Connecting fails in a customer org.",
+      "cause": "A Local app only works in its own org.",
+      "fix": "Ship a Packaged app in a managed 2GP.",
       "evidenceIds": [
         "e3",
         "e6"
       ]
     },
     {
-      "symptom": "The package installs, but authorization is still blocked in the customer org.",
-      "cause": "Likely the installed app is not associated with your global OAuth settings, or local credentials were set and broke the association.",
-      "fix": "Check that the subscriber app uses your source org's consumer credentials and that you use the matching consumer key. Retest in a fresh scratch org or sandbox.",
-      "escalation": "Trailblazer Community or a Salesforce Support case from your Dev Hub org.",
+      "symptom": "The package installs, but authorization is blocked.",
+      "cause": "Likely the installed app is not linked to your global OAuth settings.",
+      "fix": "Confirm the subscriber app uses your source org's consumer key, then retest in a fresh org.",
+      "escalation": "Trailblazer Community or a Support case from your Dev Hub org.",
       "evidenceIds": [
         "e4",
         "e28"
@@ -520,17 +520,17 @@
     },
     {
       "symptom": "API calls fail with API_DISABLED_FOR_ORG.",
-      "cause": "The customer's edition has no API access (Group, or Professional without the add-on).",
-      "fix": "The customer buys the API add-on from their account executive, or you pass security review and request API access for your app.",
+      "cause": "The edition has no API access.",
+      "fix": "The customer buys the API add-on, or you pass security review.",
       "evidenceIds": [
         "e8",
         "e9"
       ]
     },
     {
-      "symptom": "The admin can connect but other users are refused.",
-      "cause": "The app is set to Admin approved users are pre-authorized, or API Access Control is on, and those users have no assigned profile or permission set.",
-      "fix": "Ask the admin to assign a permission set for your app to the users who need it.",
+      "symptom": "The admin can connect but other users cannot.",
+      "cause": "The app is pre-authorized only or API Access Control is on, and those users lack a permission set.",
+      "fix": "Ask the admin to assign your app's permission set.",
       "evidenceIds": [
         "e7",
         "e16"
@@ -538,8 +538,8 @@
     },
     {
       "symptom": "invalid_client_id at the authorize step.",
-      "cause": "Wrong host for the org (production vs sandbox), or a consumer key from a different app.",
-      "fix": "Use test.salesforce.com or the sandbox My Domain for sandboxes, login.salesforce.com or the My Domain for production, and the key of the Packaged app.",
+      "cause": "Wrong host (production vs sandbox), or the wrong consumer key.",
+      "fix": "Use the sandbox host for sandboxes and the Packaged app's key.",
       "evidenceIds": [
         "e17",
         "e19",
@@ -547,18 +547,18 @@
       ]
     },
     {
-      "symptom": "Refresh suddenly fails and the user has to reconnect.",
-      "cause": "The admin's refresh token policy expired it, a rotated token was reused, or the token sat idle past 30 days.",
-      "fix": "Save every new refresh token, serialize refreshes, refresh on a schedule, and show a clear reconnect prompt.",
+      "symptom": "Refresh fails and the user must reconnect.",
+      "cause": "Admin policy expiry, a reused rotated token, or 30 days idle.",
+      "fix": "Save every new refresh token and refresh on a schedule.",
       "evidenceIds": [
         "e14",
         "e16"
       ]
     },
     {
-      "symptom": "Customer admins worry about a notice that your package is not authorized for distribution.",
-      "cause": "The package has not passed security review.",
-      "fix": "Explain it in your install email, or pass security review to remove the notice.",
+      "symptom": "Admins worry about the not-authorized notice.",
+      "cause": "No security review yet.",
+      "fix": "Explain it in your install email.",
       "evidenceIds": [
         "e13",
         "e31"
@@ -566,18 +566,18 @@
     },
     {
       "symptom": "Security review comes back Not Approved.",
-      "cause": "Common findings are CRUD/FLS gaps, missing sharing declarations, MFA blocking reviewers, and secrets in the wrong place.",
-      "fix": "Fix every instance of each finding type, rerun scanners, and resubmit.",
-      "escalation": "Book Partner Security Portal office hours.",
+      "cause": "Common findings: CRUD/FLS gaps, missing sharing declarations, MFA blocking reviewers, misplaced secrets.",
+      "fix": "Fix every instance, rescan, and resubmit.",
+      "escalation": "Partner Security Portal office hours.",
       "evidenceIds": [
         "e10",
         "e25"
       ]
     },
     {
-      "symptom": "Older connections for the same Salesforce user start failing with token errors.",
-      "cause": "Salesforce keeps only five active refresh tokens per user per app. A sixth connection can revoke the oldest.",
-      "fix": "Reuse one connection per user and app. Do not reconnect the same user repeatedly in tests.",
+      "symptom": "Older connections for one user fail with token errors.",
+      "cause": "Salesforce keeps five refresh tokens per user per app, so a sixth can revoke the oldest.",
+      "fix": "Reuse one connection per user, including in tests.",
       "evidenceIds": [
         "e29"
       ]
@@ -585,73 +585,73 @@
   ],
   "agentAssist": {
     "didForYou": [
-      "Read about 25 official Salesforce, Trailhead, and Composio pages and recorded each claim with its source.",
-      "Probed the OIDC discovery documents on login.salesforce.com and test.salesforce.com: both live, S256 PKCE only.",
-      "Probed the authorize endpoint with an invalid client ID: HTTP 400 with invalid_client_id.",
-      "Drafted an email for your customers' admins and a security review readiness checklist."
+      "Read about 25 official Salesforce, Trailhead, and Composio pages.",
+      "Probed OIDC discovery on login and test hosts: both live, S256 PKCE only.",
+      "Probed authorize with a bad client ID: HTTP 400 invalid_client_id.",
+      "Drafted an admin email and a review checklist."
     ],
     "canDoForYou": [
-      "Write the web server flow with PKCE, per-connection instance URL handling, and refresh token rotation.",
-      "Write the Salesforce DX project, package.xml, and sfdx-project.json for your 2GP package.",
-      "Run the package version commands after you log the CLI in to your Dev Hub.",
-      "Run Code Analyzer and summarize findings before security review.",
-      "Draft install instructions, reviewer docs, and listing copy for you to check."
+      "Write the PKCE flow and token rotation.",
+      "Write the Salesforce DX project files.",
+      "Run package commands after you log the CLI in.",
+      "Run Code Analyzer and summarize findings.",
+      "Draft install and reviewer docs."
     ],
     "youMustDo": [
-      "Sign up for and sign in to Salesforce orgs, including any MFA.",
-      "Enable Dev Hub and register the namespace (both permanent).",
-      "Send install links and talk to each customer's admin.",
-      "Enroll in the ISV Partner Program, accept agreements, and pay the review fee if you list.",
-      "Attest the OAuth security controls."
+      "Sign in to Salesforce orgs, including MFA.",
+      "Enable Dev Hub and register the namespace.",
+      "Work with each customer admin.",
+      "Enroll as an ISV partner and pay the fee if you list.",
+      "Attest the OAuth controls."
     ]
   },
   "drafts": [
     {
       "kind": "other",
       "title": "Email to a customer's Salesforce admin",
-      "body": "DRAFT, edit before use.\n\nSubject: Installing [App name] in your Salesforce org\n\nHi [Admin name],\n\n[Customer] wants to connect Salesforce to [App name], an AI assistant that [one line on what it does]. Salesforce now blocks apps that are not installed in your org, so we need you to install our package once. It takes about 15 minutes.\n\n1. Install in a sandbox first: [sandbox install URL]. Then production: [production install URL]. Choose Install for Admins Only.\n2. You may see a notice that the package is not authorized for distribution. That means it has not been through Salesforce's AgentExchange security review. [Remove this line if you have passed review.]\n3. In Setup, open External Client App Manager, find [App name], and open the Policies tab.\n4. Set Permitted Users to Admin approved users are pre-authorized and add a permission set for the people who will use [App name]. This keeps access limited to the users you choose. If you prefer, All users may self-authorize also works.\n5. Set the refresh token policy. Our agent works in the background, so please allow tokens to last at least [30/90] days or until revoked. Short limits mean users must reconnect often.\n6. If your org uses API Access Control, add [App name] to the allowlist.\n7. Make sure those users have the API Enabled permission.\n\nWhat we access: the api and refresh_token scopes only. We act as the connecting user and can only see what their Salesforce permissions allow. We never ask for full access. You can revoke access anytime from the app's OAuth usage page.\n\nQuestions: [contact]. Security docs: [link].\n\nThanks,\n[Your name]"
+      "body": "DRAFT, edit before use.\n\nSubject: Installing [App name] in your Salesforce org\n\nHi [Admin name],\n\n[Customer] wants to connect Salesforce to [App name], an AI assistant that [one line]. Salesforce blocks apps not installed in your org, so please install our package. It takes about 15 minutes.\n\n1. Install in a sandbox: [sandbox install URL]. Then production: [production install URL]. Choose Install for Admins Only.\n2. You may see a notice that the package is not authorized for distribution. It has not passed AgentExchange security review. [Remove if reviewed.]\n3. In Setup, open External Client App Manager, find [App name], and open Policies.\n4. Set Permitted Users to Admin approved users are pre-authorized and add a permission set for [App name] users. All users may self-authorize also works.\n5. Set the refresh token policy to at least [30/90] days or until revoked, so users do not reconnect often.\n6. If you use API Access Control, allowlist [App name].\n7. Give those users API Enabled.\n\nWe request only api and refresh_token, act as the connecting user, and see only what their permissions allow. You can revoke access anytime.\n\nQuestions: [contact]. Security docs: [link].\n\nThanks,\n[Your name]"
     },
     {
       "kind": "other",
-      "title": "AgentExchange security review readiness checklist",
-      "body": "DRAFT, edit before use. Check each item against the current ISVforce guide.\n\nProgram and accounts\n- [ ] Enrolled in the ISV Partner Program (confirmed by a partner rep)\n- [ ] Packaging org connected to the Partner Console\n- [ ] Provider profile created\n- [ ] Fee ready: $999 per attempt if paid, none if free\n\nPackage\n- [ ] Released (not beta) managed 2GP version, major or minor (avoid patch versions)\n- [ ] Lightning Ready\n- [ ] External Client App is Packaged; consumer secret not in source control\n\nOAuth controls (required for partners used by more than two production orgs)\n- [ ] PKCE required\n- [ ] Refresh token rotation on, client stores each new token\n- [ ] Idle refresh token limit 30 days, client refreshes before it\n- [ ] Refresh token IP allowlist with your egress IPs (256 addresses max)\n- [ ] Controls attested with Review Controls\n\nCode and scans\n- [ ] Salesforce Code Analyzer run, findings fixed\n- [ ] Source code scanner (Partner Security Portal) run on the release\n- [ ] CRUD/FLS checks on every read and write\n- [ ] Sharing keywords on every class doing DML\n- [ ] No secrets in custom metadata, custom settings, or debug logs\n- [ ] External web app scanned too (it is in scope as an API solution)\n- [ ] False positives documented one by one\n\nReviewer materials\n- [ ] Developer Edition org with the release installed and sample data\n- [ ] Reviewer login that does not get blocked by MFA or identity checks\n- [ ] Architecture and data flow doc: what data leaves Salesforce, where it is stored, how long\n- [ ] Test account for your external app and steps to connect\n\nAfter\n- [ ] Plan for 1 to 2 weeks verification plus 3 to 4 weeks testing\n- [ ] If not approved: fix every instance of each finding type, rescan, resubmit"
+      "title": "AgentExchange security review checklist",
+      "body": "DRAFT, edit before use. Check against the current ISVforce guide.\n\nProgram\n- [ ] ISV Partner Program enrolled (confirmed by a partner rep)\n- [ ] Packaging org in the Partner Console\n- [ ] Provider profile created\n- [ ] Fee: $999 per attempt if paid, none if free\n\nPackage\n- [ ] Released managed 2GP, major or minor version (not a patch)\n- [ ] Lightning Ready\n- [ ] External Client App Packaged; secret not in source control\n\nOAuth controls\n- [ ] PKCE required\n- [ ] Refresh token rotation on\n- [ ] 30-day idle refresh token limit\n- [ ] Refresh token IP allowlist (256 addresses max)\n- [ ] Controls attested\n\nCode and scans\n- [ ] Code Analyzer findings fixed\n- [ ] Source code scanner run on the release\n- [ ] CRUD/FLS checks on every read and write\n- [ ] Sharing keywords on every DML class\n- [ ] No secrets in custom metadata, custom settings, or debug logs\n- [ ] External web app scanned\n- [ ] False positives documented\n\nReviewer materials\n- [ ] Developer Edition org with the release and sample data\n- [ ] Reviewer login not blocked by MFA\n- [ ] Data flow doc: what leaves Salesforce, where, how long\n- [ ] External app test account\n\nAfter\n- [ ] Plan for 1 to 2 weeks verification plus 3 to 4 weeks testing\n- [ ] If not approved: fix every instance, rescan, resubmit"
     },
     {
       "kind": "app_description",
       "title": "Package and listing description",
-      "body": "DRAFT, edit before use.\n\n[App name] connects your Salesforce org to an AI assistant that [reads accounts, opportunities, and activity, and drafts updates for your review]. Users connect with their own Salesforce login. The assistant can only see and change what that user's Salesforce permissions allow.\n\nWhat this package installs: one External Client App named [App name]. No Apex classes, objects, or fields. [Adjust if you ship more.]\n\nAccess requested: api and refresh_token. The refresh token lets the assistant work when the user is offline. Your admin controls who can connect and how long tokens last from the app's Policies tab.\n\nData handling: [what you store, where, retention, deletion on disconnect]."
+      "body": "DRAFT, edit before use.\n\n[App name] connects Salesforce to an AI assistant that [reads accounts, opportunities, and activity, and drafts updates for review]. Users connect with their own login. The assistant sees only what that user's permissions allow.\n\nThis package installs one External Client App, [App name]. No Apex, objects, or fields. [Adjust if needed.]\n\nAccess: api and refresh_token, so the assistant works while the user is offline. Admins control access on the Policies tab.\n\nData handling: [what you store, where, retention, deletion]."
     },
     {
       "kind": "support_email",
       "title": "Question to Salesforce partner support",
-      "body": "DRAFT, edit before use.\n\nHello,\n\nWe build [App name], a SaaS AI assistant. Our customers connect their own Salesforce orgs with OAuth. We plan to distribute a Packaged External Client App in a managed 2GP package by install link, without an AgentExchange listing for now.\n\n1. Does our partner agreement allow distributing a managed package to paying customers before security review, beyond the install notice?\n2. Should every subscriber org share our source org's consumer key, or is per-org credential generation expected for this use case?\n3. Do the May 11, 2026 OAuth control requirements apply to us before we join the ISV Partner Program?\n4. What is the current security review fee for a paid API solution?\n\nOur Dev Hub org ID: [org ID]. Namespace: [namespace].\n\nThanks,\n[Your name]"
+      "body": "DRAFT, edit before use.\n\nHello,\n\nWe build [App name], an AI assistant. We plan to distribute a Packaged External Client App in a managed 2GP by install link, without an AgentExchange listing.\n\n1. Can we distribute it to paying customers before security review?\n2. Should every subscriber org share our consumer key?\n3. Do the May 11, 2026 OAuth controls apply before we join the ISV Partner Program?\n4. What is the current review fee for a paid API solution?\n\nDev Hub org ID: [org ID]. Namespace: [namespace].\n\nThanks,\n[Your name]"
     }
   ],
   "uncertainties": [
     {
-      "question": "Can you sell to paying customers through an unlisted managed package without security review?",
-      "why": "Unreviewed packages install with a notice and work (e13, e33), but Salesforce calls them not authorized for distribution, and its review page says a not approved solution cannot be distributed to customers (e32). We did not find the partner agreement terms.",
-      "howToResolve": "Ask your partner account manager or send the support email draft."
+      "question": "Can you sell an unlisted package without review?",
+      "why": "Unreviewed packages work (e13, e33), but Salesforce says unapproved solutions cannot be distributed (e32).",
+      "howToResolve": "Ask your partner account manager."
     },
     {
-      "question": "Do subscriber orgs reuse your consumer key, or get new credentials per org?",
-      "why": "Trailhead says both are possible. If credentials differ per org, you would need one client ID per customer, which changes how you store auth configs (including in Composio).",
-      "howToResolve": "Install your package in two scratch orgs and compare the consumer key each one uses."
+      "question": "Do subscriber orgs reuse your consumer key?",
+      "why": "Trailhead says both are possible, and per-org keys mean one client ID per customer, including in Composio.",
+      "howToResolve": "Install in two scratch orgs and compare keys."
     },
     {
-      "question": "Do the May 2026 OAuth security controls apply if you are not yet an ISV partner?",
-      "why": "The page says they apply to partner apps used by more than two customer production orgs. It does not say what counts as a partner for an unlisted app.",
-      "howToResolve": "Ask Salesforce partner support. Turning the controls on anyway costs little."
+      "question": "Do the May 2026 controls apply before you are a partner?",
+      "why": "The page does not define partner for an unlisted app.",
+      "howToResolve": "Ask partner support, or turn them on anyway."
     },
     {
-      "question": "What is the current security review fee?",
-      "why": "A current Trailhead unit says $999 per attempt for paid solutions. Search results show an older fee of $2,550 and an older fee table that may not charge resubmissions; we did not open those pages. The current ISVforce page does not state an amount.",
-      "howToResolve": "Check the fee in the Partner Console review wizard."
+      "question": "What is the current review fee?",
+      "why": "Trailhead says $999 per paid attempt, unopened search results show an older $2,550, and ISVforce states none.",
+      "howToResolve": "Check the Partner Console review wizard."
     },
     {
-      "question": "How long does security review really take?",
-      "why": "We found Salesforce's stated times and a consultancy's view, but no first-hand developer reports with dates.",
-      "howToResolve": "Search the Trailblazer Community ISV groups or ask other ISVs."
+      "question": "How long does security review take?",
+      "why": "We found no dated developer reports.",
+      "howToResolve": "Ask in Trailblazer Community ISV groups."
     }
   ],
   "evidence": [

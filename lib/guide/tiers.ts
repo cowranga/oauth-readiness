@@ -66,7 +66,7 @@ export function tierLabel(tier: Tier): string {
  * Falls back to the guide's overall tier when nothing matches.
  */
 export function tierForUseCases(guide: Pick<Guide, "scopeTiers" | "verdict">, selected: UseCase[]): Tier {
-  const matching = guide.scopeTiers.filter((scopeTier) => scopeTier.useCases.some((u) => selected.includes(u)));
+  const matching = guide.scopeTiers.filter((scopeTier) => matches(scopeTier, selected));
   if (matching.length === 0) return guide.verdict.tier;
   return withAppFloor(guide, Math.max(...matching.map((s) => REVIEW_LEVEL_TIER[s.reviewLevel])) as Tier);
 }
@@ -83,15 +83,22 @@ function withAppFloor(guide: Pick<Guide, "verdict">, tier: Tier): Tier {
 export function lightestTierForUseCases(guide: Pick<Guide, "scopeTiers" | "verdict">, selected: UseCase[]): Tier {
   const perChip: Tier[] = [];
   for (const useCase of selected) {
-    const serving = guide.scopeTiers.filter((scopeTier) => scopeTier.useCases.includes(useCase));
+    const serving = guide.scopeTiers.filter((scopeTier) => scopeTier.useCases.includes(useCase) && matches(scopeTier, selected));
     if (serving.length > 0) perChip.push(Math.min(...serving.map((s) => REVIEW_LEVEL_TIER[s.reviewLevel])) as Tier);
   }
   return perChip.length === 0 ? guide.verdict.tier : withAppFloor(guide, Math.max(...perChip) as Tier);
 }
 
+/**
+ * A scope tier matches when it serves a selected chip. Tiers that include admin-level access match only when
+ * "Admin-level" is selected (Slack: one partner-only search/admin tier made read + write look gated).
+ */
+function matches(scopeTier: Guide["scopeTiers"][number], selected: UseCase[]): boolean {
+  if (scopeTier.useCases.includes("admin") && !selected.includes("admin")) return false;
+  return scopeTier.useCases.some((useCase) => selected.includes(useCase));
+}
+
 /** Scope tiers to highlight for the selected chips. */
 export function matchingScopeTierIndexes(guide: Pick<Guide, "scopeTiers">, selected: UseCase[]): number[] {
-  return guide.scopeTiers.flatMap((scopeTier, index) =>
-    scopeTier.useCases.some((useCase) => selected.includes(useCase)) ? [index] : [],
-  );
+  return guide.scopeTiers.flatMap((scopeTier, index) => (matches(scopeTier, selected) ? [index] : []));
 }

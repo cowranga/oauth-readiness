@@ -24,3 +24,14 @@ describe("URL progress", () => {
     expect(stepProgress(g, new Set(["s1", "r1"]))).toEqual({ done: 1, total: 4 });
   });
 });
+
+describe("Inline marks", () => {
+  it("splits bold and code marks without HTML", async () => {
+    const { renderToStaticMarkup } = await import("react-dom/server");
+    const { createElement } = await import("react");
+    const { Inline } = await import("@/components/Inline");
+    expect(renderToStaticMarkup(createElement(Inline, { text: "Click **Save**, then add `gmail.send`. <b>x</b>" }))).toBe(
+      'Click <strong>Save</strong>, then add <code class="font-mono text-[0.9em]">gmail.send</code>. &lt;b&gt;x&lt;/b&gt;',
+    );
+  });
+});

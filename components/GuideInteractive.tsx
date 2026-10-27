@@ -1,5 +1,6 @@
 "use client";
 
+import { Inline } from "@/components/Inline";
 import { useMemo, useState } from "react";
 import { EvidenceList } from "@/components/EvidenceBadge";
 import { OwnerTag } from "@/components/OwnerTag";
@@ -69,7 +70,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
           </dl>
           <div>
             <p className="text-xs text-muted">Next step</p>
-            <p className="mt-1 text-sm">{next ? next.title : "All steps done."}</p>
+            <p className="mt-1 text-sm">{next ? <Inline text={next.title} /> : "All steps done."}</p>
           </div>
           <CopyButtons slug={guide.slug} />
         </div>
@@ -83,10 +84,10 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
           {next ? (
             <div className="mt-3 space-y-2">
               <p className="flex flex-wrap items-center gap-2 text-base">
-                {next.title} <OwnerTag owner={next.owner} />
+                <Inline text={next.title} /> <OwnerTag owner={next.owner} />
                 <span className="font-mono text-xs text-muted">{next.estimate}</span>
               </p>
-              <p className="text-sm text-muted">{next.detail}</p>
+              <p className="text-sm text-muted"><Inline text={next.detail} /></p>
               {safeHref(next.url) ? (
                 <a href={safeHref(next.url)} target="_blank" rel="noreferrer noopener" className="text-sm break-all text-ink">
                   {next.url}
@@ -151,7 +152,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
             <span className="font-mono text-xs uppercase tracking-wider text-muted">Composio-managed OAuth: </span>
             {MANAGED_LABEL[guide.composio.managedApp]} <EvidenceList ids={guide.composio.evidenceIds} evidence={evidence} />
           </div>
-          <p className="mt-2 text-sm text-muted">{guide.composio.note}</p>
+          <p className="mt-2 text-sm text-muted"><Inline text={guide.composio.note} /></p>
         </section>
 
         <section aria-labelledby="time">
@@ -175,7 +176,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
                   <tr key={stage.id} className="border-b border-border align-top">
                     <td className="py-2 pr-3">{stage.name}</td>
                     <td className="py-2 pr-3 text-muted">
-                      {stage.whoCanConnect} <EvidenceList ids={stage.evidenceIds} evidence={evidence} />
+                      <Inline text={stage.whoCanConnect} /> <EvidenceList ids={stage.evidenceIds} evidence={evidence} />
                     </td>
                     <td className="py-2 pr-3 font-mono text-xs">{formatHours(stage.handsOnHours)}</td>
                     <td className="py-2 pr-3 font-mono text-xs">
@@ -198,7 +199,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
             <ul className="mt-2 space-y-1 text-xs text-muted">
               {guide.stages.filter((s) => s.notes).map((s) => (
                 <li key={s.id}>
-                  {s.name}: {s.notes}
+                  {s.name}: <Inline text={s.notes ?? ""} />
                 </li>
               ))}
             </ul>
@@ -225,7 +226,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
                   </div>
                   <p className="mt-1 break-words font-mono text-xs text-muted">{scopeTier.exampleScopes.join("  ")}</p>
                   <div className="mt-1 text-sm">
-                    {scopeTier.effect} <EvidenceList ids={scopeTier.evidenceIds} evidence={evidence} />
+                    <Inline text={scopeTier.effect} /> <EvidenceList ids={scopeTier.evidenceIds} evidence={evidence} />
                   </div>
                 </li>
               ))}
@@ -243,10 +244,10 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
                 <input id={`req-${req.id}`} type="checkbox" className="mt-1 h-4 w-4 shrink-0" checked={done.has(req.id)} onChange={() => toggleDone(req.id)} />
                 <label htmlFor={`req-${req.id}`} className="space-y-0.5">
                   <span className="block">
-                    {req.item} <span className="font-mono text-[10px] uppercase tracking-wider text-muted">{STAGE_LABEL[req.stage]}</span>
+                    <Inline text={req.item} /> <span className="font-mono text-[10px] uppercase tracking-wider text-muted">{STAGE_LABEL[req.stage]}</span>
                     {req.agentCanHelp ? <span className="ml-2 font-mono text-[10px] uppercase tracking-wider text-muted">agent can help</span> : null}
                   </span>
-                  {req.detail ? <span className="block text-muted">{req.detail}</span> : null}
+                  {req.detail ? <span className="block text-muted"><Inline text={req.detail} /></span> : null}
                 </label>
                 <EvidenceList ids={req.evidenceIds} evidence={evidence} />
               </li>
@@ -270,11 +271,11 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
                       <input id={`step-${step.id}`} type="checkbox" className="mt-1 h-4 w-4 shrink-0" checked={done.has(step.id)} onChange={() => toggleDone(step.id)} />
                       <div className="min-w-0 space-y-1">
                         <label htmlFor={`step-${step.id}`} className="flex flex-wrap items-center gap-2">
-                          <span>{step.title}</span>
+                          <span><Inline text={step.title} /></span>
                           <OwnerTag owner={step.owner} />
                           <span className="font-mono text-xs text-muted">{step.estimate}</span>
                         </label>
-                        <p className="text-sm text-muted">{step.detail}</p>
+                        <p className="text-sm text-muted"><Inline text={step.detail} /></p>
                         <div className="flex flex-wrap items-center gap-2 text-sm">
                           {safeHref(step.url) ? (
                             <a href={safeHref(step.url)} target="_blank" rel="noreferrer noopener" className="break-all text-ink">

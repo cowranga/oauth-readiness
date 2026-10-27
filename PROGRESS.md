@@ -89,3 +89,7 @@
 ## 2026-10-28: Composio claims after a human cross-check of the Linear guide
 - changed: lib/composio/managed.ts reads the toolkit page (auth schemes) and the switching-rule page; lib/agent/run.ts builds Composio evidence server-side; prompt v2.1; 6 seed notes corrected with changelog entries; LESSONS lesson 14.
 - verified: `npm test` 123 pass; validate-guide ok for all seeds; live run 23 "Linear": 64.1s tier 2, in=19434 out=8057 cacheRead=43236 cacheWrite=37496, 2 searches; Composio note names API_KEY and the exact switching rule, both sourced to pages fetched in the run.
+
+## 2026-10-28: Wording pass (Composio docs voice)
+- changed: docs/STYLE.md; all UI copy, error messages, tier and attempt text, About page, Markdown headings; live agent writing rules (prompt v2.2); 7 seed guides' prose via 3 subagents (github -32%, google -31%, linkedin -38%, meta -30%, microsoft -26%, salesforce -37%, slack -31%), checked by scripts/check-tightening.ts (facts, ids, numbers, URLs, evidence frozen); restored 4 details the agents over-cut; components/Inline.tsx renders **bold** and `code` safely; admin-tagged scope tiers count only when Admin-level is selected (Slack read+write was 5, now 3).
+- verified: `npm test` 125 pass, tsc, lint; check-tightening 0 problems and validate-guide ok for all 7; dev server pages show no literal ** and no console errors or warnings.

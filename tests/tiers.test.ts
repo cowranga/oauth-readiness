@@ -13,6 +13,12 @@ describe("tierForUseCases", () => {
     expect(tierForUseCases(mixed, ["read"])).toBe(4);
     expect(lightestTierForUseCases(mixed, ["read"])).toBe(2);
   });
+  it("counts admin-level tiers only when Admin-level is selected", () => {
+    const withAdminRead = { ...g, scopeTiers: [...g.scopeTiers, { ...g.scopeTiers[0]!, name: "Search and admin", reviewLevel: "partner_only" as const, useCases: ["read" as const, "admin" as const] }] };
+    expect(tierForUseCases(withAdminRead, ["read", "write"])).toBe(2);
+    expect(tierForUseCases(withAdminRead, ["read", "admin"])).toBe(5);
+    expect(matchingScopeTierIndexes(withAdminRead, ["read"])).not.toContain(3);
+  });
   it("falls back to the verdict tier when nothing matches", () => {
     expect(tierForUseCases(g, [])).toBe(g.verdict.tier);
     expect(tierForUseCases({ ...g, scopeTiers: [] }, ["read"])).toBe(g.verdict.tier);

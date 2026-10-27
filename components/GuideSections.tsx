@@ -1,3 +1,4 @@
+import { Inline } from "@/components/Inline";
 import { CopyText } from "@/components/CopyButtons";
 import { EvidenceList } from "@/components/EvidenceBadge";
 import type { Evidence, Guide } from "@/lib/guide/schema";
@@ -15,20 +16,20 @@ export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map
           </h2>
           <ul className="mt-3 space-y-3">
             {guide.blockers.map((b, index) => (
-              <li key={`${index}-${b.symptom}`} className="rounded-md border border-border bg-card p-3 text-sm">
-                <p>{b.symptom}</p>
+              <li key={`${index}-$<Inline text={b.symptom} />`} className="rounded-md border border-border bg-card p-3 text-sm">
+                <p><Inline text={b.symptom} /></p>
                 <p className="mt-1 text-muted">
                   <span className="font-mono text-[10px] uppercase tracking-wider">Cause: </span>
-                  {b.cause}
+                  <Inline text={b.cause} />
                 </p>
                 <p className="mt-1">
                   <span className="font-mono text-[10px] uppercase tracking-wider text-muted">Fix: </span>
-                  {b.fix}
+                  <Inline text={b.fix} />
                 </p>
                 {b.escalation ? (
                   <p className="mt-1 text-muted">
                     <span className="font-mono text-[10px] uppercase tracking-wider">Help: </span>
-                    {b.escalation}
+                    <Inline text={b.escalation} />
                   </p>
                 ) : null}
                 <div className="mt-2">
@@ -74,12 +75,12 @@ export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map
           </h2>
           <ul className="mt-3 space-y-3 text-sm">
             {guide.uncertainties.map((u, index) => (
-              <li key={`${index}-${u.question}`}>
-                <p>{u.question}</p>
-                <p className="text-muted">{u.why}</p>
+              <li key={`${index}-$<Inline text={u.question} />`}>
+                <p><Inline text={u.question} /></p>
+                <p className="text-muted"><Inline text={u.why} /></p>
                 <p className="text-muted">
                   <span className="font-mono text-[10px] uppercase tracking-wider">To resolve: </span>
-                  {u.howToResolve}
+                  <Inline text={u.howToResolve} />
                 </p>
               </li>
             ))}
@@ -113,9 +114,9 @@ export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map
           <ul className="mt-3 space-y-2 text-sm">
             {guide.changelog.map((c, index) => (
               <li key={`${index}-${c.at}`}>
-                <p>{c.change}</p>
+                <p><Inline text={c.change} /></p>
                 <p className="text-muted">
-                  {c.reason} <span className="font-mono text-[10px] text-muted">{c.at.slice(0, 10)}</span>
+                  <Inline text={c.reason} /> <span className="font-mono text-[10px] text-muted">{c.at.slice(0, 10)}</span>
                 </p>
               </li>
             ))}
@@ -132,7 +133,7 @@ function AssistList({ title, items }: { title: string; items: string[] }): React
       <h3 className="font-mono text-[10px] uppercase tracking-wider text-muted">{title}</h3>
       <ul className="mt-2 list-disc space-y-1 pl-4 text-sm">
         {items.map((item, index) => (
-          <li key={`${index}-${item}`}>{item}</li>
+          <li key={`${index}-$<Inline text={item} />`}><Inline text={item} /></li>
         ))}
       </ul>
     </div>

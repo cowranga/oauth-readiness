@@ -21,19 +21,19 @@
   "oauth": {
     "support": "oauth2_oidc",
     "pkce": "supported",
-    "alternatives": "There is no API key path for member data. Reading a member's own posts or feed (r_member_social) is closed to new requests, and no product in LinkedIn's access list offers member messaging, connections, or other members' profiles. If your agent needs those, LinkedIn's API cannot give them to you.",
+    "alternatives": "There is no API key path for member data. r_member_social is closed, and no product offers member messaging, connections, or other members' profiles.",
     "appTypes": [
       {
         "name": "Developer app with self-serve products (Sign In with LinkedIn using OpenID Connect, Share on LinkedIn)",
-        "whenToUse": "Start here. Any member can sign in and let your agent post, comment, and react for them. No review. Tokens last 60 days and there is no refresh token, so the member must pass through LinkedIn again before day 60."
+        "whenToUse": "Start here. Any member can sign in and let your agent post, comment, and react. No review."
       },
       {
-        "name": "Separate developer app for the Community Management API",
-        "whenToUse": "Use when your agent must read post analytics, manage company Pages, or read comments on Page posts. The Development tier request only works on a new app with no other products, and only a registered legal organization can apply. It starts in a rate-limited Development tier; Standard tier needs a second review. After Standard tier approval, you can add it to your main app by giving the approved app's client ID."
+        "name": "Separate app for the Community Management API",
+        "whenToUse": "For post analytics, company Pages, or comments on Page posts. Request it on a new app with no other products. After Standard tier approval, add it to your main app with the approved app's client ID."
       },
       {
         "name": "Native client with PKCE",
-        "whenToUse": "Only for desktop or mobile apps that cannot keep a secret. Uses a loopback redirect, and LinkedIn must turn PKCE on for your app after you ask your LinkedIn contact. Web backends use the normal code flow with a client secret."
+        "whenToUse": "Only for desktop or mobile apps that cannot keep a secret. Uses a loopback redirect. Ask your LinkedIn contact to turn PKCE on."
       }
     ],
     "evidenceIds": [
@@ -49,10 +49,10 @@
   "verdict": {
     "tier": 3,
     "label": "Review required",
-    "summary": "Sign-in and posting for a member are self-serve, but anything an agent reads beyond the basic profile (post analytics, company Pages, comments) goes through Community Management API vetting, which is open only to registered legal organizations and needs two reviews. Reading a member's own posts, feed, or messages is closed to everyone, so for that use case LinkedIn is a dead end.",
-    "nextStep": "Create a LinkedIn Page for your company, then create a developer app at https://www.linkedin.com/developers/apps/new and add Sign In with LinkedIn using OpenID Connect and Share on LinkedIn on the Products tab.",
+    "summary": "Sign-in and posting are self-serve. Reading analytics, Pages, or comments needs Community Management API vetting: two reviews, legal organizations only. Reading a member's own posts, feed, or messages is closed to everyone.",
+    "nextStep": "Create a company Page, then a developer app at https://www.linkedin.com/developers/apps/new with the two self-serve products.",
     "customerSideGate": true,
-    "customerSideGateNote": "For company Page features, the connecting member needs a role on that Page: ADMINISTRATOR for Page management and analytics (rw_organization_admin), or one of a few posting roles for posting as the Page. Page roles can only be granted in LinkedIn's UI, not through the API. Personal posting has no admin gate.",
+    "customerSideGateNote": "For Page features, the member needs a Page role: ADMINISTRATOR for management and analytics (rw_organization_admin), or a posting role. Roles are granted only in LinkedIn's UI. Personal posting has no admin gate.",
     "confidence": "high",
     "evidenceIds": [
       "e1",
@@ -69,7 +69,7 @@
   },
   "composio": {
     "managedApp": "available",
-    "note": "Composio lists LinkedIn with managed OAuth, so you can prototype today without your own app. Users then see Composio on the consent screen, you share its rate limits, and you get its default scopes. We could not confirm which LinkedIn products Composio's managed app holds, so check the toolkit page before you rely on analytics or Page scopes. LinkedIn Ads is a separate Composio toolkit that needs your own app. When you switch to your own auth config, only new connections use it; existing users keep their current connection until they re-authenticate, or until you import their credentials where Composio supports it.",
+    "note": "Composio offers managed OAuth for LinkedIn, so you can prototype without your own app. Users see Composio on the consent screen, and you share its rate limits and default scopes. We could not confirm which products its app holds. LinkedIn Ads is a separate toolkit that needs your own app. If you switch auth configs, only new connections use it.",
     "evidenceIds": [
       "e34",
       "e35",
@@ -81,7 +81,7 @@
     {
       "id": "prototype",
       "name": "Prototype (self-serve products)",
-      "whoCanConnect": "Any LinkedIn member, with openid, profile, email, and w_member_social. There is no test-user list and no user cap.",
+      "whoCanConnect": "Any member, with openid, profile, email, and w_member_social. No user cap.",
       "handsOnHours": {
         "min": 1,
         "max": 3
@@ -91,7 +91,7 @@
         "max": 1
       },
       "reviewRequired": false,
-      "notes": "You must pick a LinkedIn Page when you create the app, and the app stays tied to that Page forever. Tokens last 60 days with no refresh token.",
+      "notes": "The app is tied to the Page you pick at creation, for good. Tokens last 60 days with no refresh token.",
       "evidenceIds": [
         "e1",
         "e13",
@@ -104,7 +104,7 @@
     {
       "id": "limited",
       "name": "Community Management API, Development tier",
-      "whoCanConnect": "Any member who consents, but your whole app gets 500 API calls a day and each member 100, with no batch calls and no webhooks. Enough for a few pilot users.",
+      "whoCanConnect": "Any member, within 500 calls a day per app and 100 per member.",
       "handsOnHours": {
         "min": 3,
         "max": 8
@@ -114,7 +114,7 @@
         "max": 42
       },
       "reviewRequired": true,
-      "notes": "LinkedIn publishes no review timeline. The 2 to 6 weeks comes from one vendor blog, not LinkedIn, and covers only the first response. Follow-up questions add time. Your Page super admin must verify the app first and has up to 30 days to do it. A rejection means you start over with a new app.",
+      "notes": "No batch calls or webhooks. LinkedIn publishes no timeline; 2 to 6 weeks for a first response comes from one vendor blog. Your Page super admin has up to 30 days to verify the app. A rejection means starting over with a new app.",
       "evidenceIds": [
         "e19",
         "e20",
@@ -128,7 +128,7 @@
     {
       "id": "production",
       "name": "Community Management API, Standard tier",
-      "whoCanConnect": "Any member who consents, with no Development tier call limits.",
+      "whoCanConnect": "Any member, without Development tier limits.",
       "handsOnHours": {
         "min": 8,
         "max": 24
@@ -138,7 +138,7 @@
         "max": null
       },
       "reviewRequired": true,
-      "notes": "You must have built every use case you claim, then send a screencast and test credentials. LinkedIn may decline the upgrade even if you meet the rules. No timeline is published, and we found no report specific to the Standard tier. Plan for weeks, plus time for follow-up questions.",
+      "notes": "Build every claimed use case, then send a screencast and test credentials. LinkedIn may still decline. No timeline is published. Plan for weeks.",
       "evidenceIds": [
         "e22",
         "e25",
@@ -159,7 +159,7 @@
       "useCases": [
         "read"
       ],
-      "effect": "Self-serve on the Products tab. You get the member's name, photo, and primary email. Email may be missing in some responses. This is all a self-serve app can read.",
+      "effect": "Self-serve. Name, photo, and primary email, which is sometimes missing. This is all a self-serve app can read.",
       "evidenceIds": [
         "e1",
         "e13",
@@ -175,14 +175,14 @@
       "useCases": [
         "write"
       ],
-      "effect": "Self-serve through Share on LinkedIn. Your agent can publish posts for the member, limited to 150 requests per member per day. You cannot read the posts back with this scope.",
+      "effect": "Self-serve. 150 requests per member per day. You cannot read posts back.",
       "evidenceIds": [
         "e1",
         "e33"
       ]
     },
     {
-      "name": "Act while the member is away (refresh tokens)",
+      "name": "Background access (refresh tokens)",
       "exampleScopes": [
         "refresh_token grant (programmatic refresh tokens)"
       ],
@@ -190,7 +190,7 @@
       "useCases": [
         "offline"
       ],
-      "effect": "Self-serve apps get a 60-day access token and no refresh token. Programmatic refresh tokens come only to approved Marketing Developer Platform partners, and even then the refresh token dies 365 days after the first consent. Plan for members to reconnect.",
+      "effect": "Self-serve apps get no refresh token. Approved Marketing Developer Platform partners get one, which dies 365 days after first consent.",
       "evidenceIds": [
         "e6",
         "e8",
@@ -198,7 +198,7 @@
       ]
     },
     {
-      "name": "Member post analytics, comments, and Page management (Community Management API)",
+      "name": "Analytics, comments, and Page management (Community Management API)",
       "exampleScopes": [
         "r_member_postAnalytics",
         "r_member_profileAnalytics",
@@ -213,7 +213,7 @@
         "write",
         "admin"
       ],
-      "effect": "Adds 2 to 6 weeks or more of vetting, a business email, a legal entity, Page verification, and a later screencast review. Member posts and comments you read can be stored only 48 hours, and other members' profile data cached only 24 hours. Page analytics can be kept a year. You can show the data only inside your app.",
+      "effect": "Adds vetting, a business email, a legal entity, Page verification, and a screencast review. Data retention limits apply, and data shows only inside your app.",
       "evidenceIds": [
         "e23",
         "e18",
@@ -233,7 +233,7 @@
       "useCases": [
         "read"
       ],
-      "effect": "Closed. LinkedIn is not accepting requests for this permission. An agent cannot read what a member posted or what is in their feed.",
+      "effect": "Closed to new requests.",
       "evidenceIds": [
         "e16"
       ]
@@ -251,7 +251,7 @@
         "read",
         "admin"
       ],
-      "effect": "Separate partner programs with their own applications and no fixed timeline. Compliance and Company Intelligence are closed to new applicants.",
+      "effect": "Separate partner programs with no fixed timeline. Compliance and Company Intelligence are closed to new applicants.",
       "evidenceIds": [
         "e3",
         "e2",
@@ -265,7 +265,7 @@
       "id": "r1",
       "item": "A LinkedIn Page for your company",
       "stage": "prototype",
-      "detail": "LinkedIn asks you to pick a Page when you create the app. The organization behind the Page becomes the app's publisher, and you cannot move the app to another Page later.",
+      "detail": "Its organization becomes the app's publisher. You cannot move the app to another Page.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e14",
@@ -276,7 +276,7 @@
       "id": "r2",
       "item": "An absolute HTTPS redirect URL",
       "stage": "prototype",
-      "detail": "Query parameters are ignored and a # fragment is not allowed. Native PKCE apps use http://127.0.0.1:{port} or http://[::1]:{port} instead.",
+      "detail": "Query parameters are ignored and # fragments are not allowed. Native PKCE apps use http://127.0.0.1:{port} or http://[::1]:{port}.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e4",
@@ -285,9 +285,9 @@
     },
     {
       "id": "r3",
-      "item": "A plan for reconnecting members every 60 days",
+      "item": "A 60-day reconnect plan",
       "stage": "prototype",
-      "detail": "Without a refresh token, the only renewal is sending the member through the authorize URL again. It skips the consent screen if they are still signed in to LinkedIn and the old token has not expired.",
+      "detail": "Send the member through the authorize URL again. Consent is skipped if they are signed in and the old token is still valid.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e5",
@@ -296,9 +296,9 @@
     },
     {
       "id": "r4",
-      "item": "A registered legal organization with a commercial use case",
+      "item": "A registered legal organization",
       "stage": "limited",
-      "detail": "Individual developers cannot get the Community Management API. Have your legal name, registered address, website, and privacy policy URL ready.",
+      "detail": "Individuals cannot apply. Have your legal name, registered address, website, and privacy policy URL ready.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e19"
@@ -306,9 +306,9 @@
     },
     {
       "id": "r5",
-      "item": "A verified business email address",
+      "item": "A verified business email",
       "stage": "limited",
-      "detail": "Personal email addresses fail the vetting. The domain should match your website and the organization behind your Page.",
+      "detail": "Personal email fails. The domain should match your website and Page organization.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e19"
@@ -316,9 +316,9 @@
     },
     {
       "id": "r6",
-      "item": "App verified by a super admin of your Page",
+      "item": "App verified by your Page super admin",
       "stage": "limited",
-      "detail": "The super admin approves or denies the verification request and has 30 days to act.",
+      "detail": "They have 30 days to act.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e20",
@@ -327,9 +327,9 @@
     },
     {
       "id": "r7",
-      "item": "A new app with no other products for the Development tier request",
+      "item": "A new app with no other products",
       "stage": "limited",
-      "detail": "The request option is grayed out on an app that already has other products. Use a second app just for this.",
+      "detail": "The Development tier request is grayed out otherwise.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e17"
@@ -337,7 +337,7 @@
     },
     {
       "id": "r8",
-      "item": "An app name and logo with no part of the LinkedIn or Microsoft names or logos",
+      "item": "An app name and logo without LinkedIn or Microsoft names or logos",
       "stage": "limited",
       "agentCanHelp": true,
       "evidenceIds": [
@@ -346,9 +346,9 @@
     },
     {
       "id": "r9",
-      "item": "A use case LinkedIn allows",
+      "item": "An allowed use case",
       "stage": "limited",
-      "detail": "Managing Pages or profiles only. No sales, recruiting, or ad targeting with member data, no social feed displays, no exporting or combining member data with other data.",
+      "detail": "Managing Pages or profiles only. No sales, recruiting, ad targeting, feed displays, exporting, or combining member data.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e28",
@@ -357,9 +357,9 @@
     },
     {
       "id": "r10",
-      "item": "A finished integration, a screencast of each use case, and test credentials",
+      "item": "A finished integration, screencast, and test credentials",
       "stage": "production",
-      "detail": "High resolution, downloadable, only your app on screen, narration recommended. You must finish within 12 months of Development tier approval.",
+      "detail": "High resolution, downloadable, only your app on screen. Finish within 12 months of Development tier approval.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e22",
@@ -369,9 +369,9 @@
     },
     {
       "id": "r11",
-      "item": "Data storage limits built into your agent",
+      "item": "Data storage limits",
       "stage": "production",
-      "detail": "Member posts, comments, and reactions can be stored for 48 hours. Profile data of other members, such as people who comment, can be cached for 24 hours at most. The connected member's own basic profile has no time limit, and Page analytics can be kept for one year. When rules overlap, the shortest limit applies. This limits long-term agent memory of LinkedIn content.",
+      "detail": "Member posts, comments, and reactions: 48 hours. Other members' profile data: 24 hours. The connected member's basic profile: no limit. Page analytics: one year. The shortest limit wins.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e28",
@@ -380,9 +380,9 @@
     },
     {
       "id": "r12",
-      "item": "A Linkedin-Version header on every versioned call, upgraded at least yearly",
+      "item": "A Linkedin-Version header, upgraded yearly",
       "stage": "production",
-      "detail": "Versions ship monthly and each is supported for at least one year. Version 202511 sunsets on November 16, 2026.",
+      "detail": "Versions ship monthly and are supported at least one year. 202511 sunsets on November 16, 2026.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e31"
@@ -393,8 +393,8 @@
     {
       "id": "s1",
       "stage": "prototype",
-      "title": "Create a LinkedIn Page for your company",
-      "detail": "Sign in to LinkedIn and create a company Page if you do not have one. Make yourself, or someone you can reach fast, a super admin. Pick the Page carefully: the app is tied to it for good.",
+      "title": "Create a company Page",
+      "detail": "Create a LinkedIn company Page if you lack one. Make someone reachable a super admin.",
       "owner": "you",
       "estimate": "15 min",
       "evidenceIds": [
@@ -406,7 +406,7 @@
       "id": "s2",
       "stage": "prototype",
       "title": "Create the developer app",
-      "detail": "Open linkedin.com/developers/apps/new. Enter an app name without LinkedIn or Microsoft in it, select your Page, add a privacy policy URL and logo, and accept the API terms. You land on the app page with Settings, Auth, Products, and Analytics tabs.",
+      "detail": "Open linkedin.com/developers/apps/new. Enter an app name, select your Page, add a privacy policy URL and logo, and accept the API terms.",
       "owner": "you",
       "estimate": "10 to 20 min",
       "url": "https://www.linkedin.com/developers/apps/new",
@@ -419,8 +419,8 @@
     {
       "id": "s3",
       "stage": "prototype",
-      "title": "Add the two self-serve products",
-      "detail": "On the Products tab, request Sign In with LinkedIn using OpenID Connect and Share on LinkedIn. The Auth tab should then list openid, profile, email, and w_member_social.",
+      "title": "Add the self-serve products",
+      "detail": "On the **Products** tab, request Sign In with LinkedIn using OpenID Connect and Share on LinkedIn. The **Auth** tab then lists openid, profile, email, and w_member_social.",
       "owner": "you",
       "estimate": "5 min",
       "url": "https://www.linkedin.com/developers/apps",
@@ -433,8 +433,8 @@
     {
       "id": "s4",
       "stage": "prototype",
-      "title": "Add your redirect URL and copy credentials",
-      "detail": "On the Auth tab, add your absolute HTTPS callback URL, for example the Composio callback if you use your own auth config there. Copy the Client ID and Client Secret into your secret store.",
+      "title": "Add redirect URL and copy credentials",
+      "detail": "On the **Auth** tab, add your callback URL, such as Composio's. Copy the client ID and client secret to your secret store.",
       "owner": "you",
       "estimate": "5 min",
       "evidenceIds": [
@@ -444,8 +444,8 @@
     {
       "id": "s5",
       "stage": "prototype",
-      "title": "Build the code flow and validate ID tokens",
-      "detail": "Send members to https://www.linkedin.com/oauth/v2/authorization with response_type=code, state, and scope=openid profile email w_member_social. Exchange the code within 30 minutes. Validate the ID token with keys and the issuer from the live discovery document, not from the docs sample.",
+      "title": "Build the code flow",
+      "detail": "Send members to https://www.linkedin.com/oauth/v2/authorization with response_type=code, state, and scope=openid profile email w_member_social. Exchange the code within 30 minutes. Validate the ID token against the live discovery document.",
       "owner": "agent",
       "estimate": "2 to 4 hours",
       "url": "https://www.linkedin.com/oauth/.well-known/openid-configuration",
@@ -459,8 +459,8 @@
     {
       "id": "s6",
       "stage": "prototype",
-      "title": "Build a reconnect prompt before day 60",
-      "detail": "Store expires_in. A few days before expiry, ask the member to click a reconnect link that runs the authorize URL again. Handle 401 by sending them back through sign-in. Never change the scope list casually: a different scope set invalidates their earlier tokens.",
+      "title": "Build a reconnect prompt",
+      "detail": "Store expires_in and prompt a reconnect a few days before expiry. Send 401s back through sign-in. A changed scope set invalidates earlier tokens.",
       "owner": "agent",
       "estimate": "1 to 2 hours",
       "evidenceIds": [
@@ -472,8 +472,8 @@
     {
       "id": "s7",
       "stage": "limited",
-      "title": "Check your use case against LinkedIn's restrictions",
-      "detail": "Read the restricted uses page. If your agent uses member data for sales prospecting, recruiting, CRM enrichment, or a social feed display, stop: LinkedIn will refuse it. Write down only use cases you will actually build.",
+      "title": "Check your use case",
+      "detail": "Read the restricted uses page. LinkedIn refuses sales prospecting, recruiting, CRM enrichment, and feed displays. List only use cases you will build.",
       "owner": "agent",
       "estimate": "30 min",
       "url": "https://learn.microsoft.com/en-us/linkedin/marketing/restricted-use-cases",
@@ -485,8 +485,8 @@
     {
       "id": "s8",
       "stage": "limited",
-      "title": "Create a second app for the Community Management API",
-      "detail": "Create a new app tied to the same Page and add no other products to it. The Community Management request is grayed out on apps that already have products.",
+      "title": "Create a second app",
+      "detail": "Create a new app on the same Page with no products, for the Community Management request.",
       "owner": "you",
       "estimate": "15 min",
       "url": "https://www.linkedin.com/developers/apps/new",
@@ -497,8 +497,8 @@
     {
       "id": "s9",
       "stage": "limited",
-      "title": "Get the app verified by your Page super admin",
-      "detail": "On the app's Settings tab, start Page verification and send the link to a super admin of the Page. They approve it while signed in. They have 30 days. Use the draft note below.",
+      "title": "Get Page verification",
+      "detail": "On the app's **Settings** tab, start Page verification and send the link to a Page super admin. Use the draft note.",
       "owner": "you",
       "estimate": "10 min plus up to 30 days for the admin",
       "url": "https://www.linkedin.com/help/linkedin/answer/a548360/associate-an-app-with-a-linkedin-page?lang=en",
@@ -510,8 +510,8 @@
     {
       "id": "s10",
       "stage": "limited",
-      "title": "Submit the Development tier access request",
-      "detail": "On the Products tab, request Community Management API. Fill every field: business email (you must click the verification email, check spam), legal name, registered address, website, privacy policy, and the use-case description. Use the draft below as a start.",
+      "title": "Submit the Development tier request",
+      "detail": "On the **Products** tab, request Community Management API. Fill every field and click the business email verification link (check spam). Use the use-case draft.",
       "owner": "you",
       "estimate": "45 to 90 min",
       "url": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management-app-review",
@@ -523,8 +523,8 @@
     {
       "id": "s11",
       "stage": "limited",
-      "title": "Wait for LinkedIn's Development tier decision",
-      "detail": "LinkedIn checks the use case, business email, organization, website domain, and Page verification. No timeline is published. If they reject you, you cannot reapply on the same app: fix the cause and start again with a new app.",
+      "title": "Wait for the Development tier decision",
+      "detail": "LinkedIn checks the use case, email, organization, domain, and Page verification. If rejected, start again with a new app.",
       "owner": "provider",
       "estimate": "2 to 6 weeks (developer-reported)",
       "evidenceIds": [
@@ -536,8 +536,8 @@
     {
       "id": "s12",
       "stage": "production",
-      "title": "Build every use case you claimed",
-      "detail": "Within 12 months, build the features you listed using the /rest/ versioned endpoints with a Linkedin-Version header. Stay inside 500 calls a day per app. Delete member social activity after 48 hours and other members' profile data after 24.",
+      "title": "Build every claimed use case",
+      "detail": "Use the /rest/ versioned endpoints with a Linkedin-Version header. Stay within 500 calls a day and enforce the data retention limits.",
       "owner": "agent",
       "estimate": "1 to 3 days",
       "evidenceIds": [
@@ -551,7 +551,7 @@
       "id": "s13",
       "stage": "production",
       "title": "Record the screencast",
-      "detail": "Show a user going through the full OAuth flow, posting, how a member's comment appears in your app, and which profile fields you display, for each use case on your form. Close every other window. Narrate in English.",
+      "detail": "For each use case, show the OAuth flow, posting, how comments appear, and which profile fields you display. Narrate in English. See the shot list draft.",
       "owner": "you",
       "estimate": "1 to 2 hours",
       "evidenceIds": [
@@ -563,7 +563,7 @@
       "id": "s14",
       "stage": "production",
       "title": "Submit the Standard tier form",
-      "detail": "Under My Apps, Products, open the Standard tier form. Add a company and product overview, use cases, privacy policy, test login for reviewers, and the screencast. Watch for follow-up mail from developer-access@linkedin.com.",
+      "detail": "Under **My Apps**, **Products**, open the Standard tier form. Add an overview, use cases, privacy policy, reviewer test login, and screencast. Watch for mail from developer-access@linkedin.com.",
       "owner": "you",
       "estimate": "1 hour",
       "evidenceIds": [
@@ -575,7 +575,7 @@
       "id": "s15",
       "stage": "production",
       "title": "Wait for the Standard tier decision",
-      "detail": "LinkedIn may approve, ask questions, or decline even if you meet the rules. If declined, you start over from a new app at the Development tier.",
+      "detail": "LinkedIn may approve, ask questions, or decline. If declined, start over at the Development tier.",
       "owner": "provider",
       "estimate": "2 weeks to unknown",
       "evidenceIds": [
@@ -587,8 +587,8 @@
     {
       "id": "s16",
       "stage": "production",
-      "title": "Point your Composio auth config at your app",
-      "detail": "In Composio, create a LinkedIn auth config with your Client ID and Secret and add Composio's callback URL to your app's Auth tab. Only new connections use it. Ask existing users to reconnect.",
+      "title": "Connect your app to Composio",
+      "detail": "Create a LinkedIn auth config with your client ID and client secret, and add Composio's callback URL to the **Auth** tab. Ask existing users to reconnect.",
       "owner": "you",
       "estimate": "20 min",
       "url": "https://docs.composio.dev/docs/white-labeling-authentication",
@@ -600,9 +600,9 @@
   ],
   "blockers": [
     {
-      "symptom": "The authorize page shows an invalid scope error when you request r_member_social, r_liteprofile, or another scope.",
-      "cause": "Your app does not have the product that grants that scope. r_member_social is closed to everyone, and older scopes like r_liteprofile come only with certain marketing products.",
-      "fix": "Request only scopes listed on your app's Auth tab. Use openid profile email for sign-in. Drop any plan to read a member's own posts.",
+      "symptom": "Invalid scope error for r_member_social, r_liteprofile, or another scope.",
+      "cause": "Your app lacks the product for that scope, or the scope is closed.",
+      "fix": "Request only scopes listed on your **Auth** tab.",
       "escalation": "LinkedIn Developer Support: https://www.linkedin.com/help/linkedin/ask/dsapi",
       "evidenceIds": [
         "e16",
@@ -611,18 +611,18 @@
       ]
     },
     {
-      "symptom": "The Community Management API request is grayed out on the Products tab.",
-      "cause": "The app already has other API products.",
-      "fix": "Create a new app on the same Page with no products and request it there. After Standard tier approval you can request it on your main app by entering the approved app's client ID.",
+      "symptom": "The Community Management API request is grayed out.",
+      "cause": "The app already has other products.",
+      "fix": "Request it on a new app with no products.",
       "evidenceIds": [
         "e17",
         "e22"
       ]
     },
     {
-      "symptom": "Your Development or Standard tier request is rejected.",
-      "cause": "Common causes: personal email, legal name or domain that does not match the Page organization, an unverified app, a restricted use case, or a screencast that misses a stated use case.",
-      "fix": "Fix the mismatch, then create a new app and submit a new Development tier request. You cannot reapply on the rejected app.",
+      "symptom": "Your tier request is rejected.",
+      "cause": "Often a personal email, a mismatched name or domain, an unverified app, a restricted use case, or an incomplete screencast.",
+      "fix": "Fix the cause and submit from a new app.",
       "escalation": "LinkedIn Developer Support: https://www.linkedin.com/help/linkedin/ask/dsapi",
       "evidenceIds": [
         "e21",
@@ -631,9 +631,9 @@
       ]
     },
     {
-      "symptom": "Members stop working after 60 days and your agent fails with 401.",
-      "cause": "Self-serve apps get no refresh token. Access tokens last 60 days.",
-      "fix": "Prompt members to reconnect before expiry. If they are still signed in to LinkedIn, the consent screen is skipped. For true background access, get Marketing Developer Platform approval for programmatic refresh tokens, which still expire after 365 days.",
+      "symptom": "Calls fail with 401 after 60 days.",
+      "cause": "Self-serve apps get no refresh token.",
+      "fix": "Prompt members to reconnect before expiry.",
       "evidenceIds": [
         "e5",
         "e6",
@@ -641,18 +641,18 @@
       ]
     },
     {
-      "symptom": "401 Redirect_uri doesn't match on the authorize page, or invalid_redirect_uri on the token call.",
-      "cause": "The redirect URI is not exactly one listed on the Auth tab, or the code expired after 30 minutes.",
-      "fix": "Add the exact absolute HTTPS URL on the Auth tab, send the same value on both calls, and exchange the code right away.",
+      "symptom": "401 Redirect_uri doesn't match, or invalid_redirect_uri on the token call.",
+      "cause": "The redirect URI differs from the **Auth** tab, or the code is older than 30 minutes.",
+      "fix": "Send the exact registered URL on both calls and exchange the code right away.",
       "evidenceIds": [
         "e4",
         "e5"
       ]
     },
     {
-      "symptom": "403 Not enough permissions on organization or follower statistics endpoints.",
-      "cause": "Either your OAuth client requested fewer scopes than the app holds, or the member is not an ADMINISTRATOR of the Page.",
-      "fix": "Request rw_organization_admin in the scope parameter, then check the member's role with the organizationAcls endpoint. A Page admin must grant the role in LinkedIn's UI.",
+      "symptom": "403 Not enough permissions on organization statistics.",
+      "cause": "rw_organization_admin was not requested, or the member is not a Page ADMINISTRATOR.",
+      "fix": "Request rw_organization_admin and check the member's role with organizationAcls.",
       "evidenceIds": [
         "e39",
         "e26",
@@ -660,26 +660,26 @@
       ]
     },
     {
-      "symptom": "429 responses, or an email that your app passed 75 percent of its quota.",
-      "cause": "Daily app or per-member limits, which reset at midnight UTC. Development tier allows only 500 calls a day per app.",
-      "fix": "Look up each endpoint's limit on the app's Analytics tab, cache what the storage rules allow, and apply for Standard tier.",
+      "symptom": "429 responses, or a 75 percent quota email.",
+      "cause": "Daily app or member limits, which reset at midnight UTC.",
+      "fix": "Check limits on the **Analytics** tab, cache within the rules, and apply for Standard tier.",
       "evidenceIds": [
         "e32",
         "e24"
       ]
     },
     {
-      "symptom": "Calls to /rest/ endpoints fail with a missing or deprecated version error.",
-      "cause": "No Linkedin-Version header, or a version past its one-year support window.",
-      "fix": "Send Linkedin-Version: YYYYMM with a current version and plan a yearly upgrade. 202511 sunsets on November 16, 2026.",
+      "symptom": "/rest/ calls fail with a missing or deprecated version error.",
+      "cause": "No Linkedin-Version header, or a version past one year.",
+      "fix": "Send Linkedin-Version: YYYYMM with a current version.",
       "evidenceIds": [
         "e31"
       ]
     },
     {
-      "symptom": "ID token validation fails on the issuer check.",
-      "cause": "The live discovery document gives the issuer as https://www.linkedin.com/oauth, while the docs sample shows https://www.linkedin.com.",
-      "fix": "Read the issuer and JWKS URL from the live discovery document at startup instead of hard-coding them.",
+      "symptom": "ID token validation fails on the issuer.",
+      "cause": "The live issuer is https://www.linkedin.com/oauth, but the docs sample shows https://www.linkedin.com.",
+      "fix": "Read the issuer and JWKS URL from the live discovery document.",
       "evidenceIds": [
         "e10",
         "e13",
@@ -687,9 +687,9 @@
       ]
     },
     {
-      "symptom": "Your Page super admin never approves the verification request.",
-      "cause": "The request waits on a person, who has 30 days to act.",
-      "fix": "Send the draft note below, confirm who the super admin is in the Page's admin tools, and resend after 30 days if it lapses.",
+      "symptom": "The Page super admin never approves verification.",
+      "cause": "The request waits on a person with 30 days to act.",
+      "fix": "Send the draft note and resend if it lapses.",
       "evidenceIds": [
         "e14"
       ]
@@ -697,86 +697,86 @@
   ],
   "agentAssist": {
     "didForYou": [
-      "Read about 21 official LinkedIn, Composio, and community pages and recorded each claim with its source.",
-      "Fetched the live OpenID discovery document: it exists at /oauth/.well-known/openid-configuration and lists only openid, profile, and email.",
-      "Probed the authorize endpoint with an invalid client ID: it is live and shows an invalid client_id error page.",
-      "Checked the developer portal at linkedin.com/developers/apps: it responds to a signed-out request with the portal page shell.",
-      "Drafted a Community Management use-case description, a Page admin verification note, a screencast script, a data handling checklist, and a support email."
+      "Read about 21 official LinkedIn, Composio, and community pages.",
+      "Fetched the live OpenID discovery document at /oauth/.well-known/openid-configuration: only openid, profile, and email.",
+      "Probed authorize with a bad client ID: live, invalid client_id error page.",
+      "Checked linkedin.com/developers/apps: it serves the portal shell when signed out.",
+      "Drafted a use-case description, a Page admin note, a screencast script, a data checklist, and a support email."
     ],
     "canDoForYou": [
-      "Write the code flow, ID token validation from the discovery document, and the 60-day reconnect prompt.",
-      "Write 24-hour and 48-hour deletion jobs for LinkedIn data.",
-      "Add the Linkedin-Version header and a yearly upgrade reminder.",
-      "Fill the developer app form and access request in a browser while you watch, after you sign in.",
-      "Tailor the use-case description and screencast script to the features you actually built."
+      "Write the code flow, ID token validation, and reconnect prompt.",
+      "Write 24-hour and 48-hour deletion jobs.",
+      "Add the Linkedin-Version header and an upgrade reminder.",
+      "Fill the app and access forms in a browser after you sign in.",
+      "Tailor the drafts to what you built."
     ],
     "youMustDo": [
-      "Sign in to LinkedIn and pass any 2FA.",
-      "Create the company Page and decide who is super admin.",
-      "Approve the app verification as Page super admin, or get the person who is to do it.",
-      "Verify your business email and confirm your legal entity details.",
-      "Publish a privacy policy you stand behind.",
-      "Record and narrate the screencast and provide reviewer test credentials.",
+      "Sign in to LinkedIn and pass 2FA.",
+      "Create the Page and choose a super admin.",
+      "Get the app verification approved.",
+      "Verify your business email and legal entity.",
+      "Publish a privacy policy.",
+      "Record the screencast and provide test credentials.",
       "Accept the LinkedIn API and Marketing API terms."
     ]
   },
   "drafts": [
     {
       "kind": "app_description",
-      "title": "Community Management API use-case description (Development tier form)",
-      "body": "[Company legal name] builds [product], an assistant that helps professionals and marketing teams manage their own LinkedIn presence. With the member's consent, [product] drafts posts that the member reviews and approves, publishes them to the member's profile or to LinkedIn Pages the member administers, and shows the member how those posts performed (impressions, reactions, comments, shares).\n\nUse cases we will build:\n1. Profile management: publish posts the member approved, and reply to comments on those posts.\n2. Page management: publish posts to Pages where the member is an ADMINISTRATOR, and show comments on those posts inside our app.\n3. Analytics: show post and Page statistics to the member and their Page admins only.\n\nData handling: we display LinkedIn data only inside our app, only to the member or the admins of the Page it belongs to. We delete member social activity within 48 hours and keep other members' profile data for no more than 24 hours. We do not export LinkedIn data, combine it with other data, or use it for sales, recruiting, lead generation, or ad targeting.\n\nPermissions requested: w_member_social, r_member_postAnalytics, w_organization_social, r_organization_social, rw_organization_admin. We request nothing else."
+      "title": "Community Management API use-case description",
+      "body": "[Company legal name] builds [product], an assistant that helps professionals and marketing teams manage their LinkedIn presence. With consent, [product] drafts posts the member approves, publishes them to their profile or Pages they administer, and shows how they performed (impressions, reactions, comments, shares).\n\nUse cases:\n1. Profile management: publish approved posts and reply to comments on them.\n2. Page management: publish to Pages where the member is an ADMINISTRATOR and show comments in our app.\n3. Analytics: show post and Page statistics to the member and Page admins only.\n\nData handling: LinkedIn data appears only in our app, only to the member or Page admins. We delete member social activity within 48 hours and other members' profile data within 24 hours. We do not export or combine LinkedIn data, or use it for sales, recruiting, lead generation, or ad targeting.\n\nPermissions: w_member_social, r_member_postAnalytics, w_organization_social, r_organization_social, rw_organization_admin. Nothing else."
     },
     {
       "kind": "other",
-      "title": "Note to your LinkedIn Page super admin asking them to verify the app",
-      "body": "Hi [name],\n\nWe are applying for LinkedIn's Community Management API for [product]. LinkedIn requires a super admin of our company Page, [Page name], to confirm that the developer app belongs to us.\n\nWhat to do (about 2 minutes):\n1. Sign in to LinkedIn as yourself.\n2. Open this verification link: [paste the link from the app's Settings tab].\n3. Check that the app name is [app name] and the Page is [Page name], then click Verify.\n\nThe link expires in 30 days. This does not give the app access to your account or post anything for you. It only links the app to our Page.\n\nThanks,\n[your name]"
+      "title": "Note to your Page super admin",
+      "body": "Hi [name],\n\nWe are applying for LinkedIn's Community Management API for [product]. LinkedIn needs a super admin of [Page name] to confirm the developer app is ours.\n\nSteps (about 2 minutes):\n1. Sign in to LinkedIn.\n2. Open [paste the link from the app's Settings tab].\n3. Check the app is [app name] and the Page is [Page name], then click Verify.\n\nThe link expires in 30 days. It does not give the app access to your account.\n\nThanks,\n[your name]"
     },
     {
       "kind": "demo_video_script",
       "title": "Standard tier screencast shot list",
-      "body": "Close every window except your app. Record in high resolution and narrate in English. Keep it short.\n1. Show your app's home screen and say what it does in one sentence.\n2. Click Connect LinkedIn. Show the full LinkedIn consent screen and click Allow.\n3. Profile management: draft a post, approve it, publish it. Open LinkedIn and show the post.\n4. From another account, comment on that post. Back in your app, show where the comment appears and which commenter fields you display (name, photo, headline).\n5. Page management: pick a Page where the user is an administrator, publish a post, show it on the Page.\n6. Analytics: show the post and Page statistics screens.\n7. Say how long you keep LinkedIn data (48 hours for member posts and comments, 24 hours for other members' profile data, up to one year for Page analytics) and that only the member or Page admins can see it.\n8. If a listed use case is not in the app, say so on the recording."
+      "body": "Close every other window. Record in high resolution and narrate in English.\n1. Show your app's home screen and say what it does.\n2. Click Connect LinkedIn, show the consent screen, and click Allow.\n3. Profile management: draft, approve, and publish a post. Show it on LinkedIn.\n4. Comment from another account. Show where the comment appears and which commenter fields you display.\n5. Page management: publish a post to a Page the user administers.\n6. Analytics: show the post and Page statistics.\n7. State retention (48 hours for member posts and comments, 24 hours for other members' profiles, one year for Page analytics) and who can see the data.\n8. Say if a listed use case is missing."
     },
     {
       "kind": "privacy_policy_checklist",
-      "title": "Privacy policy and data handling checklist for LinkedIn",
-      "body": "- Name LinkedIn as a data source and list the fields you read (name, photo, email, post analytics, comments on Page posts).\n- State retention: member social activity up to 48 hours, other members' profile data up to 24 hours, Page analytics up to one year.\n- State that LinkedIn data is shown only to the member or the admins of the Page it belongs to.\n- State that you do not sell, export, or combine LinkedIn data with other data, and do not use it for sales, recruiting, or ads.\n- Explain how a member disconnects and how you delete their data.\n- Give a contact email on your company domain.\n- Host the policy on the same domain as the website in your access request."
+      "title": "Privacy policy checklist for LinkedIn",
+      "body": "- Name LinkedIn as a source and list the fields you read.\n- State retention: member social activity 48 hours, other members' profiles 24 hours, Page analytics one year.\n- State that only the member or Page admins see the data.\n- State that you do not sell, export, or combine LinkedIn data, or use it for sales, recruiting, or ads.\n- Explain how to disconnect and how you delete data.\n- Give a contact email on your domain.\n- Host the policy on your access request's website domain."
     },
     {
       "kind": "support_email",
       "title": "Question to LinkedIn Developer Support",
-      "body": "Subject: Community Management API: refresh tokens and review status for app [client ID]\n\nHello,\n\nWe submitted a Community Management API Development tier request for app [client ID] on [date] for [company legal name].\n\n1. Could you share the status of the request, and anything missing?\n2. Will programmatic refresh tokens be enabled for this app once it is approved, or is that a separate request?\n3. Our product drafts posts that the member approves before we publish them. Is that use case within the Community Management terms?\n\nThank you,\n[name], [role], [company]"
+      "body": "Subject: Community Management API: refresh tokens and review status for app [client ID]\n\nHello,\n\nWe submitted a Development tier request for app [client ID] on [date] for [company legal name].\n\n1. What is the status, and is anything missing?\n2. Will programmatic refresh tokens be enabled on approval, or is that separate?\n3. Members approve each post before we publish it. Is that within the Community Management terms?\n\nThank you,\n[name], [role], [company]"
     }
   ],
   "uncertainties": [
     {
-      "question": "How long do Development and Standard tier reviews take today?",
-      "why": "LinkedIn publishes no timeline for these products. The only figure (2 to 6 weeks for a first response) comes from a vendor blog dated February 2026 with no named author.",
-      "howToResolve": "Submit a real request and log the dates, or ask Developer Support with the draft email."
+      "question": "How long do tier reviews take?",
+      "why": "The only figure is from an unattributed February 2026 vendor blog.",
+      "howToResolve": "Submit a request and log the dates."
     },
     {
-      "question": "Does Community Management approval come with programmatic refresh tokens?",
-      "why": "LinkedIn says refresh tokens go to all approved Marketing Developer Platform partners, and Community Management sits in the marketing docs, but no page says Development tier apps get them.",
-      "howToResolve": "After approval, check whether the token response includes refresh_token, or ask Developer Support."
+      "question": "Does approval include programmatic refresh tokens?",
+      "why": "No page says Development tier apps get them.",
+      "howToResolve": "Check the token response for refresh_token after approval."
     },
     {
-      "question": "Do self-serve products need the Page super admin to verify the app, or only to pick a Page?",
-      "why": "The help article says you must select a default Page; the review docs require verification for Community Management. We could not open the signed-in app form.",
-      "howToResolve": "Create an app and see whether Sign In and Share on LinkedIn work before verification."
+      "question": "Do self-serve products need Page verification?",
+      "why": "We could not open the signed-in app form.",
+      "howToResolve": "Test Sign In and Share on LinkedIn before verifying."
     },
     {
-      "question": "Which LinkedIn scopes does Composio's managed app hold?",
-      "why": "Composio's managed-auth table lists LinkedIn but not its products or scopes.",
-      "howToResolve": "Open the Composio LinkedIn toolkit page or connect a test account and inspect the granted scopes."
+      "question": "Which scopes does Composio's managed app hold?",
+      "why": "Composio's managed-auth table does not list them.",
+      "howToResolve": "Connect a test account and inspect the granted scopes."
     },
     {
-      "question": "Do LinkedIn's API terms limit how AI models may use LinkedIn content?",
-      "why": "We did not read the full API Terms of Use or Marketing API Terms in this pass.",
-      "howToResolve": "Read https://www.linkedin.com/legal/l/api-terms-of-use and the Marketing API Terms before launch, ideally with counsel."
+      "question": "Do LinkedIn's API terms limit AI use of content?",
+      "why": "We did not read the full API or Marketing API terms.",
+      "howToResolve": "Read https://www.linkedin.com/legal/l/api-terms-of-use and the Marketing API Terms before launch."
     },
     {
-      "question": "When did the recent Community Management changes ship?",
-      "why": "The docs mention new member analytics scopes and raised Development tier limits (500 per app, 100 per member) but give no dates.",
-      "howToResolve": "Check LinkedIn's Recent Changes page for the marketing API."
+      "question": "When did recent Community Management changes ship?",
+      "why": "The docs list new analytics scopes and higher limits without dates.",
+      "howToResolve": "Check LinkedIn's Recent Changes page."
     }
   ],
   "evidence": [

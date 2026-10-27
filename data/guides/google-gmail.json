@@ -24,11 +24,11 @@
     "appTypes": [
       {
         "name": "External user type, Web application client",
-        "whenToUse": "Your agent product, where any Google user connects their own Gmail and Calendar. This is the path this guide covers."
+        "whenToUse": "Any Google user connects their own Gmail and Calendar. This guide covers this path."
       },
       {
         "name": "Internal user type",
-        "whenToUse": "Only people in your own Google Cloud organization use the app. No verification needed, but outside users get an org_internal error."
+        "whenToUse": "Only users in your Google Cloud organization. No verification. Outside users get an org_internal error."
       }
     ],
     "evidenceIds": [
@@ -41,10 +41,10 @@
   "verdict": {
     "tier": 4,
     "label": "Review + external audit",
-    "summary": "Reading mail (gmail.readonly, gmail.modify) and even creating drafts (gmail.compose) are restricted scopes, so you need Google's data access verification plus a yearly third-party CASA security assessment. No Calendar scope is on Google's restricted list, so the Gmail scopes decide your timeline.",
-    "nextStep": "List every Gmail and Calendar feature your agent needs, map each to the narrowest scope on Google's scope pages, and decide if you can avoid restricted Gmail scopes.",
+    "summary": "Reading mail (gmail.readonly, gmail.modify) and creating drafts (gmail.compose) are restricted scopes. They need Google verification plus a yearly CASA security assessment. No Calendar scope is restricted.",
+    "nextStep": "Map each feature to the narrowest scope and decide if you can avoid restricted Gmail scopes.",
     "customerSideGate": true,
-    "customerSideGateNote": "A Workspace admin can set Gmail or Calendar to Restricted or block unconfigured apps. Then only apps they mark Trusted or Specific Google data can connect, even after Google verifies you. Expect business customers to ask you to get allowlisted.",
+    "customerSideGateNote": "A Workspace admin can restrict Gmail or Calendar or block unconfigured apps. Then only apps marked Trusted or Specific Google data can connect, even after verification.",
     "confidence": "high",
     "evidenceIds": [
       "e1",
@@ -56,7 +56,7 @@
   },
   "composio": {
     "managedApp": "available",
-    "note": "Gmail and Google Calendar are on Composio's managed OAuth list, so you can build and demo today with no Google app of your own. Users then see a Google consent screen that says Composio, and you share quota with other Composio users. When you switch to your own verified app, only new connections use it; existing users keep their current connection until they re-authenticate, or until you import their credentials where Composio supports it.",
+    "note": "Composio provides managed OAuth for Gmail and Google Calendar. The consent screen says Composio, and you share quota. After you switch to your own app, existing users keep their connection until they re-authenticate, or until you import their credentials where Composio supports it.",
     "evidenceIds": [
       "e23",
       "e24",
@@ -67,7 +67,7 @@
     {
       "id": "prototype",
       "name": "Prototype (Testing status)",
-      "whoCanConnect": "You and up to 100 test users you list on the Audience page.",
+      "whoCanConnect": "You and up to 100 test users on the Audience page.",
       "handsOnHours": {
         "min": 1,
         "max": 3
@@ -77,7 +77,7 @@
         "max": 0
       },
       "reviewRequired": false,
-      "notes": "Test user grants and refresh tokens expire 7 days after consent, so your background agent stops working weekly until users reconnect. Or start on Composio's managed app instead.",
+      "notes": "Test user grants and refresh tokens expire 7 days after consent. Background agents stop weekly until users reconnect.",
       "evidenceIds": [
         "e13",
         "e15",
@@ -87,7 +87,7 @@
     {
       "id": "limited",
       "name": "Limited beta (In production, unverified)",
-      "whoCanConnect": "Up to 100 new users in total, after clicking through Google's unverified app warning.",
+      "whoCanConnect": "Up to 100 new users in total, after an unverified app warning.",
       "handsOnHours": {
         "min": 1,
         "max": 2
@@ -97,7 +97,7 @@
         "max": 0
       },
       "reviewRequired": false,
-      "notes": "The 100 new user cap counts over the whole life of the project and cannot be reset. Do not burn it on a public launch. Refresh tokens no longer expire after 7 days once you leave Testing status.",
+      "notes": "The 100 user cap covers the life of the project and cannot be reset. Refresh tokens no longer expire after 7 days.",
       "evidenceIds": [
         "e14",
         "e32",
@@ -107,7 +107,7 @@
     {
       "id": "production",
       "name": "Production (verified, restricted scopes)",
-      "whoCanConnect": "Any Google user, with your app name on the consent screen and no warning screen. Workspace admins can still block you.",
+      "whoCanConnect": "Any Google user, with no warning screen. Workspace admins can still block you.",
       "handsOnHours": {
         "min": 30,
         "max": 100
@@ -121,7 +121,7 @@
         "max": 42
       },
       "reviewRequired": true,
-      "notes": "Google estimates 2 to 3 business days for branding and 6 weeks for restricted scope verification, not guaranteed. A 2024 vendor comparison lists CASA labs taking 1 to 8 weeks depending on lab and tier, and developers report some reviews stalled for months with no reply. Repeat the assessment every 12 months.",
+      "notes": "Google estimates 2 to 3 business days for branding and 6 weeks for restricted scopes, not guaranteed. A 2024 vendor comparison lists CASA at 1 to 8 weeks. Some reviews stall for months. Reassess every 12 months.",
       "evidenceIds": [
         "e7",
         "e2",
@@ -143,7 +143,7 @@
       "useCases": [
         "write"
       ],
-      "effect": "No data access review. You only need brand verification to show your name and logo. Too narrow for an inbox agent.",
+      "effect": "No data access review. Brand verification only. Too narrow for an inbox agent.",
       "evidenceIds": [
         "e1",
         "e7"
@@ -162,7 +162,7 @@
         "write",
         "offline"
       ],
-      "effect": "Needs data access verification with a demo video and scope justification. No security assessment. Background access works with access_type=offline at any tier.",
+      "effect": "Needs verification with a demo video and scope justification. No security assessment. access_type=offline works at any tier.",
       "evidenceIds": [
         "e9",
         "e8",
@@ -180,7 +180,7 @@
       "useCases": [
         "write"
       ],
-      "effect": "Needs verification but no security assessment. Your agent can send but cannot read the inbox or save drafts.",
+      "effect": "Needs verification, no security assessment. Your agent cannot read the inbox or save drafts.",
       "evidenceIds": [
         "e1",
         "e8"
@@ -200,7 +200,7 @@
         "read",
         "write"
       ],
-      "effect": "Needs verification plus a yearly CASA assessment from an authorized lab when the data reaches your server. Plan on weeks, not days. An inbox assistant lands here.",
+      "effect": "Needs verification plus a yearly CASA assessment when data reaches your server. Plan on weeks. An inbox assistant lands here.",
       "evidenceIds": [
         "e1",
         "e2",
@@ -219,7 +219,7 @@
       "useCases": [
         "admin"
       ],
-      "effect": "Same review and audit as reading mail. Request only if your agent manages filters, forwarding, or delegates.",
+      "effect": "Same review as reading mail. Request only to manage filters, forwarding, or delegates.",
       "evidenceIds": [
         "e1",
         "e2",
@@ -230,9 +230,9 @@
   "requirements": [
     {
       "id": "r1",
-      "item": "Google account and a Google Cloud project",
+      "item": "Google Cloud project",
       "stage": "prototype",
-      "detail": "The Cloud console needs a Google sign-in. Use one project for development and a separate one for production, so test users and the lifetime user cap do not mix.",
+      "detail": "Use separate projects for development and production so the lifetime user cap does not mix.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e28",
@@ -241,9 +241,9 @@
     },
     {
       "id": "r2",
-      "item": "Homepage and privacy policy on a domain you own",
+      "item": "Homepage and privacy policy on your domain",
       "stage": "production",
-      "detail": "The homepage must describe the app and not be only a login page. The privacy policy must sit on the same domain, be linked from the homepage and the consent screen, and say how you access, use, store, and share Google user data.",
+      "detail": "The homepage must describe the app. The privacy policy must be on the same domain, linked from the homepage and consent screen, and cover how you access, use, store, and share Google user data.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e17"
@@ -253,7 +253,7 @@
       "id": "r3",
       "item": "Domain verified in Google Search Console",
       "stage": "production",
-      "detail": "Verify every authorized domain with an account that is an Owner or Editor on the Cloud project.",
+      "detail": "Verify every authorized domain with a project Owner or Editor account.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e17"
@@ -263,7 +263,7 @@
       "id": "r4",
       "item": "Limited Use disclosure",
       "stage": "production",
-      "detail": "Post an affirmative statement that your use of Google Workspace data follows the Limited Use requirements, in the app or on your site.",
+      "detail": "State on your site that your use of Google Workspace data follows the Limited Use requirements.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e20",
@@ -272,9 +272,9 @@
     },
     {
       "id": "r5",
-      "item": "Scope justification for each sensitive and restricted scope",
+      "item": "Justification per sensitive and restricted scope",
       "stage": "production",
-      "detail": "Say which feature uses each scope and why a narrower scope will not work.",
+      "detail": "Name the feature and why a narrower scope does not work.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e18"
@@ -284,7 +284,7 @@
       "id": "r6",
       "item": "Demo video on YouTube (unlisted)",
       "stage": "production",
-      "detail": "Show the full sign-in and consent flow in English, your app name on the consent screen, your client ID in the address bar, and each feature that uses each scope.",
+      "detail": "Show the consent flow in English, your app name, your client ID in the address bar, and each feature per scope.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e4"
@@ -292,9 +292,9 @@
     },
     {
       "id": "r7",
-      "item": "CASA security assessment and Letter of Assessment",
+      "item": "CASA assessment and Letter of Assessment",
       "stage": "production",
-      "detail": "Required for restricted scopes. An authorized lab tests your app and infrastructure. Google does not charge; you agree the price with the lab. Repeat every 12 months.",
+      "detail": "Required for restricted scopes. An authorized lab tests your app and infrastructure. Google does not charge. Repeat every 12 months.",
       "agentCanHelp": false,
       "evidenceIds": [
         "e2",
@@ -308,8 +308,8 @@
     {
       "id": "s1",
       "stage": "prototype",
-      "title": "Build on Composio's managed Gmail and Calendar app",
-      "detail": "Connect your own Gmail and Calendar through Composio's managed auth and build the agent flow. You do not need a Google app yet. The consent screen will say Composio.",
+      "title": "Build on Composio's managed app",
+      "detail": "Connect Gmail and Calendar through Composio managed auth. You do not need a Google app yet.",
       "owner": "you",
       "estimate": "1 hour",
       "url": "https://docs.composio.dev/toolkits/managed-auth",
@@ -321,8 +321,8 @@
     {
       "id": "s2",
       "stage": "prototype",
-      "title": "Map features to the narrowest scopes",
-      "detail": "Write down each feature and the scope it needs. Use gmail.send if you only send. Any reading or draft saving needs gmail.readonly, gmail.modify, or gmail.compose, which are restricted. Prefer calendar.events over the full calendar scope.",
+      "title": "Map features to scopes",
+      "detail": "Use gmail.send if you only send. Reading or drafting needs a restricted scope. Prefer calendar.events over the full calendar scope.",
       "owner": "agent",
       "estimate": "1 hour",
       "url": "https://developers.google.com/workspace/gmail/api/auth/scopes",
@@ -334,8 +334,8 @@
     {
       "id": "s3",
       "stage": "prototype",
-      "title": "Create a Cloud project and set up Google Auth Platform",
-      "detail": "Open the console link, sign in, create a project named for production. On Branding, enter app name, support email, and developer contact. On Audience, pick External and keep Testing status. On Data Access, add your scopes. The console shows which are sensitive or restricted.",
+      "title": "Set up Google Auth Platform",
+      "detail": "On **Branding**, enter app name, support email, and developer contact. On **Audience**, pick External and keep Testing status. On **Data Access**, add scopes.",
       "owner": "you",
       "estimate": "30 min",
       "url": "https://console.cloud.google.com/auth/overview",
@@ -348,8 +348,8 @@
     {
       "id": "s4",
       "stage": "prototype",
-      "title": "Create a Web application OAuth client",
-      "detail": "On Clients, create a Web application client and add your exact HTTPS callback URL, or the redirect URI Composio shows if you will plug the client into Composio. Request access_type=offline for a refresh token and use PKCE with S256.",
+      "title": "Create a Web application client",
+      "detail": "On **Clients**, add your exact HTTPS callback URL or the Composio redirect URI. Request access_type=offline and use PKCE with S256.",
       "owner": "you",
       "estimate": "20 min",
       "url": "https://console.cloud.google.com/auth/clients",
@@ -361,8 +361,8 @@
     {
       "id": "s5",
       "stage": "prototype",
-      "title": "Add test users and handle partial consent",
-      "detail": "Add up to 100 test users. Expect them to reconnect every 7 days. Because you ask for Gmail and Calendar together, users get checkboxes and may grant only one. Read the granted scopes and turn off features that lack them.",
+      "title": "Add test users",
+      "detail": "Add up to 100 test users. Users may grant only Gmail or only Calendar. Turn off features whose scopes are missing.",
       "owner": "you",
       "estimate": "2 hours",
       "evidenceIds": [
@@ -374,8 +374,8 @@
     {
       "id": "s6",
       "stage": "limited",
-      "title": "Publish to In production for a small beta, if you must",
-      "detail": "On Audience, click Publish app. Unverified, users see a warning screen and you get 100 new users for the life of the project. Skip this if you can wait for verification.",
+      "title": "Publish for a small beta",
+      "detail": "On **Audience**, click **Publish app**. Unverified apps show a warning. Skip this if you can wait.",
       "owner": "you",
       "estimate": "10 min",
       "evidenceIds": [
@@ -386,8 +386,8 @@
     {
       "id": "s7",
       "stage": "production",
-      "title": "Prepare homepage, privacy policy, and domain",
-      "detail": "Publish a homepage and privacy policy on your domain, add the Limited Use statement, and verify the domain in Search Console with a project Owner or Editor account.",
+      "title": "Prepare homepage and domain",
+      "detail": "Publish the homepage, privacy policy, and Limited Use statement. Verify the domain in Search Console.",
       "owner": "you",
       "estimate": "4 to 8 hours",
       "url": "https://search.google.com/search-console",
@@ -400,7 +400,7 @@
       "id": "s8",
       "stage": "production",
       "title": "Verify and publish branding",
-      "detail": "On the Branding page, click Verify Branding, then Publish branding. A compliant result must be published within 7 days or you verify again.",
+      "detail": "On **Branding**, click **Verify Branding**, then **Publish branding**. Publish a compliant result within 7 days or verify again.",
       "owner": "you",
       "estimate": "2 to 3 business days",
       "url": "https://console.cloud.google.com/auth/branding",
@@ -413,8 +413,8 @@
     {
       "id": "s9",
       "stage": "production",
-      "title": "Record the demo video and write scope justifications",
-      "detail": "Use the drafts in this guide. Upload the video to YouTube as Unlisted.",
+      "title": "Record video and justifications",
+      "detail": "Use the drafts below. Upload the video to YouTube as Unlisted.",
       "owner": "you",
       "estimate": "4 to 8 hours",
       "evidenceIds": [
@@ -426,7 +426,7 @@
       "id": "s10",
       "stage": "production",
       "title": "Submit data access verification",
-      "detail": "In the Verification Center, declare all scopes, add up to three documentation links, the video link, your justifications, and pick your permitted application type.",
+      "detail": "In the Verification Center, declare all scopes and add up to three documentation links, the video link, justifications, and your application type.",
       "owner": "you",
       "estimate": "2 hours",
       "url": "https://console.cloud.google.com/auth/verification",
@@ -438,8 +438,8 @@
     {
       "id": "s11",
       "stage": "production",
-      "title": "Wait for Trust and Safety and answer quickly",
-      "detail": "Google emails you from the review team. Reply fast; Google says timing depends on how fast you respond. If nothing arrives for weeks, reply on the verification thread.",
+      "title": "Answer Trust and Safety",
+      "detail": "Reply fast. Google says timing depends on your response speed. If nothing arrives for weeks, reply on the verification thread.",
       "owner": "provider",
       "estimate": "2 weeks to several months",
       "evidenceIds": [
@@ -452,7 +452,7 @@
       "id": "s12",
       "stage": "production",
       "title": "Complete the CASA assessment",
-      "detail": "When Google asks, contact two or three authorized CASA labs for quotes. Run the scans they require, fix every critical and high finding, and send the Letter of Assessment to Google.",
+      "detail": "Get quotes from two or three authorized labs. Fix every critical and high finding and send the Letter of Assessment to Google.",
       "owner": "you",
       "estimate": "1 to 8 weeks",
       "url": "https://appdefensealliance.dev/casa",
@@ -467,8 +467,8 @@
     {
       "id": "s13",
       "stage": "production",
-      "title": "Switch Composio to your client and set a yearly reminder",
-      "detail": "Create a custom auth config in Composio with your client ID and secret. Ask existing users to reconnect. Add a reminder 10 months out for reverification and reassessment.",
+      "title": "Switch Composio to your client",
+      "detail": "Create a custom auth config with your client ID and secret. Ask existing users to reconnect. Set a 10 month reverification reminder.",
       "owner": "you",
       "estimate": "2 hours",
       "evidenceIds": [
@@ -479,64 +479,64 @@
   ],
   "blockers": [
     {
-      "symptom": "Test users must reconnect every week and the agent stops working in the background.",
-      "cause": "In Testing status, test user grants and refresh tokens expire 7 days after consent.",
-      "fix": "Accept it during development, or publish to In production (unverified, 100 user lifetime cap) for longer-lived tokens.",
+      "symptom": "Test users must reconnect weekly.",
+      "cause": "In Testing status, grants and refresh tokens expire 7 days after consent.",
+      "fix": "Accept it in development, or publish unverified.",
       "evidenceIds": [
         "e13",
         "e15"
       ]
     },
     {
-      "symptom": "New users cannot connect after a beta, with an error about the app's user cap.",
-      "cause": "Unverified apps get 100 new users for the life of the project, and the count never resets.",
-      "fix": "Complete verification. Keep dev and beta testing in a separate project from production.",
-      "escalation": "Request verification in the Verification Center to appeal the cap.",
+      "symptom": "New users hit the user cap error.",
+      "cause": "Unverified apps get 100 new users per project lifetime.",
+      "fix": "Complete verification. Test in a separate project.",
+      "escalation": "Request verification in the Verification Center to appeal.",
       "evidenceIds": [
         "e14"
       ]
     },
     {
-      "symptom": "Verification sits at in review for weeks with no email from Google.",
-      "cause": "Review queues vary and Google says estimates are not guaranteed.",
-      "fix": "Check that every section in the Verification Center is complete, then reply on the verification email thread.",
-      "escalation": "Post on the Google Developer forum (discuss.google.dev) with your project number, never your secrets.",
+      "symptom": "Verification sits in review for weeks.",
+      "cause": "Review queues vary.",
+      "fix": "Complete every Verification Center section, then reply on the thread.",
+      "escalation": "Post on discuss.google.dev with your project number, never secrets.",
       "evidenceIds": [
         "e7",
         "e29"
       ]
     },
     {
-      "symptom": "Reviewer asks why a narrower scope will not work, or rejects a scope.",
-      "cause": "Your justification or video does not show a feature that needs that exact scope.",
-      "fix": "Drop the scope, or show the feature clearly in the video and explain why each narrower scope fails.",
+      "symptom": "Reviewer rejects a scope or asks why a narrower one fails.",
+      "cause": "Your video or justification does not show a feature that needs it.",
+      "fix": "Drop the scope, or show the feature and explain why narrower scopes fail.",
       "evidenceIds": [
         "e18",
         "e4"
       ]
     },
     {
-      "symptom": "Business users see access blocked or get admin_policy_enforced.",
-      "cause": "Their Workspace admin restricted Gmail or Calendar, or blocks unconfigured third-party apps.",
-      "fix": "Send the customer's admin your client ID and ask them to mark your app Trusted or Specific Google data in API controls.",
+      "symptom": "Business users get access blocked or admin_policy_enforced.",
+      "cause": "Their Workspace admin restricted Gmail or Calendar or blocks unconfigured apps.",
+      "fix": "Ask the admin to mark your client ID Trusted or Specific Google data in API controls.",
       "evidenceIds": [
         "e21",
         "e15"
       ]
     },
     {
-      "symptom": "Some users granted Calendar but not Gmail, and your agent fails.",
-      "cause": "Granular consent lets users untick scopes when you ask for more than one.",
-      "fix": "Check granted scopes after the callback, disable missing features, and ask again only when the user tries that feature.",
+      "symptom": "Users granted Calendar but not Gmail.",
+      "cause": "Granular consent lets users untick scopes.",
+      "fix": "Check granted scopes after the callback. Ask again when the user tries that feature.",
       "evidenceIds": [
         "e22"
       ]
     },
     {
-      "symptom": "CASA lab report lists critical or high findings and you get no Letter of Assessment.",
-      "cause": "You must fix critical and high findings before the lab signs off.",
-      "fix": "Fix and rescan. Run a free scanner such as Scout Suite on your cloud setup before the lab starts.",
-      "escalation": "Your CASA lab's support, then the Google verification thread.",
+      "symptom": "The CASA report lists critical or high findings.",
+      "cause": "The lab signs off only after you fix them.",
+      "fix": "Fix and rescan. Run Scout Suite or a similar free scanner first.",
+      "escalation": "Your CASA lab's support, then the verification thread.",
       "evidenceIds": [
         "e11"
       ]
@@ -544,79 +544,79 @@
   ],
   "agentAssist": {
     "didForYou": [
-      "Read Google's Gmail scope list, verification requirements, restricted and sensitive scope pages, verification FAQ, security assessment page, and the user data policies.",
+      "Read Google's scope lists, verification docs, security assessment page, and user data policies.",
       "Probed Google's OpenID configuration: PKCE with S256 is supported.",
-      "Probed the authorize endpoint with a fake client ID: it returns invalid_client, so the endpoint is live.",
-      "Checked the developer portal: the Cloud console redirects to Google sign-in.",
+      "Probed the authorize endpoint with a fake client ID: it returns invalid_client.",
+      "Checked the Cloud console: it redirects to Google sign-in.",
       "Checked Composio docs: Gmail and Calendar have managed OAuth."
     ],
     "canDoForYou": [
-      "Map your features to the narrowest Gmail and Calendar scopes.",
-      "Draft scope justifications, the demo video shot list, the Limited Use statement, and privacy policy sections.",
-      "Fill the Branding, Audience, and Data Access pages in a browser while you watch, after you sign in.",
-      "Draft emails to CASA labs asking for quotes and timelines."
+      "Map features to the narrowest scopes.",
+      "Draft justifications, the video shot list, and privacy policy sections.",
+      "Fill the console pages in a browser after you sign in.",
+      "Draft quote requests to CASA labs."
     ],
     "youMustDo": [
       "Sign in to Google Cloud and own the project.",
       "Verify your domain in Search Console (DNS change).",
-      "Publish the homepage, privacy policy, and Limited Use statement, with legal review.",
+      "Publish the homepage, privacy policy, and Limited Use statement.",
       "Record and upload the demo video.",
-      "Choose and pay a CASA lab, give it access, and fix findings.",
-      "Answer Google's review emails and renew every year."
+      "Choose and pay a CASA lab and fix findings.",
+      "Answer review emails and renew yearly."
     ]
   },
   "drafts": [
     {
       "kind": "scope_justification",
       "title": "Justification for gmail.modify (restricted)",
-      "body": "[App name] is an email assistant. Each user connects their own Gmail account to triage and answer mail.\n\nWe request https://www.googleapis.com/auth/gmail.modify for these user-facing features:\n1. Read new messages so the assistant can summarize threads and suggest replies in our inbox view.\n2. Save suggested replies as Gmail drafts, so the user reviews and sends them from Gmail.\n3. Apply labels and archive messages the user chose to file.\n\nWhy narrower scopes do not work:\n- gmail.readonly cannot create drafts or change labels, so features 2 and 3 would fail.\n- gmail.compose can create drafts but cannot read the threads the drafts answer.\n- gmail.metadata gives headers only; we need message bodies to summarize and reply.\n- gmail.send would send mail without user review, which we do not want.\n\nWe never delete messages. Message content is processed only to provide these features to the user who connected the account. We do not use it for ads, sell it, or train generalized AI models on it. [Edit: describe storage, retention, and deletion on disconnect.]"
+      "body": "[App name] is an email assistant. Each user connects their own Gmail account.\n\nWe request https://www.googleapis.com/auth/gmail.modify to:\n1. Read new messages to summarize threads and suggest replies.\n2. Save suggested replies as drafts for the user to review.\n3. Apply labels and archive messages the user files.\n\nWhy narrower scopes do not work:\n- gmail.readonly cannot create drafts or change labels.\n- gmail.compose cannot read threads.\n- gmail.metadata gives headers only.\n- gmail.send sends without user review.\n\nWe never delete messages. We use content only to serve the connected user. We do not use it for ads, sell it, or train generalized AI models on it. [Edit: describe storage, retention, and deletion on disconnect.]"
     },
     {
       "kind": "scope_justification",
       "title": "Justification for calendar.events (sensitive)",
-      "body": "We request https://www.googleapis.com/auth/calendar.events so the assistant can read the user's upcoming events to propose meeting times, and create or update events the user approves. calendar.readonly cannot create events. calendar.freebusy shows busy times only, so the assistant could not see event details the user asks about. We do not need the full calendar scope because we do not manage calendars or sharing."
+      "body": "We request https://www.googleapis.com/auth/calendar.events to read events to propose meeting times, and to create or update events the user approves. calendar.readonly cannot create events. calendar.freebusy shows busy times only. We do not manage calendars or sharing, so we do not need the full calendar scope."
     },
     {
       "kind": "demo_video_script",
       "title": "Demo video shot list for Google verification",
-      "body": "Length: 3 to 5 minutes. Language: English. Upload to YouTube as Unlisted.\n1. Show your homepage URL in the browser, then the privacy policy link on it.\n2. Click Connect Google in your app. Pause on the Google sign-in.\n3. On the consent screen, zoom into the address bar so the client_id value is readable. Show your app name.\n4. Show every requested scope on the consent screen and grant them.\n5. Feature for gmail.modify: open the inbox view, show a thread summary, generate a reply, show it saved as a draft in Gmail, then apply a label.\n6. Feature for calendar.events: ask for a meeting time, show events read from Calendar, create an event, show it in Google Calendar.\n7. If you use more than one OAuth client (web, mobile), repeat the consent step for each.\n8. Show how a user disconnects and how you delete their data.\n9. If you use any user data to improve AI models, show the explicit consent screen for that. Otherwise say on screen that you do not."
+      "body": "Length: 3 to 5 minutes. Language: English. Upload to YouTube as Unlisted.\n1. Show your homepage URL and its privacy policy link.\n2. Click Connect Google. Pause on the sign-in.\n3. Zoom into the address bar so the client_id is readable. Show your app name.\n4. Show and grant every requested scope.\n5. gmail.modify: show a thread summary, a reply saved as a Gmail draft, and a label applied.\n6. calendar.events: show events read from Calendar, then create one and show it in Google Calendar.\n7. Repeat consent for each OAuth client (web, mobile).\n8. Show disconnect and data deletion.\n9. If you train AI models on user data, show that consent screen. Otherwise say on screen that you do not."
     },
     {
       "kind": "privacy_policy_checklist",
       "title": "Privacy policy checklist for Gmail and Calendar data",
-      "body": "- Hosted on the same domain as your homepage, linked from the homepage and the consent screen (same URL in both).\n- Names the Google data you access: email messages, drafts, labels, calendar events.\n- Says how you use it: only to provide the features the user sees.\n- Says how you store it, for how long, and where.\n- Says who you share it with (subprocessors such as your model provider and cloud host) and why.\n- Says how users revoke access and request deletion, and how fast you delete.\n- States that humans do not read the data except with user consent, for security, or by law.\n- States you do not use the data for ads, sell it, or train generalized AI or ML models on it.\n- Includes a Limited Use statement in your own words: your use and transfer of data from Google APIs follows the Google API Services User Data Policy, including its Limited Use requirements. Link the policy (https://developers.google.com/terms/api-services-user-data-policy).\n- Have a lawyer review it before you submit."
+      "body": "- Same domain as your homepage, linked from the homepage and consent screen (same URL).\n- Names the data: messages, drafts, labels, calendar events.\n- Says you use it only for user-facing features.\n- Says how, how long, and where you store it.\n- Names subprocessors (model provider, cloud host) and why.\n- Says how users revoke access and request deletion, and how fast you delete.\n- States humans do not read the data except with consent, for security, or by law.\n- States you do not use it for ads, sell it, or train generalized AI or ML models on it.\n- Includes a Limited Use statement in your own words: your use and transfer of data from Google APIs follows the Google API Services User Data Policy, including its Limited Use requirements. Link the policy (https://developers.google.com/terms/api-services-user-data-policy).\n- Get legal review first."
     },
     {
       "kind": "support_email",
       "title": "Quote request to a CASA lab",
-      "body": "Hello,\n\nWe are going through Google OAuth verification for restricted Gmail scopes (gmail.modify) and need a CASA assessment. Our app is a web app with a server backend on [cloud provider]. Expected users: [number].\n\nCould you tell us your price for the assurance level Google assigns us, the typical time from kickoff to Letter of Assessment, what scans or access you need, and your price for the yearly reassessment?\n\nThanks,\n[Name]"
+      "body": "Hello,\n\nWe need a CASA assessment for restricted Gmail scopes (gmail.modify). Our web app runs on [cloud provider]. Expected users: [number].\n\nPlease share your price for our assurance level, time to Letter of Assessment, required scans or access, and yearly reassessment price.\n\nThanks,\n[Name]"
     }
   ],
   "uncertainties": [
     {
       "question": "How long does sensitive scope review take?",
-      "why": "Google's sensitive scope page says 3 to 5 business days, while the verification FAQ says 10 business days, and developers report months-long stalls in 2026.",
-      "howToResolve": "Track your own submission dates and update this guide after a real attempt."
+      "why": "Google says 3 to 5 business days on one page and 10 on the FAQ. Developers report months-long stalls in 2026.",
+      "howToResolve": "Track your dates and update this guide after a real attempt."
     },
     {
-      "question": "Exactly which Calendar scopes are sensitive and which, if any, are restricted?",
-      "why": "The Calendar scope page does not label sensitivity. Google's restricted list names no Calendar scope, and Google uses reading Calendar events as its sensitive example, but no official per-scope list was found.",
-      "howToResolve": "Add the Calendar scopes on the Data Access page of a test project and read the labels the console shows."
+      "question": "Which Calendar scopes are sensitive or restricted?",
+      "why": "No official per-scope list was found, and the restricted list names no Calendar scope.",
+      "howToResolve": "Add the scopes on **Data Access** in a test project and read the console labels."
     },
     {
-      "question": "What does CASA cost in 2026, and is a free Tier 2 path still offered?",
-      "why": "Google says it does not charge and mentions a free Tier 2 assessment for some apps. Lab prices come from a vendor comparison labeled as of 2024.",
-      "howToResolve": "Ask two or three authorized labs for quotes once Google assigns your assurance level."
+      "question": "What does CASA cost in 2026, and is free Tier 2 still offered?",
+      "why": "Google mentions free Tier 2 for some apps. Lab prices come from a 2024 vendor comparison.",
+      "howToResolve": "Get lab quotes once Google assigns your assurance level."
     },
     {
-      "question": "Does the 6 week restricted estimate include the security assessment?",
-      "why": "The FAQ gives 6 weeks, while the restricted scope page says the assessment is a large part of a several-week process.",
-      "howToResolve": "Ask on the verification email thread when Trust and Safety contacts you."
+      "question": "Does the 6 week estimate include the security assessment?",
+      "why": "The restricted scope page calls the assessment a large part of a several-week process.",
+      "howToResolve": "Ask on the verification thread."
     },
     {
       "question": "Can you skip CASA if mail data never reaches your server?",
-      "why": "Google requires the assessment when restricted data is accessed from or through a third-party server. An agent backend almost always does.",
-      "howToResolve": "Assume you need it. Confirm with the reviewer if your design is fully client-side."
+      "why": "Google requires it when restricted data passes through a third-party server, as with most agent backends.",
+      "howToResolve": "Assume you need it. Confirm with the reviewer if fully client-side."
     }
   ],
   "evidence": [

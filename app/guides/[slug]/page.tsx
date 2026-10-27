@@ -1,3 +1,4 @@
+import { Inline } from "@/components/Inline";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -77,10 +78,10 @@ export default async function GuidePage({ params, searchParams }: Params): Promi
         </div>
         {/* div, not p: evidence badges are <details>, which a <p> cannot contain */}
         <div className="text-lg">
-          {guide.verdict.summary} <EvidenceList ids={guide.verdict.evidenceIds} evidence={evidence} />
+          <Inline text={guide.verdict.summary} /> <EvidenceList ids={guide.verdict.evidenceIds} evidence={evidence} />
         </div>
         {guide.verdict.customerSideGate && guide.verdict.customerSideGateNote ? (
-          <p className="text-sm text-muted"><strong>Customer-side gate:</strong> {guide.verdict.customerSideGateNote}</p>
+          <p className="text-sm text-muted"><strong>Customer-side gate:</strong> <Inline text={guide.verdict.customerSideGateNote} /></p>
         ) : null}
         {guide.oauth.appTypes && guide.oauth.appTypes.length > 0 ? (
           <details className="text-sm">
@@ -88,13 +89,13 @@ export default async function GuidePage({ params, searchParams }: Params): Promi
             <ul className="mt-2 space-y-1">
               {guide.oauth.appTypes.map((t, index) => (
                 <li key={`${index}-${t.name}`}>
-                  {t.name}: <span className="text-muted">{t.whenToUse}</span>
+                  {t.name}: <span className="text-muted"><Inline text={t.whenToUse} /></span>
                 </li>
               ))}
             </ul>
           </details>
         ) : null}
-        {guide.oauth.support === "none" && guide.oauth.alternatives ? <p className="text-sm">Instead: {guide.oauth.alternatives}</p> : null}
+        {guide.oauth.support === "none" && guide.oauth.alternatives ? <p className="text-sm">Instead: <Inline text={guide.oauth.alternatives} /></p> : null}
         <div className="space-y-1">
           <AttemptDepth level={attemptDepth(guide)} />
           <p className="font-mono text-[10px] uppercase tracking-wider text-muted">Evidence: {counts}</p>
