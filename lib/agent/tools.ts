@@ -21,12 +21,12 @@ export type ToolContext = {
 
 export type ToolResult = { content: string; isError?: boolean };
 
-export const WEB_SEARCH_TOOL = {
+export const WEB_SEARCH_TOOL: Anthropic.Messages.WebSearchTool20260209 = {
   type: "web_search_20260209",
   name: "web_search",
   max_uses: 8,
   allowed_callers: ["direct"],
-} as const;
+};
 
 const fetchPageInput = z.object({ url: z.string() });
 const probeInput = z.object({

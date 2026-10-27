@@ -1,0 +1,10 @@
+[
+  { "type": "status", "message": "Researching Example Notes (mock mode)" },
+  { "type": "search", "query": "Example Notes OAuth developer docs" },
+  { "type": "read", "url": "https://example.com/docs/oauth", "title": "Example Notes OAuth docs", "ok": true },
+  { "type": "search", "query": "Example Notes integration directory review" },
+  { "type": "read", "url": "https://example.com/docs/listing", "title": "Directory listing", "ok": true },
+  { "type": "probe", "target": "https://example.com/oauth/authorize", "result": "Authorization endpoint at example.com is live and rejects an unknown client ID (invalid_client), as expected." },
+  { "type": "finding", "message": "Composio managed app: unknown. Example Notes is a test fixture." },
+  { "type": "status", "message": "Writing the guide" }
+]
