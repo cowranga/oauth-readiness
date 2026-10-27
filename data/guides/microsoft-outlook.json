@@ -11,7 +11,58 @@
     "model": "oauth-researcher subagent",
     "promptVersion": "seed-v1"
   },
-  "changelog": [],
+  "changelog": [
+    {
+      "at": "2026-10-28",
+      "change": "Verdict summary no longer says the default policy has blocked mail and calendar consent since 2025. It now says the policy does so now, and that Microsoft does not review the app itself.",
+      "reason": "The mid-2025 change (MC1097272) covered files and sites only. The date mail and calendar were added could not be confirmed from a page we could open.",
+      "evidenceIds": [
+        "e4",
+        "e19"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Narrowed e19 to say the mid-2025 change covered file and site permissions, and removed it from the Read mail and calendars scope tier.",
+      "reason": "The cited article does not mention mail or calendar permissions.",
+      "evidenceIds": [
+        "e19"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Narrowed e20 to name Sites.Read.All and removed it from the admin approval blocker.",
+      "reason": "The Q&A thread is about Sites.Read.All, not mail.",
+      "evidenceIds": [
+        "e20"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Refresh token blocker now says the token reached its 90 day default lifetime, not 90 days without use, and names the admin centers where a password reset revokes tokens.",
+      "reason": "The refresh token page states a 90 day default lifetime and lists revocation triggers. It does not mention inactivity.",
+      "evidenceIds": [
+        "e16"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Added e30 (MC1304287) to the Send mail tier and the Mail.Send uncertainty.",
+      "reason": "The May 2026 notice names the permissions it added. Mail.Send is not among them.",
+      "evidenceIds": [
+        "e30"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Added e31 and a new uncertainty about conflicting Microsoft text on default mailbox consent.",
+      "reason": "Microsoft's Configure user consent page still says users can consent to mailbox access by default.",
+      "evidenceIds": [
+        "e31",
+        "e4"
+      ]
+    }
+  ],
   "app": {
     "name": "Microsoft (Outlook and Calendar via Graph)",
     "provider": "Microsoft",
@@ -46,7 +97,7 @@
   "verdict": {
     "tier": 3,
     "label": "Review required",
-    "summary": "Your customer's tenant consent policy decides this: Microsoft's default policy since 2025 stops users from approving mail and calendar read access themselves, so an admin must approve your app. Before that, you need publisher verification, which depends on a business-verified Microsoft partner account.",
+    "summary": "Your customer's tenant consent policy decides this: Microsoft's default policy now stops users from approving mail and calendar read access themselves, so an admin must approve your app. Microsoft does not review the app itself, but users in other tenants cannot approve anything beyond sign-in until you pass publisher verification, which depends on a business-verified Microsoft partner account.",
     "nextStep": "Start Microsoft AI Cloud Partner Program enrollment today, because business verification is the longest wait, then register a multitenant app in the Entra admin center.",
     "customerSideGate": true,
     "customerSideGateNote": "In tenants on Microsoft's default consent policy, users cannot consent to Mail.Read, Mail.ReadWrite, Calendars.Read or Calendars.ReadWrite. An admin grants tenant-wide consent or approves a request through the admin consent workflow. Application permissions always need an admin. Personal Microsoft accounts are not affected.",
@@ -175,7 +226,8 @@
         "e4",
         "e7",
         "e8",
-        "e27"
+        "e27",
+        "e30"
       ]
     },
     {
@@ -193,7 +245,6 @@
       "evidenceIds": [
         "e3",
         "e4",
-        "e19",
         "e20"
       ]
     },
@@ -509,8 +560,7 @@
       "evidenceIds": [
         "e4",
         "e14",
-        "e15",
-        "e20"
+        "e15"
       ]
     },
     {
@@ -583,7 +633,7 @@
     },
     {
       "symptom": "Refresh fails with invalid_grant for one user",
-      "cause": "The token was revoked, for example after an admin reset the user's password or revoked sessions, or 90 days passed without use.",
+      "cause": "The token was revoked, for example after an admin reset the user's password in the Entra or Microsoft 365 admin center or revoked their sessions, or the refresh token reached its 90 day default lifetime.",
       "fix": "Mark the connection as expired and ask the user to reconnect.",
       "evidenceIds": [
         "e16"
@@ -646,7 +696,7 @@
   "uncertainties": [
     {
       "question": "When did Mail and Calendar scopes join Microsoft's default blocked list?",
-      "why": "Microsoft's docs show only the current list. A third-party blog dates the expansion to November 2025 and reports another addition in May 2026, but we could not open it.",
+      "why": "Microsoft's docs show only the current list. The first managed policy change (mid-2025) covered files and sites only. A third-party blog dates the mail and calendar expansion to November 2025, but we could not open it (HTTP 403).",
       "howToResolve": "Check Microsoft 365 message center posts on the Microsoft-managed app consent policy, or the Microsoft Entra What's new page."
     },
     {
@@ -656,7 +706,7 @@
     },
     {
       "question": "Will Mail.Send stay user-consentable?",
-      "why": "Microsoft updates the managed list without notice to app developers. A May 2026 report mentions more Exchange permissions being added.",
+      "why": "Microsoft updates the managed list without notice to app developers. Message center notice MC1304287 (May 2026) added contacts, people and tasks permissions, but not Mail.Send.",
       "howToResolve": "Recheck the manage app consent policies page monthly."
     },
     {
@@ -673,6 +723,11 @@
       "question": "Is Composio's managed Outlook app publisher verified?",
       "why": "Composio's docs do not say. Admins in default tenants would still need to approve it for mail read.",
       "howToResolve": "Connect a test account through Composio and look at the consent screen, or ask Composio support."
+    },
+    {
+      "question": "Do all tenants on default settings block mail read consent?",
+      "why": "Microsoft's Configure user consent page still says users can consent to mailbox access by default, which conflicts with the managed policy list.",
+      "howToResolve": "Try consent for Mail.Read from a fresh test tenant on default settings with a publisher verified app, and record the result."
     }
   ],
   "evidence": [
@@ -816,7 +871,7 @@
     {
       "id": "e16",
       "level": "sourced",
-      "claim": "Refresh tokens last 90 days by default and 24 hours for single-page app redirects. Each use returns a new refresh token; discard the old one. Tokens for confidential clients are revoked when an admin resets the password in the Entra or Microsoft 365 admin center, or when tokens are revoked.",
+      "claim": "Refresh tokens last 90 days by default and 24 hours for single-page app redirects. Each use returns a new refresh token; delete the old one. Tokens for confidential clients are revoked when an admin resets the password in the Entra or Microsoft 365 admin center, or when the user or an admin revokes refresh tokens.",
       "retrievedAt": "2026-10-28",
       "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens",
       "sourceTitle": "Refresh tokens in the Microsoft identity platform",
@@ -843,7 +898,7 @@
     {
       "id": "e19",
       "level": "sourced",
-      "claim": "Microsoft message center notice MC1097272 (17 June 2025) announced a Microsoft-managed app consent policy rolling out mid-July to August 2025, only for tenants on default consent settings, not affecting existing grants.",
+      "claim": "Microsoft message center notice MC1097272 (17 June 2025) announced a Microsoft-managed app consent policy rolling out mid-July to August 2025, only for tenants on default consent settings, not affecting existing grants. That first change covered file and site permissions such as Sites.Read.All. It did not mention mail or calendar.",
       "retrievedAt": "2026-10-28",
       "sourceUrl": "https://office365itpros.com/2025/06/19/app-consent-policy-user-app-consent/",
       "sourceTitle": "Microsoft to Block Users Granting Third-Party App Access to User Sites and Files (Office 365 for IT Pros)",
@@ -852,7 +907,7 @@
     {
       "id": "e20",
       "level": "sourced",
-      "claim": "In September 2025, a developer on Microsoft Q&A got Need admin approval for a delegated scope that the docs list as not needing admin consent; the accepted answer points to the July 2025 consent policy change.",
+      "claim": "In September 2025, a developer on Microsoft Q&A got Need admin approval for delegated Sites.Read.All, which the docs list as not needing admin consent. The accepted answer points to the July 2025 consent policy change. This shows the mechanism, not mail or calendar scopes.",
       "retrievedAt": "2026-10-28",
       "sourceUrl": "https://learn.microsoft.com/en-us/answers/questions/5556903/admin-approval-prompt-for-sites-read-all-delegated",
       "sourceTitle": "Admin approval prompt for Sites.Read.All delegated scope (Microsoft Q&A)",
@@ -932,6 +987,26 @@
       "claim": "How long a customer's admin takes to approve your app is outside Microsoft's control and varies by customer, from minutes to never.",
       "retrievedAt": "2026-10-28",
       "note": "No source gives a timeline. Depends on the customer's security review process."
+    },
+    {
+      "id": "e30",
+      "level": "sourced",
+      "claim": "Message center notice MC1304287 (8 May 2026) says that from June 2026 the Microsoft-managed default user consent policy also requires admin consent for Contacts.ReadWrite, Contacts.Read.Shared, Contacts.ReadWrite.Shared, People.Read and Tasks permissions. Mail.Send is not in that list. Tenants with custom consent policies and existing consents are not affected.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://mc.merill.net/message/MC1304287",
+      "sourceTitle": "MC1304287: Upcoming secure-by-default changes for Exchange APIs (message center mirror)",
+      "sourceKind": "community",
+      "note": "Third-party mirror of the Microsoft 365 message center."
+    },
+    {
+      "id": "e31",
+      "level": "sourced",
+      "claim": "Microsoft's Configure user consent page still says that by default a user can consent to let an app access their mailbox. This older text conflicts with the managed policy exclusion list on the Manage app consent policies page.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-user-consent",
+      "sourceTitle": "Configure how users consent to applications",
+      "sourceKind": "official_docs",
+      "note": "Page ms.date 2025-06-15. The Manage app consent policies page (e4) was updated 2026-08-28 and is the more specific, more recent source."
     }
   ]
 }

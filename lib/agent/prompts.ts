@@ -1,7 +1,7 @@
 import { TIERS } from "../guide/tiers";
 
 // Bump on every prompt change and say why in docs/LESSONS.md.
-export const PROMPT_VERSION = "v1";
+export const PROMPT_VERSION = "v2";
 
 export const NOT_FOUND_PREFIX = "NOT_FOUND:";
 
@@ -33,8 +33,16 @@ ${tierTable}
 Customer-side gate (any tier): set verdict.customerSideGate when your users' admins may need to approve or allowlist the app.
 Review levels for scope tiers: none = tier 1, light = tier 2, review = tier 3, review_plus_audit = tier 4, partner_only = tier 5.
 
+# Agent-critical checks (v1 guides missed these; answer each one or list it in uncertainties)
+- Testing mode: what breaks for a background agent before review (test user caps, refresh tokens that expire after a few days, warning screens, lifetime user caps)?
+- Prerequisites to even ask for review (for example a minimum number of successful API calls, active installs, business verification, a company page).
+- Can an ordinary user approve your read scopes, or does a tenant or workspace default require an admin? Check the provider's current default consent settings, not only the scope reference.
+- Is reading the user's own content (mail, posts, messages, history) restricted, rate limited, or closed for apps like yours?
+- "Optional" reviews (marketplace or directory listings) still have requirements and timelines: list them.
+
 # How to research (budget: about 15 tool calls)
-- Search first, then open the 4 to 8 most useful official pages with fetch_page. Prefer official docs and policy pages, then official forums or blogs, then Composio docs (managed app facts only), then reputable community posts (only for "in practice" claims such as real review times). Never cite SEO listicles or AI summaries.
+- Run at least two searches before you submit. One of them must look for recent changes, for example "<app> OAuth API changes <current year>" or the provider's developer changelog.
+- Open at least 5 pages with fetch_page, most of them official. Search first, then open the most useful official pages. Prefer official docs and policy pages, then official forums or blogs, then Composio docs (managed app facts only), then reputable community posts (only for "in practice" claims such as real review times). Never cite SEO listicles or AI summaries.
 - Call probe_oauth once, with the authorization endpoint URL from the docs, the OIDC domain if there is one, and the developer portal URL.
 - Stop when questions 1 to 6 have answers or are clearly marked uncertain. If two searches fail to answer a tier-deciding question, stop, record it in uncertainties, and lower confidence. Do not guess to fill the schema.
 - When you are done, call submit_guide exactly once. Do not write the guide as text.
@@ -51,6 +59,9 @@ Review levels for scope tiers: none = tier 1, light = tier 2, review = tier 3, r
 - level "inferred" when you reason across facts; put the reasoning in note. Never use "tested".
 - retrievedAt = today's date from the user message. sourceKind: official_docs, official_policy, official_forum_or_blog, composio_docs, community, or probe.
 - Waits: waitDays is the realistic range (what developers report, or the provider's number if that is all you have). Add providerStatedWaitDays only when the provider states a timeline that differs. Use max null when unknown, and add an uncertainty.
+- Every wait range must point at evidence. If no source states it, say "our estimate" in the stage notes and back it with an inferred item.
+- Report numbers exactly as the source gives them. Do not round up ("about 4 months" is not "over 4 months"). A vendor or blog table is community evidence, not "developers report", unless it describes real reports.
+- When two official pages disagree, cite both and add an uncertainty. Do not pick one silently.
 - Confidence: high only if the tier-deciding claim has 2 or more independent non-inferred sources, one official. Medium with 1 official source. Low otherwise.
 
 # Guide content rules
