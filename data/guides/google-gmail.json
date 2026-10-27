@@ -41,7 +41,7 @@
   "verdict": {
     "tier": 4,
     "label": "Review + external audit",
-    "summary": "Reading mail (gmail.readonly, gmail.modify) and even creating drafts (gmail.compose) are restricted scopes, so you need Google's data access verification plus a yearly third-party CASA security assessment. Calendar scopes are sensitive and need verification only, so the Gmail scopes decide your timeline.",
+    "summary": "Reading mail (gmail.readonly, gmail.modify) and even creating drafts (gmail.compose) are restricted scopes, so you need Google's data access verification plus a yearly third-party CASA security assessment. No Calendar scope is on Google's restricted list, so the Gmail scopes decide your timeline.",
     "nextStep": "List every Gmail and Calendar feature your agent needs, map each to the narrowest scope on Google's scope pages, and decide if you can avoid restricted Gmail scopes.",
     "customerSideGate": true,
     "customerSideGateNote": "A Workspace admin can set Gmail or Calendar to Restricted or block unconfigured apps. Then only apps they mark Trusted or Specific Google data can connect, even after Google verifies you. Expect business customers to ask you to get allowlisted.",
@@ -50,7 +50,8 @@
       "e1",
       "e2",
       "e12",
-      "e34"
+      "e34",
+      "e35"
     ]
   },
   "composio": {
@@ -120,7 +121,7 @@
         "max": 42
       },
       "reviewRequired": true,
-      "notes": "Google estimates 2 to 3 business days for branding and 6 weeks for restricted scope verification, not guaranteed. Developers report CASA labs taking 1 to 4 weeks and some reviews stalled for months with no reply. Repeat the assessment every 12 months.",
+      "notes": "Google estimates 2 to 3 business days for branding and 6 weeks for restricted scope verification, not guaranteed. A 2024 vendor comparison lists CASA labs taking 1 to 8 weeks depending on lab and tier, and developers report some reviews stalled for months with no reply. Repeat the assessment every 12 months.",
       "evidenceIds": [
         "e7",
         "e2",
@@ -166,7 +167,8 @@
         "e9",
         "e8",
         "e7",
-        "e33"
+        "e33",
+        "e35"
       ]
     },
     {
@@ -203,7 +205,8 @@
         "e1",
         "e2",
         "e3",
-        "e12"
+        "e12",
+        "e35"
       ]
     },
     {
@@ -219,7 +222,8 @@
       "effect": "Same review and audit as reading mail. Request only if your agent manages filters, forwarding, or delegates.",
       "evidenceIds": [
         "e1",
-        "e2"
+        "e2",
+        "e35"
       ]
     }
   ],
@@ -450,7 +454,7 @@
       "title": "Complete the CASA assessment",
       "detail": "When Google asks, contact two or three authorized CASA labs for quotes. Run the scans they require, fix every critical and high finding, and send the Letter of Assessment to Google.",
       "owner": "you",
-      "estimate": "1 to 4 weeks",
+      "estimate": "1 to 8 weeks",
       "url": "https://appdefensealliance.dev/casa",
       "evidenceIds": [
         "e12",
@@ -596,7 +600,7 @@
     },
     {
       "question": "Exactly which Calendar scopes are sensitive and which, if any, are restricted?",
-      "why": "The Calendar scope page does not label sensitivity. Google uses reading Calendar events as its sensitive example, but no official per-scope list was opened.",
+      "why": "The Calendar scope page does not label sensitivity. Google's restricted list names no Calendar scope, and Google uses reading Calendar events as its sensitive example, but no official per-scope list was found.",
       "howToResolve": "Add the Calendar scopes on the Data Access page of a test project and read the labels the console shows."
     },
     {
@@ -856,10 +860,10 @@
       "id": "e27",
       "level": "probed",
       "claim": "The authorize endpoint is live and rejects an unknown client with invalid_client.",
-      "sourceUrl": "https://accounts.google.com/o/oauth2/v2/auth?client_id=oauth-guide-probe-invalid",
+      "sourceUrl": "https://accounts.google.com/o/oauth2/v2/auth?client_id=oauth-guide-probe-invalid&response_type=code&redirect_uri=https://example.com/cb&scope=openid",
       "sourceKind": "probe",
       "retrievedAt": "2026-10-28",
-      "note": "HTTP 302 to /signin/oauth/error; authError decodes to invalid_client, The OAuth client was not found."
+      "note": "HTTP 302 to /signin/oauth/error; authError decodes to invalid_client, The OAuth client was not found. With client_id alone the endpoint returns invalid_request (missing response_type) instead, so the full parameter set is recorded here."
     },
     {
       "id": "e28",
@@ -873,22 +877,22 @@
     {
       "id": "e29",
       "level": "sourced",
-      "claim": "Developers report 2026 verification requests, including for the sensitive calendar.events scope, waiting 50 days to over 4 months with no Trust and Safety email.",
+      "claim": "A developer reports a 2026 verification request for the sensitive calendar.events scope waiting about 4 months with no Trust and Safety email. Related thread titles mention waits of 50 or more days.",
       "sourceUrl": "https://discuss.google.dev/t/oauth-verification-pending-since-22-apr-2026-first-trust-safety-email-never-received/392005",
       "sourceTitle": "OAuth verification pending since 22 Apr 2026",
       "sourceKind": "community",
       "retrievedAt": "2026-10-28",
-      "note": "Single thread plus related thread titles. No staff answer shown."
+      "note": "One thread read in full. The 50 day figure comes only from a related thread title. No staff answer shown."
     },
     {
       "id": "e30",
       "level": "sourced",
-      "claim": "A vendor comparison lists CASA Tier 2 at about $540 to $1,800 and Tier 3 at about $4,500 to $8,000 or more, with 1 to 4 weeks turnaround for Tier 2.",
+      "claim": "A vendor-published comparison lists CASA Tier 2 at about $540 to $1,800 and Tier 3 at about $4,500 to $8,000 or more. Turnaround is 1 to 4 weeks for Tier 2, 2 to 6 weeks for Tier 3, and some large labs quote 4 to 8 weeks.",
       "sourceUrl": "https://www.switchlabs.dev/post/casa-tier-2-tier-3-security-review-providers-pricing-and-the-cheapest-option",
       "sourceTitle": "CASA Tier 2 and Tier 3 providers and pricing",
       "sourceKind": "community",
       "retrievedAt": "2026-10-28",
-      "note": "Labeled as of 2024. Uses older Tier 2/3 names, not AL1/AL2."
+      "note": "Labeled as of 2024. Published by Switch Labs, a vendor that is not one of the listed labs. Uses older Tier 2/3 names, not AL1/AL2."
     },
     {
       "id": "e31",
@@ -914,7 +918,7 @@
       "level": "inferred",
       "claim": "Calendar read and write scopes such as calendar.events are sensitive, not restricted.",
       "retrievedAt": "2026-10-28",
-      "note": "Google uses Calendar event reading as its sensitive example (e9) and a community thread treats calendar.events as sensitive (e29). No official page opened lists any Calendar scope as restricted. Confirm in the console."
+      "note": "Google's restricted list (e35) names no Calendar scope, so Calendar is not restricted. That it is sensitive rather than non-sensitive rests on Google using Calendar event reading as its sensitive example (e9) and a developer thread (e29). No official page labels each Calendar scope. Confirm in the console."
     },
     {
       "id": "e34",
@@ -922,7 +926,51 @@
       "claim": "An inbox assistant that reads mail and drafts replies needs a restricted Gmail scope, which puts it in tier 4. A send-only agent with Calendar would be tier 3.",
       "retrievedAt": "2026-10-28",
       "note": "Reading needs gmail.readonly or gmail.modify and drafting needs gmail.compose, all restricted (e1). Restricted scopes need the assessment (e2, e12). gmail.send and Calendar are sensitive (e1, e33)."
+    },
+    {
+      "id": "e35",
+      "level": "sourced",
+      "claim": "Google's restricted scope list includes gmail.readonly, gmail.metadata, gmail.modify, gmail.insert, gmail.compose, gmail.settings.basic, gmail.settings.sharing, and https://mail.google.com/. It lists no Google Calendar scope.",
+      "sourceUrl": "https://support.google.com/cloud/answer/13464325",
+      "sourceTitle": "Restricted scopes list",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-28"
     }
   ],
-  "changelog": []
+  "changelog": [
+    {
+      "at": "2026-10-28",
+      "change": "Corrected the e27 probe URL to include response_type, redirect_uri, and scope.",
+      "reason": "Re-running the recorded URL with only client_id returns invalid_request, not invalid_client. The full request returns invalid_client as claimed.",
+      "evidenceIds": [
+        "e27"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Narrowed e29 from '50 days to over 4 months' to one report of about 4 months plus a thread title citing 50 or more days.",
+      "reason": "The thread was submitted 22 April and posted late August, so about 4 months, not over. The 50 day figure is only a title of a linked thread.",
+      "evidenceIds": [
+        "e29"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Changed CASA lab time from '1 to 4 weeks, developers report' to '1 to 8 weeks depending on lab and tier', in production notes, step s12, and e30.",
+      "reason": "The cited page is a vendor comparison, not developer reports. Its 1 to 4 weeks covers Tier 2 only; Tier 3 runs to 6 weeks and some labs quote 4 to 8 weeks.",
+      "evidenceIds": [
+        "e30"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Added e35 (Google's official restricted scope list) as a second official source for the tier 4 decision and for Calendar not being restricted. Reworded the verdict summary so it no longer states Calendar scopes are sensitive as fact.",
+      "reason": "The list confirms gmail.compose and the other mail scopes are restricted and names no Calendar scope. No official page labels individual Calendar scopes as sensitive, so that part stays inferred (e33).",
+      "evidenceIds": [
+        "e35",
+        "e33",
+        "e1"
+      ]
+    }
+  ]
 }
