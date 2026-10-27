@@ -68,7 +68,12 @@ export function tierLabel(tier: Tier): string {
 export function tierForUseCases(guide: Pick<Guide, "scopeTiers" | "verdict">, selected: UseCase[]): Tier {
   const matching = guide.scopeTiers.filter((scopeTier) => scopeTier.useCases.some((u) => selected.includes(u)));
   if (matching.length === 0) return guide.verdict.tier;
-  return Math.max(...matching.map((s) => REVIEW_LEVEL_TIER[s.reviewLevel])) as Tier;
+  return withAppFloor(guide, Math.max(...matching.map((s) => REVIEW_LEVEL_TIER[s.reviewLevel])) as Tier);
+}
+
+// Tier 1 vs 2 is an app-level fact (an optional listing review exists), not a scope fact, so scopes never go below it.
+function withAppFloor(guide: Pick<Guide, "verdict">, tier: Tier): Tier {
+  return Math.max(tier, Math.min(guide.verdict.tier, 2)) as Tier;
 }
 
 /**
@@ -81,7 +86,7 @@ export function lightestTierForUseCases(guide: Pick<Guide, "scopeTiers" | "verdi
     const serving = guide.scopeTiers.filter((scopeTier) => scopeTier.useCases.includes(useCase));
     if (serving.length > 0) perChip.push(Math.min(...serving.map((s) => REVIEW_LEVEL_TIER[s.reviewLevel])) as Tier);
   }
-  return perChip.length === 0 ? guide.verdict.tier : (Math.max(...perChip) as Tier);
+  return perChip.length === 0 ? guide.verdict.tier : withAppFloor(guide, Math.max(...perChip) as Tier);
 }
 
 /** Scope tiers to highlight for the selected chips. */
