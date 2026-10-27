@@ -1,0 +1,462 @@
+{
+  "app": {
+    "name": "LinkedIn",
+    "provider": "LinkedIn (Microsoft)",
+    "website": "https://www.linkedin.com",
+    "category": "Social / professional network",
+    "developerPortalUrl": "https://www.linkedin.com/developers/apps"
+  },
+  "oauth": {
+    "support": "oauth2_oidc",
+    "pkce": "unknown",
+    "alternatives": "LinkedIn has no open API for reading messages, feed, connections or other members' profiles. Those need partner programs (Sales Navigator, Talent, Marketing). Compliance is closed. If your agent needs inbox or network data, a normal app cannot get it.",
+    "appTypes": [
+      {
+        "name": "Developer app (3-legged member auth)",
+        "whenToUse": "Use for an agent product where each user connects their own LinkedIn account. One app serves all users. The products you add decide the scopes."
+      },
+      {
+        "name": "Application auth (2-legged client credentials)",
+        "whenToUse": "Only for partner programs that need app-level data. Not for member accounts."
+      }
+    ],
+    "evidenceIds": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "verdict": {
+    "tier": 2,
+    "label": "Self-serve, optional review",
+    "summary": "Any LinkedIn member can connect to your own app through the self-serve products (Sign in with LinkedIn using OpenID Connect, Share on LinkedIn) with no review. Reading anything beyond the member's own basic profile needs partner approval that LinkedIn may refuse, which is tier 5 for those use cases.",
+    "nextStep": "Create an app at https://www.linkedin.com/developers/apps and add the two self-serve products on the Products tab.",
+    "customerSideGate": false,
+    "customerSideGateNote": "Members consent for themselves. No org admin approval step appeared in the docs I read.",
+    "confidence": "medium",
+    "evidenceIds": [
+      "e2",
+      "e4"
+    ]
+  },
+  "composio": {
+    "managedApp": "available",
+    "note": "Composio lists a managed OAuth app for LinkedIn, so you can start today. Moving to your own app later only affects new connections. Existing users must reconnect.",
+    "evidenceIds": [
+      "e5"
+    ]
+  },
+  "stages": [
+    {
+      "id": "prototype",
+      "name": "Prototype",
+      "whoCanConnect": "Anyone with a LinkedIn account can authorize once the self-serve products are enabled. No test-user list was documented.",
+      "handsOnHours": {
+        "min": 1,
+        "max": 3
+      },
+      "waitDays": {
+        "min": 0,
+        "max": 1
+      },
+      "reviewRequired": false,
+      "notes": "App creation may require linking a LinkedIn Page. Not confirmed.",
+      "evidenceIds": [
+        "e2",
+        "e6"
+      ]
+    },
+    {
+      "id": "production",
+      "name": "Production (self-serve scopes)",
+      "whoCanConnect": "Any member, using openid, profile, email, w_member_social.",
+      "handsOnHours": {
+        "min": 2,
+        "max": 6
+      },
+      "waitDays": {
+        "min": 0,
+        "max": null
+      },
+      "reviewRequired": false,
+      "notes": "Extra products (Advertising API, Sales Navigator, Talent) need LinkedIn approval with no stated timeline.",
+      "evidenceIds": [
+        "e2"
+      ]
+    }
+  ],
+  "scopeTiers": [
+    {
+      "name": "Open permissions",
+      "exampleScopes": [
+        "openid",
+        "profile",
+        "email",
+        "w_member_social"
+      ],
+      "reviewLevel": "none",
+      "useCases": [
+        "read",
+        "write"
+      ],
+      "effect": "Self-serve on the Products tab. Gives the member's own name, headline, photo, email, and posting, commenting and liking for them.",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "name": "Marketing (Advertising API)",
+      "exampleScopes": [
+        "Advertising API permissions"
+      ],
+      "reviewLevel": "review",
+      "useCases": [
+        "read",
+        "write",
+        "admin"
+      ],
+      "effect": "You must apply and be approved through the Products tab.",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "name": "Sales and Talent partner programs",
+      "exampleScopes": [
+        "r_sales_nav_profiles",
+        "r_sales_nav_analytics",
+        "Recruiter System Connect"
+      ],
+      "reviewLevel": "partner_only",
+      "useCases": [
+        "read",
+        "admin"
+      ],
+      "effect": "Needs approval as a partner. It can be refused.",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "name": "Compliance",
+      "exampleScopes": [
+        "r_compliance",
+        "w_compliance"
+      ],
+      "reviewLevel": "partner_only",
+      "useCases": [
+        "read",
+        "admin"
+      ],
+      "effect": "Closed. Cannot be requested.",
+      "evidenceIds": [
+        "e2"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "r1",
+      "item": "LinkedIn account and developer app",
+      "stage": "prototype",
+      "detail": "Sign in and create an app in the developer portal. You need an app name and logo, and possibly a LinkedIn Page (unconfirmed).",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e6"
+      ]
+    },
+    {
+      "id": "r2",
+      "item": "HTTPS redirect URL",
+      "stage": "prototype",
+      "detail": "Add absolute HTTPS callback URLs on the Auth tab. No fragments. Query parameters are ignored.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "id": "r3",
+      "item": "Enable self-serve products",
+      "stage": "production",
+      "detail": "Add Sign in with LinkedIn using OpenID Connect and Share on LinkedIn on the Products tab.",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "id": "r4",
+      "item": "Branding and privacy policy",
+      "stage": "production",
+      "detail": "Your logo and app name show on the consent screen. Publish a privacy policy before launch. This is good practice; a LinkedIn requirement was not confirmed.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e1"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "stage": "prototype",
+      "title": "Create the app",
+      "detail": "Open the developer portal, click Create app, fill in name, logo and Page, and accept the terms.",
+      "owner": "you",
+      "estimate": "20 min",
+      "evidenceIds": [
+        "e6"
+      ]
+    },
+    {
+      "id": "s2",
+      "stage": "prototype",
+      "title": "Enable products",
+      "detail": "On the app's Products tab, request Sign in with LinkedIn using OpenID Connect and Share on LinkedIn. Both are self-serve.",
+      "owner": "you",
+      "estimate": "5 min",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "id": "s3",
+      "stage": "prototype",
+      "title": "Add redirect URLs",
+      "detail": "On the Auth tab, add exact absolute HTTPS callback URLs. Copy the Client ID and Client Secret.",
+      "owner": "you",
+      "estimate": "10 min",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "id": "s4",
+      "stage": "prototype",
+      "title": "Implement the code flow",
+      "detail": "Send users to https://www.linkedin.com/oauth/v2/authorization with response_type, client_id, redirect_uri, state and scope. Exchange the code at /oauth/v2/accessToken within 30 minutes.",
+      "owner": "agent",
+      "estimate": "2 hours",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "id": "s5",
+      "stage": "prototype",
+      "title": "Plan for token expiry",
+      "detail": "Access tokens last 60 days. Programmatic refresh tokens are only for some partners, so plan to send users through the authorize flow again before expiry.",
+      "owner": "agent",
+      "estimate": "1 hour",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "id": "s6",
+      "stage": "production",
+      "title": "Set branding",
+      "detail": "Under My apps > Settings, set the logo and name shown on the consent screen.",
+      "owner": "you",
+      "estimate": "10 min",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "id": "s7",
+      "stage": "production",
+      "title": "Decide on extra access",
+      "detail": "If you need ads, sales or talent data, apply on the Products tab or the partner program page. The outcome is uncertain and no timeline is stated.",
+      "owner": "you",
+      "estimate": "1 to 3 hours",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "id": "s8",
+      "stage": "production",
+      "title": "Move off Composio managed app",
+      "detail": "Switch your auth config to your own client ID. Existing users must reconnect.",
+      "owner": "you",
+      "estimate": "1 hour",
+      "evidenceIds": [
+        "e5"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "symptom": "401 Redirect_uri doesn't match",
+      "cause": "The redirect URL differs from the one on the Auth tab.",
+      "fix": "Register the exact URL and send the same value in the authorize and token requests.",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "symptom": "401 Invalid scope",
+      "cause": "The scope is not granted to the app because the product is not enabled.",
+      "fix": "Add the matching product on the Products tab, then check the Auth tab for scopes.",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "symptom": "Users must consent again about every 60 days",
+      "cause": "Access tokens last 60 days and refresh tokens are partner-only.",
+      "fix": "Re-run the authorize flow before expiry. It skips the screen if the member is still logged in and the token is valid.",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "symptom": "You need messages, connections or feed and no scope exists",
+      "cause": "Open permissions only cover the member's own profile, email and posting.",
+      "fix": "Apply to the relevant partner program or drop the feature.",
+      "escalation": "Submit a developer support request from the LinkedIn developer portal.",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "symptom": "Earlier tokens stop working after you change scopes",
+      "cause": "Requesting a different scope invalidates earlier tokens.",
+      "fix": "Ask for the full scope set up front. Users must re-authenticate after scope changes.",
+      "evidenceIds": [
+        "e1"
+      ]
+    }
+  ],
+  "agentAssist": {
+    "didForYou": [
+      "Read the LinkedIn 3-legged OAuth docs",
+      "Read the Getting Access page",
+      "Probed the authorize endpoint and developer portal",
+      "Checked Composio for a managed app"
+    ],
+    "canDoForYou": [
+      "Write the OAuth flow and token-expiry reminders",
+      "Draft the privacy policy and app description",
+      "Check redirect URLs against the rules"
+    ],
+    "youMustDo": [
+      "Sign in and create the app",
+      "Accept the terms and handle any Page verification",
+      "Enable the products",
+      "Apply to partner programs if needed"
+    ]
+  },
+  "drafts": [
+    {
+      "kind": "app_description",
+      "title": "App description",
+      "body": "We help professionals draft and schedule LinkedIn posts. Users sign in with LinkedIn to confirm who they are, then approve posting on their behalf. We request only openid, profile, email and w_member_social. We never post without the user's confirmation. Users can disconnect at any time."
+    },
+    {
+      "kind": "support_email",
+      "title": "Partner access question",
+      "body": "Hello, our app (Client ID: XXXX) lets users manage their own LinkedIn activity with an AI assistant. We would like read access to the member's own messages. Is there a program or product that allows this? If not, what do you suggest instead? Thank you."
+    }
+  ],
+  "uncertainties": [
+    {
+      "question": "Does app creation require a verified LinkedIn Page, and is there any review for Share on LinkedIn?",
+      "why": "The docs I read call these products self-serve, but I did not open the app-creation page.",
+      "howToResolve": "Create an app and watch the Products tab."
+    },
+    {
+      "question": "Is PKCE supported?",
+      "why": "Not covered in the pages I read.",
+      "howToResolve": "Check LinkedIn's native app and PKCE docs."
+    },
+    {
+      "question": "What changed in the last 18 months?",
+      "why": "I only saw an extended login parameter and a Getting Access page dated 2025-06-26.",
+      "howToResolve": "Check the LinkedIn API changelog."
+    },
+    {
+      "question": "Are there user caps or customer admin gates?",
+      "why": "None found in the pages read.",
+      "howToResolve": "Test with an external account and a company-managed account."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "e1",
+      "level": "sourced",
+      "claim": "LinkedIn uses the OAuth 2.0 authorization code flow. HTTPS redirect URLs must match exactly. Codes last 30 minutes. Access tokens last 60 days. Programmatic refresh is for limited partners. Scope changes force re-consent.",
+      "sourceUrl": "https://learn.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow",
+      "sourceTitle": "Authorization Code Flow (3-legged OAuth)",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e2",
+      "level": "sourced",
+      "claim": "Open permissions (profile, email, w_member_social) are self-serve. Most other permissions and partner programs need approval. Compliance is closed.",
+      "sourceUrl": "https://learn.microsoft.com/en-us/linkedin/shared/authentication/getting-access",
+      "sourceTitle": "Getting Access to LinkedIn APIs",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e3",
+      "level": "probed",
+      "claim": "No OIDC discovery document at linkedin.com; the authorize endpoint is live.",
+      "sourceUrl": "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=oauth-guide-probe-invalid&redirect_uri=https%3A%2F%2Fexample.com%2Fcallback&state=probe&scope=openid+profile+email",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Authorization endpoint live and rejects an unknown client ID. Discovery document returned 404."
+    },
+    {
+      "id": "e4",
+      "level": "inferred",
+      "claim": "Tier 2 for self-serve scopes, tier 5 for anything else.",
+      "retrievedAt": "2026-10-27",
+      "note": "From e2: open permissions need no approval; other permissions need approval that may be refused."
+    },
+    {
+      "id": "e5",
+      "level": "sourced",
+      "claim": "Composio lists LinkedIn under managed OAuth.",
+      "sourceUrl": "https://docs.composio.dev/toolkits/managed-auth",
+      "sourceTitle": "Composio managed auth",
+      "sourceKind": "composio_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e6",
+      "level": "probed",
+      "claim": "The developer portal is reachable.",
+      "sourceUrl": "https://www.linkedin.com/developers/apps",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "HTTP 200 for a signed-out visitor; it may ask you to sign in."
+    },
+    {
+      "id": "e_autoprobe_1",
+      "level": "probed",
+      "claim": "No OAuth discovery document at https://www.linkedin.com/.well-known/openid-configuration (HTTP 404).",
+      "sourceUrl": "https://www.linkedin.com/.well-known/openid-configuration",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Recorded automatically from the probe this run made."
+    }
+  ],
+  "schemaVersion": 1,
+  "slug": "linkedin-1h34t9",
+  "input": {
+    "query": "LinkedIn",
+    "kind": "name"
+  },
+  "origin": "live",
+  "generatedAt": "2026-10-27T20:42:17.229Z",
+  "generator": {
+    "model": "claude-sonnet-5-5",
+    "promptVersion": "v1",
+    "durationMs": 67617
+  },
+  "changelog": []
+}

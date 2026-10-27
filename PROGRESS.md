@@ -28,3 +28,15 @@
   - run 2 "Notion": claude-sonnet-5-5, 43.4s, in=40209 out=5251 cacheRead=45250 cacheWrite=20427, 1 web search, 7 tool calls.
 - fixes from reading the Notion output: probe findings now always recorded as probed evidence; portal probe no longer claims "loads without sign-in" for client-side apps.
 - next: Phase 4 store, API, pages.
+
+## 2026-10-27T22:40Z Task 5.1 (started early, parallel with Phase 4): First-pass v1 guides
+- changed: verification/raw/<slug>.v1.json for all 7 seeds (prompt v1, claude-sonnet-5-5).
+- verified: all 7 runs produced schema-valid guides. Live runs now 9/30.
+  - google-gmail "Gmail": 63.3s, tier 4, in=17688 out=7855 cacheRead=36200 cacheWrite=20487, 1 search
+  - meta "Meta": 60.2s, tier 3, in=20241 out=7838 cacheRead=36200 cacheWrite=20521, 1 search
+  - microsoft-outlook: 45.5s, tier 2, in=22535 out=6477 cacheRead=27150, 0 searches
+  - github: 50.1s, tier 2, in=24901 out=6609 cacheRead=27150, 0 searches
+  - slack: 64.6s, tier 2, in=79464 out=8487 cacheRead=45250 cacheWrite=18675, 1 search
+  - salesforce: 67.5s, tier 2 (low confidence), in=24660 out=8201 cacheRead=45732 cacheWrite=18933, 2 searches
+  - linkedin: 67.6s, tier 2, in=30121 out=11244 cacheRead=36200, 0 searches
+- next: oauth-researcher subagents (google-gmail, meta, microsoft-outlook running), finish Phase 4 pages meanwhile.
