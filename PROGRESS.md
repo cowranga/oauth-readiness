@@ -63,3 +63,8 @@
 - verified: validate-guide ok for every verified seed; `npm run eval` writes the table; lessons rows fact-checked against files (fixed one overstated row: v1 Slack PKCE was "unknown", not "no").
 - partial: 6.3 v2 re-runs blocked on API credits (see Blocked); scripts/live-tests.sh runs them.
 - next: Salesforce verification, then Phase 8 docs.
+
+## 2026-10-28T03:30Z Tasks 6.1, 8.1 to 8.4: Verification complete, docs, handoff
+- changed: all 7 seeds verified (verification/<slug>.md); README.md with verification totals (231 claims: 179 confirmed, 30 narrowed, 10 corrected, 12 unverifiable); docs/ASSIGNMENT.md traceability filled; final code review (no code must-fix, doc mismatches fixed); docs/MORNING_HANDOFF.md.
+- verified: `npm run build`, `npm test` (121 pass), `npm run lint`, `npm run check:secrets` all pass; no em dashes in user-facing docs, pages, or seeds.
+- not done: Task 6.3 v2 re-runs, Task 7.1 rows 2/3/4/6, Phase 9 (all need API credits; 9.3 needs the Vercel CLI). Stopping here: every remaining task is blocked on the human.

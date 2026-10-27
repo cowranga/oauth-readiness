@@ -71,7 +71,7 @@ No 100-app catalog (decision, 2026-10-28). The 7 seeds are the library; the live
 
 ## Phase 8: Docs and handoff (45 min)
 
-- [ ] **8.1 README.md** (short, plain, no em dashes, written as the human):
+- [x] **8.1 README.md** (short, plain, no em dashes, written as the human):
   1. One paragraph: what it is. Placeholder line for live link and repo link.
   2. The problem in 3 sentences and the core insight (decision first; work vs wait; scopes decide difficulty; start with a managed app while your own app is in review).
   3. Scope and why: open with the focused-scope paragraph from docs/PRODUCT.md (managed app to your own approved app), then what we built, what we cut, and how this scales to 100 (roadmap from PRODUCT.md).
@@ -82,7 +82,7 @@ No 100-app catalog (decision, 2026-10-28). The 7 seeds are the library; the live
   8. Limitations (include harvested `ponytail:` markers) and what I would do next.
 - [x] **8.2** Fill the "Where" column in docs/ASSIGNMENT.md traceability.
 - [x] **8.3** Final code-reviewer pass on the whole repo; apply must-fix items.
-- [ ] **8.4** Fill `docs/MORNING_HANDOFF.md`. Final commit.
+- [x] **8.4** Fill `docs/MORNING_HANDOFF.md`. Final commit.
 
 ## Phase 9: Stretch (only if everything above is done)
 
