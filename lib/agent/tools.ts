@@ -159,6 +159,6 @@ async function composio(input: unknown, ctx: ToolContext): Promise<ToolResult> {
   const result = await checkComposioManaged(parsed.data.appName, ctx.composioApiKey);
   if (result.fetchedUrl) ctx.fetchedUrls.add(canonicalUrl(result.fetchedUrl));
   ctx.emit({ type: "finding", message: `Composio managed app: ${result.status.replace("_", " ")}. ${result.note}` });
-  const { fetchedUrl: _fetched, ...forModel } = result;
+  const forModel = { status: result.status, url: result.url, note: result.note, toolkit: result.toolkit };
   return { content: JSON.stringify({ ...forModel, citeAs: result.fetchedUrl ? "sourced, sourceKind composio_docs" : "inferred" }) };
 }

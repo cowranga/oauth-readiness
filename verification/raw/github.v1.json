@@ -1,0 +1,522 @@
+{
+  "app": {
+    "name": "GitHub",
+    "provider": "GitHub (Microsoft)",
+    "website": "https://github.com",
+    "category": "Developer tools / source control",
+    "developerPortalUrl": "https://github.com/settings/developers"
+  },
+  "oauth": {
+    "support": "oauth2",
+    "pkce": "supported",
+    "alternatives": "Personal access tokens (classic or fine-grained) work for single users but are not a fit for multi-user connections. GitHub does not publish an OIDC discovery document for user login.",
+    "appTypes": [
+      {
+        "name": "GitHub App",
+        "whenToUse": "Default choice for an agent product. Fine-grained permissions, per-repo install, short-lived user tokens, not subject to org OAuth app restrictions, higher scaling rate limits."
+      },
+      {
+        "name": "OAuth app",
+        "whenToUse": "Use when you need enterprise-level resources, or want simple scope-based access (for example the repo scope) and accept coarser access, lower rate limits and org approval requests."
+      }
+    ],
+    "evidenceIds": [
+      "e1",
+      "e2",
+      "e3",
+      "e7"
+    ]
+  },
+  "verdict": {
+    "tier": 2,
+    "label": "Self-serve, optional review",
+    "summary": "You register a GitHub App or OAuth app in settings and any GitHub user can authorize it with no GitHub review. The real gate is on the customer side: organization owners can restrict or approve OAuth apps.",
+    "nextStep": "Sign in to GitHub, open Settings > Developer settings, and register a GitHub App with a callback URL and expiring user tokens enabled.",
+    "customerSideGate": true,
+    "customerSideGateNote": "Org owners can enable OAuth app access restrictions (on by default for new orgs). Members then need owner approval before an OAuth app reaches org data. GitHub Apps are not subject to this policy, but an owner must approve installs that need org permissions.",
+    "confidence": "medium",
+    "evidenceIds": [
+      "e1",
+      "e2",
+      "e4",
+      "e5"
+    ]
+  },
+  "composio": {
+    "managedApp": "available",
+    "note": "Composio lists GitHub under managed OAuth, so you can start today. Moving to your own app later only affects new connections. Existing users must reconnect.",
+    "evidenceIds": [
+      "e8"
+    ]
+  },
+  "stages": [
+    {
+      "id": "prototype",
+      "name": "Prototype",
+      "whoCanConnect": "Any GitHub user can authorize your app. No test-user list or user cap was found in the docs.",
+      "handsOnHours": {
+        "min": 1,
+        "max": 3
+      },
+      "waitDays": {
+        "min": 0,
+        "max": 0
+      },
+      "reviewRequired": false,
+      "notes": "Orgs with restrictions will block or queue the app until an owner approves.",
+      "evidenceIds": [
+        "e1",
+        "e4",
+        "e9"
+      ]
+    },
+    {
+      "id": "production",
+      "name": "Production",
+      "whoCanConnect": "Any GitHub user. Org data needs owner approval where restrictions are on (OAuth apps) or install approval (GitHub Apps).",
+      "handsOnHours": {
+        "min": 3,
+        "max": 10
+      },
+      "waitDays": {
+        "min": 0,
+        "max": null
+      },
+      "reviewRequired": false,
+      "notes": "Wait depends on customer org owners, not GitHub. A Marketplace listing is optional and is reviewed by GitHub, but its process was not checked.",
+      "evidenceIds": [
+        "e4",
+        "e5"
+      ]
+    }
+  ],
+  "scopeTiers": [
+    {
+      "name": "Public, profile and identity",
+      "exampleScopes": [
+        "(no scope)",
+        "read:user",
+        "user:email"
+      ],
+      "reviewLevel": "none",
+      "useCases": [
+        "read"
+      ],
+      "effect": "Read public data and the user profile or email.",
+      "evidenceIds": [
+        "e6"
+      ]
+    },
+    {
+      "name": "Repository and notification access",
+      "exampleScopes": [
+        "repo",
+        "public_repo",
+        "notifications",
+        "read:org",
+        "workflow"
+      ],
+      "reviewLevel": "none",
+      "useCases": [
+        "read",
+        "write"
+      ],
+      "effect": "Full read and write on private repos for repo. No GitHub review, but org restrictions apply.",
+      "evidenceIds": [
+        "e6",
+        "e4"
+      ]
+    },
+    {
+      "name": "Refresh tokens",
+      "exampleScopes": [
+        "offline_access"
+      ],
+      "reviewLevel": "none",
+      "useCases": [
+        "offline"
+      ],
+      "effect": "Returns an expiring token (8 hours) plus a refresh token even if the app is not set to expiring tokens.",
+      "evidenceIds": [
+        "e6",
+        "e3"
+      ]
+    },
+    {
+      "name": "Admin scopes",
+      "exampleScopes": [
+        "admin:org",
+        "admin:repo_hook",
+        "admin:org_hook",
+        "delete_repo",
+        "read:audit_log"
+      ],
+      "reviewLevel": "none",
+      "useCases": [
+        "admin"
+      ],
+      "effect": "Manage orgs, hooks, repos. Owners are likely to deny these. No GitHub review is required.",
+      "evidenceIds": [
+        "e6"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "r1",
+      "item": "GitHub account (free) to own the app",
+      "stage": "prototype",
+      "detail": "Register under a personal account or an organization you own. Use an organization account so the app is not tied to one person.",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e7"
+      ]
+    },
+    {
+      "id": "r2",
+      "item": "Callback URL and client secret storage",
+      "stage": "prototype",
+      "detail": "Set the callback URL, store the client secret server-side, and use state plus PKCE (S256).",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e3"
+      ]
+    },
+    {
+      "id": "r3",
+      "item": "Refresh-token handling",
+      "stage": "production",
+      "detail": "Turn on expiring user tokens. Access token lasts 8 hours. Refresh token lasts 6 months unused and rotates on each use.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e3"
+      ]
+    },
+    {
+      "id": "r4",
+      "item": "Org-owner approval path",
+      "stage": "production",
+      "detail": "Prepare an in-app message and docs your customers can send to org owners to approve your app.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e4",
+        "e5"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "stage": "prototype",
+      "title": "Open developer settings",
+      "detail": "Sign in, go to Settings > Developer settings. Choose GitHub Apps > New GitHub App (preferred) or OAuth Apps > New OAuth App.",
+      "owner": "you",
+      "estimate": "10 min",
+      "url": "https://github.com/settings/developers",
+      "evidenceIds": [
+        "e7",
+        "e1"
+      ]
+    },
+    {
+      "id": "s2",
+      "stage": "prototype",
+      "title": "Fill in name, homepage, callback URL",
+      "detail": "Use your brand name and homepage. This is what users see on the consent screen. Add your HTTPS callback URL.",
+      "owner": "you",
+      "estimate": "15 min",
+      "evidenceIds": [
+        "e7"
+      ]
+    },
+    {
+      "id": "s3",
+      "stage": "prototype",
+      "title": "Choose permissions or scopes",
+      "detail": "For a GitHub App, pick fine-grained permissions (for example Issues read, Contents read). For an OAuth app, request the narrowest scopes plus offline_access.",
+      "owner": "you",
+      "estimate": "20 min",
+      "evidenceIds": [
+        "e1",
+        "e6"
+      ]
+    },
+    {
+      "id": "s4",
+      "stage": "prototype",
+      "title": "Enable expiring user tokens",
+      "detail": "Turn on expiring user tokens in app settings, or send offline_access. Expect expires_in 28800 and a refresh_token.",
+      "owner": "you",
+      "estimate": "10 min",
+      "evidenceIds": [
+        "e3"
+      ]
+    },
+    {
+      "id": "s5",
+      "stage": "prototype",
+      "title": "Implement the web flow with PKCE",
+      "detail": "Redirect to github.com/login/oauth/authorize with state and code_challenge (S256). Exchange the code at /login/oauth/access_token with the code_verifier.",
+      "owner": "agent",
+      "estimate": "2 hours",
+      "evidenceIds": [
+        "e3"
+      ]
+    },
+    {
+      "id": "s6",
+      "stage": "prototype",
+      "title": "Verify identity after each sign-in",
+      "detail": "Call GET /user with the new token so users who switch accounts are not mixed up.",
+      "owner": "agent",
+      "estimate": "30 min",
+      "evidenceIds": [
+        "e3"
+      ]
+    },
+    {
+      "id": "s7",
+      "stage": "production",
+      "title": "Build refresh logic",
+      "detail": "Store the new refresh token on each refresh, since refresh tokens are replaced on use. Handle revoked or lost access.",
+      "owner": "agent",
+      "estimate": "2 hours",
+      "evidenceIds": [
+        "e3"
+      ]
+    },
+    {
+      "id": "s8",
+      "stage": "production",
+      "title": "Test with a restricted org",
+      "detail": "Create a test org with OAuth app restrictions on. Confirm the request-approval flow and the error your users see.",
+      "owner": "you",
+      "estimate": "1 hour",
+      "evidenceIds": [
+        "e4"
+      ]
+    },
+    {
+      "id": "s9",
+      "stage": "production",
+      "title": "Publish customer instructions",
+      "detail": "Tell org owners how to approve your OAuth app or install your GitHub App.",
+      "owner": "agent",
+      "estimate": "1 hour",
+      "evidenceIds": [
+        "e4",
+        "e5"
+      ]
+    },
+    {
+      "id": "s10",
+      "stage": "production",
+      "title": "Move users off the Composio app",
+      "detail": "Switch config to your client ID and secret. Ask existing users to reconnect.",
+      "owner": "you",
+      "estimate": "1 hour",
+      "evidenceIds": [
+        "e8"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "symptom": "Users see a request-access screen or cannot reach org repos",
+      "cause": "The org has OAuth app access restrictions on, and these are on by default for new orgs.",
+      "fix": "Have the user request approval, or have an owner approve the app. Consider a GitHub App, which is not subject to this policy.",
+      "escalation": "Org owner; GitHub Support for policy questions.",
+      "evidenceIds": [
+        "e4",
+        "e2"
+      ]
+    },
+    {
+      "symptom": "No refresh_token in the token response",
+      "cause": "Expiring tokens are not enabled, or the host is GitHub Enterprise Server without support.",
+      "fix": "Enable expiring tokens in app settings or request offline_access. Do not assume a refresh token is always returned.",
+      "escalation": "GitHub Docs and community discussions.",
+      "evidenceIds": [
+        "e3"
+      ]
+    },
+    {
+      "symptom": "Token stops working after a user loses repo access",
+      "cause": "OAuth tokens lose access when the user does. The OAuth app is not told.",
+      "fix": "Handle 401/403/404 by prompting reconnect. A GitHub App gets install webhooks.",
+      "escalation": "GitHub Support.",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "symptom": "Rate limit errors at scale",
+      "cause": "OAuth tokens use the user's 5,000 per hour limit and OAuth apps do not scale. GitHub App installs scale with repos and users.",
+      "fix": "Use a GitHub App, or request a rate limit increase.",
+      "escalation": "GitHub Support.",
+      "evidenceIds": [
+        "e1"
+      ]
+    }
+  ],
+  "agentAssist": {
+    "didForYou": [
+      "Read GitHub Docs on GitHub Apps vs OAuth apps, authorizing OAuth apps, OAuth scopes, and org OAuth app restrictions",
+      "Probed the authorize endpoint, OIDC discovery and developer portal",
+      "Checked Composio managed OAuth for GitHub"
+    ],
+    "canDoForYou": [
+      "Implement the PKCE web flow and refresh rotation",
+      "Draft customer approval instructions for org owners",
+      "Choose minimal permissions for your use case"
+    ],
+    "youMustDo": [
+      "Sign in and register the app",
+      "Store the client secret",
+      "Create a test org to check restrictions",
+      "Ask customers' org owners to approve where needed"
+    ]
+  },
+  "drafts": [
+    {
+      "kind": "other",
+      "title": "Message for org owners",
+      "body": "Hi, our team uses [App] to [purpose]. It needs [permissions] on [repos]. To approve: Org Settings > Third-party Access > OAuth app policy, then approve [App]. If you use the GitHub App, go to Installed GitHub Apps and approve the install. It only reads [x] and never deletes. Contact: [email]."
+    }
+  ],
+  "uncertainties": [
+    {
+      "question": "Exact redirect URI rules (HTTPS required, localhost, subpath matching)?",
+      "why": "The relevant docs section was cut off in the page fetched.",
+      "howToResolve": "Read the redirect URLs section of the Authorizing OAuth apps page."
+    },
+    {
+      "question": "Is there a user cap or warning screen on new unreviewed apps?",
+      "why": "None found in the docs read, but not explicitly confirmed.",
+      "howToResolve": "Test with a second GitHub account; ask GitHub Support."
+    },
+    {
+      "question": "Marketplace listing review process and timeline",
+      "why": "Not researched. It is optional.",
+      "howToResolve": "Read GitHub Marketplace listing requirements."
+    },
+    {
+      "question": "Recent changes in the last 18 months",
+      "why": "No dated changes were confirmed in the pages read.",
+      "howToResolve": "Check the GitHub changelog for OAuth and GitHub Apps."
+    },
+    {
+      "question": "Does the user token revocation behavior and refresh-token rotation have other limits?",
+      "why": "Only the 8 hour and 6 month figures were read.",
+      "howToResolve": "Read the refreshing user access tokens docs."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "e1",
+      "level": "sourced",
+      "claim": "GitHub Apps are preferred over OAuth apps; OAuth apps have lower, non-scaling rate limits and user tokens use 5,000 requests per hour; OAuth apps lose access silently when the user loses access.",
+      "sourceUrl": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/differences-between-github-apps-and-oauth-apps",
+      "sourceTitle": "Differences between GitHub Apps and OAuth apps",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e2",
+      "level": "sourced",
+      "claim": "GitHub Apps are not subject to organization application policies; OAuth apps are.",
+      "sourceUrl": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/differences-between-github-apps-and-oauth-apps",
+      "sourceTitle": "Differences between GitHub Apps and OAuth apps",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e3",
+      "level": "sourced",
+      "claim": "OAuth 2.0 authorization code and device flow, PKCE S256, expiring tokens (8h access, 6 month refresh), offline_access scope.",
+      "sourceUrl": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps",
+      "sourceTitle": "Authorizing OAuth apps",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e4",
+      "level": "sourced",
+      "claim": "With OAuth app access restrictions on, members cannot authorize OAuth apps for org resources and must request owner approval; enabled by default on new orgs.",
+      "sourceUrl": "https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions",
+      "sourceTitle": "About OAuth app access restrictions",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e5",
+      "level": "sourced",
+      "claim": "A GitHub App needing organization permissions requires organization owner approval.",
+      "sourceUrl": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/differences-between-github-apps-and-oauth-apps",
+      "sourceTitle": "Differences between GitHub Apps and OAuth apps",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e6",
+      "level": "sourced",
+      "claim": "OAuth app scope list including repo, read:user, notifications, admin:org, offline_access.",
+      "sourceUrl": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps",
+      "sourceTitle": "Scopes for OAuth apps",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e7",
+      "level": "probed",
+      "claim": "Developer portal loads and needs a GitHub sign-in to register an app.",
+      "sourceUrl": "https://github.com/settings/developers",
+      "sourceTitle": "Probe: developer portal",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Portal loads and asks you to sign in."
+    },
+    {
+      "id": "e8",
+      "level": "sourced",
+      "claim": "Composio lists GitHub as managed OAuth.",
+      "sourceUrl": "https://docs.composio.dev/toolkits/managed-auth",
+      "sourceTitle": "Composio managed auth",
+      "sourceKind": "composio_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e9",
+      "level": "probed",
+      "claim": "Authorize endpoint is live; no OIDC discovery document (404).",
+      "sourceUrl": "https://github.com/login/oauth/authorize?response_type=code&client_id=oauth-guide-probe-invalid&redirect_uri=https%3A%2F%2Fexample.com%2Fcallback&state=probe&scope=repo",
+      "sourceTitle": "Probe: authorize endpoint",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Authorize endpoint live and redirects to sign-in before checking client ID. Discovery at /.well-known/openid-configuration returned 404."
+    },
+    {
+      "id": "e_probe_1",
+      "level": "probed",
+      "claim": "No OAuth discovery document at https://github.com/.well-known/openid-configuration (HTTP 404).",
+      "sourceUrl": "https://github.com/.well-known/openid-configuration",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Recorded automatically from the probe this run made."
+    }
+  ],
+  "schemaVersion": 1,
+  "slug": "github-nq3cl7",
+  "input": {
+    "query": "GitHub",
+    "kind": "name"
+  },
+  "origin": "live",
+  "generatedAt": "2026-10-27T20:41:08.934Z",
+  "generator": {
+    "model": "claude-sonnet-5-5",
+    "promptVersion": "v1",
+    "durationMs": 50146
+  },
+  "changelog": []
+}
