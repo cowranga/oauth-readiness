@@ -57,3 +57,9 @@
 ## Blocked
 - 2026-10-28T02:10Z: ANTHROPIC_API_KEY returns HTTP 400 "Your credit balance is too low to access the Anthropic API" (request req_011CgTRcv84JWWC92askrVLs). Tried: two v2 runs (0 tokens used) and a count_tokens call. Blocks: Task 6.3 v2 re-runs and Task 7.1 live tests. Needs the human to add credits. Everything else continues; the remaining live runs are scripted in scripts/live-tests.sh.
 - Live runs used: 9 successful + 1 accidental nonsense run + 2 failed at 0 tokens = 12 attempts, under the 30 cap.
+
+## 2026-10-28T02:50Z Tasks 6.1 to 6.4: Verification, lessons, eval, attempt templates
+- changed: verification/<slug>.md for 6 of 7 seeds (Salesforce verifier still running), changelog entries in each seed; docs/LESSONS.md (12 patterns, each tied to a prompt or code change); prompt v2; scripts/eval.ts + lib/eval/compare.ts (tested); docs/EVAL.md with the v1 table and narrative; verification/attempts/{github,slack,google-gmail}.md.
+- verified: validate-guide ok for every verified seed; `npm run eval` writes the table; lessons rows fact-checked against files (fixed one overstated row: v1 Slack PKCE was "unknown", not "no").
+- partial: 6.3 v2 re-runs blocked on API credits (see Blocked); scripts/live-tests.sh runs them.
+- next: Salesforce verification, then Phase 8 docs.

@@ -52,9 +52,9 @@ No 100-app catalog (decision, 2026-10-28). The 7 seeds are the library; the live
 ## Phase 6: Verification and eval (130 min)
 
 - [ ] **6.1 Verify.** Spawn `claim-verifier` per seed (fresh context, max 3 at once). Apply corrections, add changelog entries, write `verification/<slug>.md`.
-- [ ] **6.2 Lessons.** `docs/LESSONS.md`; update prompts, `PROMPT_VERSION = "v2"`.
+- [x] **6.2 Lessons.** `docs/LESSONS.md`; update prompts, `PROMPT_VERSION = "v2"`.
 - [ ] **6.3 Re-run + eval.** If key: generate v2 for 2 seeds; implement `scripts/eval.ts`; write `docs/EVAL.md`.
-- [ ] **6.4 Attempt templates.** Blank `verification/attempts/<slug>.md` for github, slack, google-gmail.
+- [x] **6.4 Attempt templates.** Blank `verification/attempts/<slug>.md` for github, slack, google-gmail.
   - Accept: every seed has a verification log with counts; EVAL.md exists (or states plainly why it was skipped).
 
 ## Phase 7: Live demo hardening (60 min)
