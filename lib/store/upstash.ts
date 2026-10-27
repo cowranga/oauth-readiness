@@ -15,25 +15,38 @@ async function command<T>(config: Config, args: (string | number)[]): Promise<T>
   return ((await response.json()) as { result: T }).result;
 }
 
+function parseJson(raw: string): unknown {
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return undefined;
+  }
+}
+
+// ponytail: put() is three requests that can half-succeed -> use the /multi-exec endpoint
 export function createUpstashStore(config: Config): GuideStore {
   return {
     persistent: true,
     async get(slug) {
       const raw = await command<string | null>(config, ["GET", `guide:${slug}`]);
       if (!raw) return null;
-      const parsed = guideSchema.safeParse(JSON.parse(raw));
+      const parsed = guideSchema.safeParse(parseJson(raw));
       return parsed.success ? parsed.data : null;
     },
     async put(guide: Guide) {
       await command(config, ["SET", `guide:${guide.slug}`, JSON.stringify(guide)]);
       await command(config, ["SET", `summary:${guide.slug}`, JSON.stringify(summarize(guide))]);
       await command(config, ["ZADD", "recent", Date.parse(guide.generatedAt), guide.slug]);
+      await command(config, ["ZREMRANGEBYRANK", "recent", 0, -201]);
     },
     async listRecent(limit) {
       const slugs = await command<string[]>(config, ["ZRANGE", "recent", 0, limit - 1, "REV"]);
       if (slugs.length === 0) return [];
       const raws = await command<(string | null)[]>(config, ["MGET", ...slugs.map((s) => `summary:${s}`)]);
-      return raws.flatMap((raw) => (raw ? [JSON.parse(raw) as GuideSummary] : []));
+      return raws.flatMap((raw) => {
+        const summary = raw ? (parseJson(raw) as GuideSummary | undefined) : undefined;
+        return summary?.slug && summary.app && summary.verdict ? [summary] : [];
+      });
     },
     async countGeneration(day) {
       const count = await command<number>(config, ["INCR", `count:${day}`]);

@@ -8,6 +8,7 @@ import { CopyButtons } from "@/components/CopyButtons";
 import { formatDays, formatHours } from "@/lib/guide/markdown";
 import { effortTotals, nextStep, parseDone, parseUseCases, progressQuery, stepProgress } from "@/lib/guide/progress";
 import { STAGE_IDS, USE_CASES, type Evidence, type Guide, type StageId, type UseCase } from "@/lib/guide/schema";
+import { safeHref } from "@/lib/guide/url";
 import { matchingScopeTierIndexes, REVIEW_LEVEL_LABEL, TIERS, tierForUseCases, USE_CASE_LABEL } from "@/lib/guide/tiers";
 
 type Props = { guide: Guide; initialDone?: string; initialUse?: string; children: React.ReactNode };
@@ -85,8 +86,8 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
                 <span className="font-mono text-xs text-muted">{next.estimate}</span>
               </p>
               <p className="text-sm text-muted">{next.detail}</p>
-              {next.url ? (
-                <a href={next.url} target="_blank" rel="noreferrer noopener" className="text-sm break-all text-ink">
+              {safeHref(next.url) ? (
+                <a href={safeHref(next.url)} target="_blank" rel="noreferrer noopener" className="text-sm break-all text-ink">
                   {next.url}
                 </a>
               ) : null}
@@ -207,7 +208,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
             <ul className="mt-3 space-y-2">
               {guide.scopeTiers.map((scopeTier, index) => (
                 <li
-                  key={scopeTier.name}
+                  key={`${index}-${scopeTier.name}`}
                   className={`rounded-md border border-border bg-card p-3 ${highlighted.has(index) ? "border-l-2 border-l-brand" : "opacity-70"}`}
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
@@ -269,8 +270,8 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
                         </label>
                         <p className="text-sm text-muted">{step.detail}</p>
                         <div className="flex flex-wrap items-center gap-2 text-sm">
-                          {step.url ? (
-                            <a href={step.url} target="_blank" rel="noreferrer noopener" className="break-all text-ink">
+                          {safeHref(step.url) ? (
+                            <a href={safeHref(step.url)} target="_blank" rel="noreferrer noopener" className="break-all text-ink">
                               {step.url}
                             </a>
                           ) : null}

@@ -14,6 +14,7 @@ export function allowRequest(clientId: string, limit = 5, now = Date.now()): boo
   return true;
 }
 
+// ponytail: x-forwarded-for is trusted as set by Vercel's proxy -> spoofable elsewhere, use the platform's client IP
 export function clientIdFrom(headers: Headers): string {
   return headers.get("x-forwarded-for")?.split(",")[0]?.trim() || headers.get("x-real-ip") || "local";
 }

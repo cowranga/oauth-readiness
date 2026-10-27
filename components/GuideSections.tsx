@@ -1,10 +1,11 @@
 import { CopyText } from "@/components/CopyButtons";
 import { EvidenceList } from "@/components/EvidenceBadge";
 import type { Evidence, Guide } from "@/lib/guide/schema";
+import { safeHref } from "@/lib/guide/url";
 
 // The read-only lower half of a guide: blockers, agent work, unknowns, sources, changelog.
 export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map<string, Evidence> }): React.ReactElement {
-  const sources = [...new Map(guide.evidence.filter((e) => e.sourceUrl).map((e) => [e.sourceUrl, e])).values()];
+  const sources = [...new Map(guide.evidence.filter((e) => safeHref(e.sourceUrl)).map((e) => [e.sourceUrl, e])).values()];
   return (
     <>
       {guide.blockers.length > 0 ? (
@@ -13,8 +14,8 @@ export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map
             If you get stuck
           </h2>
           <ul className="mt-3 space-y-3">
-            {guide.blockers.map((b) => (
-              <li key={b.symptom} className="rounded-md border border-border bg-card p-3 text-sm">
+            {guide.blockers.map((b, index) => (
+              <li key={`${index}-${b.symptom}`} className="rounded-md border border-border bg-card p-3 text-sm">
                 <p>{b.symptom}</p>
                 <p className="mt-1 text-muted">
                   <span className="font-mono text-[10px] uppercase tracking-wider">Why: </span>
@@ -51,8 +52,8 @@ export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map
         {guide.drafts.length > 0 ? (
           <div className="mt-6 space-y-3">
             <h3 className="text-base">Drafts to edit and paste</h3>
-            {guide.drafts.map((draft) => (
-              <details key={draft.title} className="rounded-md border border-border bg-card p-3">
+            {guide.drafts.map((draft, index) => (
+              <details key={`${index}-${draft.title}`} className="rounded-md border border-border bg-card p-3">
                 <summary className="cursor-pointer text-sm">
                   {draft.title} <span className="ml-2 font-mono text-[10px] uppercase tracking-wider text-muted">draft · {draft.kind.replace(/_/g, " ")}</span>
                 </summary>
@@ -72,8 +73,8 @@ export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map
             What we don&apos;t know
           </h2>
           <ul className="mt-3 space-y-3 text-sm">
-            {guide.uncertainties.map((u) => (
-              <li key={u.question}>
+            {guide.uncertainties.map((u, index) => (
+              <li key={`${index}-${u.question}`}>
                 <p>{u.question}</p>
                 <p className="text-muted">{u.why}</p>
                 <p className="text-muted">
@@ -110,8 +111,8 @@ export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map
             Changes after verification
           </h2>
           <ul className="mt-3 space-y-2 text-sm">
-            {guide.changelog.map((c) => (
-              <li key={`${c.at}-${c.change}`}>
+            {guide.changelog.map((c, index) => (
+              <li key={`${index}-${c.at}`}>
                 <p>{c.change}</p>
                 <p className="text-muted">
                   {c.reason} <span className="font-mono text-[10px] text-muted">{c.at.slice(0, 10)}</span>
@@ -130,8 +131,8 @@ function AssistList({ title, items }: { title: string; items: string[] }): React
     <div className="rounded-md border border-border bg-card p-3">
       <h3 className="font-mono text-[10px] uppercase tracking-wider text-muted">{title}</h3>
       <ul className="mt-2 list-disc space-y-1 pl-4 text-sm">
-        {items.map((item) => (
-          <li key={item}>{item}</li>
+        {items.map((item, index) => (
+          <li key={`${index}-${item}`}>{item}</li>
         ))}
       </ul>
     </div>

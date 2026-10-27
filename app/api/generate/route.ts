@@ -21,27 +21,44 @@ export async function POST(request: Request): Promise<Response> {
   const env = getEnv();
   const store = getStore();
   const { query, fresh = false } = parsed.data;
-  const seedHit = !fresh && safeFindSeed(query);
+  let input: ReturnType<typeof normalizeInput>;
+  try {
+    input = normalizeInput(query);
+  } catch (error) {
+    return eventResponse(toErrorEvent(error), 400);
+  }
 
-  if (!seedHit) {
+  if (fresh || !findSeed(input)) {
     if (!allowRequest(clientIdFrom(request.headers))) {
       return eventResponse({ type: "error", message: "You have started 5 guides in the last hour. Try again later, or browse the library.", retryable: false }, 429);
     }
-    const today = new Date().toISOString().slice(0, 10);
-    if ((await store.countGeneration(today)) > env.dailyCap) {
-      return eventResponse({ type: "error", message: "This demo has reached its daily limit for live guides. Try again tomorrow, or browse the library.", retryable: false }, 429);
+    try {
+      if ((await store.countGeneration(new Date().toISOString().slice(0, 10))) > env.dailyCap) {
+        return eventResponse({ type: "error", message: "This demo has reached its daily limit for live guides. Try again tomorrow, or browse the library.", retryable: false }, 429);
+      }
+    } catch {
+      return eventResponse({ type: "error", message: "Guide storage is not reachable right now. Try again in a minute.", retryable: true }, 503);
     }
   }
+
+  // If the browser disconnects we keep going, so the guide is still saved and shows up under "Recently generated".
+  let open = true;
+  let heartbeat: ReturnType<typeof setInterval> | undefined;
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const encoder = new TextEncoder();
-      let open = true;
-      const send = (event: AgentEvent): void => {
-        if (open) controller.enqueue(encoder.encode(sseChunk(event)));
+      const write = (text: string): void => {
+        if (!open) return;
+        try {
+          controller.enqueue(encoder.encode(text));
+        } catch {
+          open = false;
+        }
       };
+      const send = (event: AgentEvent): void => write(sseChunk(event));
       // Comment frames keep proxies from closing an idle connection while the model writes.
-      const heartbeat = setInterval(() => open && controller.enqueue(encoder.encode(": keep-alive\n\n")), 15_000);
+      heartbeat = setInterval(() => write(": keep-alive\n\n"), 15_000);
       try {
         if (!store.persistent) send({ type: "status", message: "Note: this server has no persistent storage, so the share link may expire." });
         await generateGuide(query, fresh, { env, emit: send, findSeed, save: (guide) => store.put(guide) });
@@ -49,21 +66,22 @@ export async function POST(request: Request): Promise<Response> {
         send(toErrorEvent(error));
       } finally {
         clearInterval(heartbeat);
-        open = false;
-        controller.close();
+        if (open) {
+          open = false;
+          try {
+            controller.close();
+          } catch {
+            // already closed by the client
+          }
+        }
       }
+    },
+    cancel() {
+      open = false;
+      clearInterval(heartbeat);
     },
   });
   return new Response(stream, { headers: { "content-type": "text/event-stream", "cache-control": "no-store", "x-accel-buffering": "no" } });
-}
-
-// Seed hits skip the rate limit. Bad input falls through; generateGuide reports it as an error event.
-function safeFindSeed(query: string): boolean {
-  try {
-    return Boolean(findSeed(normalizeInput(query)));
-  } catch {
-    return false;
-  }
 }
 
 function toErrorEvent(error: unknown): AgentEvent {

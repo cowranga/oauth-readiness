@@ -8,7 +8,12 @@ import { GuideSections } from "@/components/GuideSections";
 import { TierBadge } from "@/components/TierBadge";
 import { attemptDepth } from "@/lib/guide/attempt";
 import { EVIDENCE_LEVELS, type Evidence } from "@/lib/guide/schema";
-import { loadGuide } from "@/lib/store";
+import { cache } from "react";
+import { safeHref } from "@/lib/guide/url";
+import { loadGuide as loadGuideUncached } from "@/lib/store";
+
+// One store read per request, shared by metadata and the page.
+const loadGuide = cache(loadGuideUncached);
 
 type Params = { params: Promise<{ slug: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
@@ -41,18 +46,18 @@ export default async function GuidePage({ params, searchParams }: Params): Promi
         <h1 className="text-3xl sm:text-4xl">{guide.app.name}</h1>
         <p className="text-sm text-muted">
           {guide.app.provider}
-          {guide.app.website ? (
+          {safeHref(guide.app.website) ? (
             <>
               {" · "}
-              <a href={guide.app.website} target="_blank" rel="noreferrer noopener">
+              <a href={safeHref(guide.app.website)} target="_blank" rel="noreferrer noopener">
                 {guide.app.website.replace(/^https?:\/\//, "")}
               </a>
             </>
           ) : null}
-          {guide.app.developerPortalUrl ? (
+          {safeHref(guide.app.developerPortalUrl) ? (
             <>
               {" · "}
-              <a href={guide.app.developerPortalUrl} target="_blank" rel="noreferrer noopener">
+              <a href={safeHref(guide.app.developerPortalUrl)} target="_blank" rel="noreferrer noopener">
                 Developer portal
               </a>
             </>
@@ -80,8 +85,8 @@ export default async function GuidePage({ params, searchParams }: Params): Promi
           <details className="text-sm">
             <summary className="cursor-pointer text-muted">Which kind of app to create ({guide.oauth.appTypes.length} options)</summary>
             <ul className="mt-2 space-y-1">
-              {guide.oauth.appTypes.map((t) => (
-                <li key={t.name}>
+              {guide.oauth.appTypes.map((t, index) => (
+                <li key={`${index}-${t.name}`}>
                   {t.name}: <span className="text-muted">{t.whenToUse}</span>
                 </li>
               ))}

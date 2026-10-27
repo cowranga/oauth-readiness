@@ -56,6 +56,7 @@ export function GenerateRunner({ query, fresh }: { query: string; fresh: boolean
     setNow(begin);
     const push = (event: AgentEvent): void => setLines((prev) => [...prev, { at: Date.now() - begin, event }]);
     (async () => {
+      let finishedCleanly = false;
       try {
         const response = await fetch("/api/generate", {
           method: "POST",
@@ -65,12 +66,20 @@ export function GenerateRunner({ query, fresh }: { query: string; fresh: boolean
         if (!response.body) throw new Error("no response body");
         for await (const event of readSse(response.body)) {
           push(event);
-          if (event.type === "error") setFailure({ message: event.message, retryable: event.retryable });
-          if (event.type === "done") router.replace(`/guides/${event.slug}`);
+          if (event.type === "error") {
+            finishedCleanly = true;
+            setFailure({ message: event.message, retryable: event.retryable });
+          }
+          if (event.type === "done") {
+            finishedCleanly = true;
+            router.replace(`/guides/${event.slug}`);
+          }
         }
       } catch {
-        setFailure({ message: "The connection dropped before the guide was ready. Try again.", retryable: true });
+        // handled below
       }
+      // A stream that ends with no done or error event means the server was cut off (for example a timeout).
+      if (!finishedCleanly) setFailure({ message: "The connection dropped before the guide was ready. Try again.", retryable: true });
     })();
   }, [attempt, query, fresh, router]);
 
@@ -85,7 +94,7 @@ export function GenerateRunner({ query, fresh }: { query: string; fresh: boolean
     <div className="max-w-[720px] space-y-4">
       <div className="flex items-baseline justify-between gap-3">
         <h1 className="text-2xl">Researching {query}</h1>
-        <span className="font-mono text-sm text-muted" aria-label="Elapsed time">
+        <span className="font-mono text-sm text-muted">
           {elapsed}s
         </span>
       </div>
@@ -93,7 +102,7 @@ export function GenerateRunner({ query, fresh }: { query: string; fresh: boolean
         The agent searches the provider&apos;s docs, opens the pages it cites, probes the live OAuth endpoints with a fake client, and checks
         Composio&apos;s managed app list. This usually takes about a minute. You can leave this tab open.
       </p>
-      <ol className="space-y-1 rounded-md border border-border bg-card p-4 font-mono text-xs" aria-live="polite">
+      <ol className="space-y-1 rounded-md border border-border bg-card p-4 font-mono text-xs" role="log" aria-label="Agent progress">
         {lines.length === 0 ? <li className="text-muted">Starting...</li> : null}
         {lines.map((line, index) => (
           <li key={index} className={`flex gap-3 ${line.event.type === "error" ? "text-destructive" : ""}`}>
