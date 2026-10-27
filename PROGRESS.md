@@ -81,3 +81,7 @@
 - changed: Composio managed status from the tool now overrides the model (BeReal run showed the model overwriting "unknown"); LIVE_TESTS rows 2/3/4/6 filled; EVAL v2 section; README/handoff wording.
 - verified: `npm test` 121 pass, lint, tsc.
 - next (proposed to the human, not done): code gate on minimum research before submit_guide, then 2 re-runs.
+
+## 2026-10-28 morning: research-minimum gate experiment (reverted)
+- tried: loop sends back an early submit_guide once until 2 searches + 5 pages. v3 runs (live attempts 21, 22): Microsoft 112.4s tier 2 (in=79076 out=17829), LinkedIn 127.4s tier 5 (in=103501 out=22927). Both sent back once, then met the minimum.
+- result: same tiers as v2, key facts still missing, runs about twice as long. Reverted the code; kept verification/raw/*.v3.json and recorded it in EVAL.md and LESSONS.md (lesson 13).

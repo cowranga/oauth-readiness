@@ -43,6 +43,10 @@ v1 got the tier exactly right for 5 of 7 apps, and within one tier for all 7. Bo
 | 11 | Portal probe overclaimed | "Loads without sign-in" for a client-rendered page that asks for sign-in in a browser. | Code: `interpretProbe` now says only what the HTTP response shows. |
 | 12 | Cited pages it never opened | Hard rule 3 forbids this. Prompts alone do not guarantee it. | Code: `auditEvidence` downgrades any live "sourced" claim whose URL was not fetched during the run, and any "probed" claim without a matching probe. |
 
-## What is not yet measured
+## Measured the next morning
+
+Prompt v2 did not fix the two tier misses (docs/EVAL.md). I then tried enforcing the research minimum in code. Runs did more research but reached the same tiers, and took about twice as long, so I reverted it. Lesson 13: depth of search was not the cause. The fix that worked overnight was an independent verifier, so live guides need a short verification pass, not more research.
+
+## Originally not yet measured
 
 Prompt v2 has not been run live. The API account ran out of credits before the v2 re-runs (see PROGRESS.md, Blocked). `scripts/live-tests.sh` runs v2 on Microsoft and LinkedIn, the two apps v1 under-tiered, and refreshes `docs/EVAL.md`. Until then, the v2 changes are untested hypotheses.
