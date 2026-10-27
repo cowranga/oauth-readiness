@@ -12,11 +12,13 @@ export class InputError extends Error {}
 
 const MAX_LENGTH = 200;
 const LOOKS_LIKE_URL = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(:\d+)?(\/\S*)?$/i;
+// "Node.js", "Next.js", "Monday.com" without a scheme are product names more often than websites.
+const NAME_SUFFIX = /\.(js|ts)$/i;
 
 export function slugify(text: string): string {
   return text
     .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/\p{M}/gu, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
@@ -29,8 +31,13 @@ export function normalizeInput(raw: string): NormalizedInput {
   if (query.length === 0) throw new InputError("Type an app name or website, for example Gmail or https://slack.com.");
   if (query.length > MAX_LENGTH) throw new InputError(`Keep it under ${MAX_LENGTH} characters: just the app name or its website.`);
 
-  if (!query.includes(" ") && LOOKS_LIKE_URL.test(query)) {
-    const url = new URL(/^https?:\/\//i.test(query) ? query : `https://${query}`);
+  if (!query.includes(" ") && LOOKS_LIKE_URL.test(query) && !NAME_SUFFIX.test(query)) {
+    let url: URL;
+    try {
+      url = new URL(/^https?:\/\//i.test(query) ? query : `https://${query}`);
+    } catch {
+      throw new InputError("That website address does not look valid. Try just the domain, like slack.com.");
+    }
     const domain = url.hostname.toLowerCase().replace(/^www\./, "");
     const name = nameFromDomain(domain);
     return { query, kind: "url", name, domain, slug: slugify(name) || "app" };

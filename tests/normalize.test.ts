@@ -30,3 +30,12 @@ describe("slugify", () => {
     expect(slugify("Café & Co.")).toBe("cafe-co");
   });
 });
+
+describe("normalizeInput edge cases from review", () => {
+  it("turns an invalid port into a friendly InputError", () => {
+    expect(() => normalizeInput("slack.com:99999")).toThrow(InputError);
+  });
+  it("treats Node.js style names as names", () => {
+    expect(normalizeInput("Node.js")).toMatchObject({ kind: "name", name: "Node.js" });
+  });
+});

@@ -13,7 +13,9 @@ const STAGE_NAMES: Record<StageId, string> = { prototype: "Prototype", limited: 
 export function postprocess(input: Guide): Guide {
   const guide = structuredClone(input);
   const date = guide.generatedAt.slice(0, 10);
-  guide.evidence = guide.evidence.map((e) => fixEvidenceLevel(e, guide.origin));
+  stripUnsafeUrls(guide);
+  guide.evidence = dedupeById(guide.evidence).map((e) => fixEvidenceLevel(e, guide.origin));
+  guide.steps = uniqueStepIds(guide.steps);
   inferScopeTierUseCases(guide, date);
   guide.stages = normalizeStages(guide);
   guide.steps = sortSteps(guide.steps);
@@ -27,6 +29,7 @@ export function postprocess(input: Guide): Guide {
 /** Rules 2 and 3: no URL means inferred; live guides never claim tested. */
 export function fixEvidenceLevel(evidence: Evidence, origin: Guide["origin"]): Evidence {
   const fixed = { ...evidence };
+  if (!isHttpUrl(fixed.sourceUrl)) delete fixed.sourceUrl;
   if (origin === "live" && fixed.level === "tested") fixed.level = "sourced";
   if (fixed.level !== "inferred" && !isHttpUrl(fixed.sourceUrl)) {
     fixed.level = "inferred";
@@ -35,7 +38,29 @@ export function fixEvidenceLevel(evidence: Evidence, origin: Guide["origin"]): E
   return fixed;
 }
 
-function isHttpUrl(value: string | undefined): boolean {
+// Model output comes from untrusted pages; only http(s) links may reach hrefs or Markdown.
+function stripUnsafeUrls(guide: Guide): void {
+  if (!isHttpUrl(guide.app.developerPortalUrl)) delete guide.app.developerPortalUrl;
+  if (!isHttpUrl(guide.app.website)) guide.app.website = "";
+  for (const step of guide.steps) if (!isHttpUrl(step.url)) delete step.url;
+}
+
+function dedupeById<T extends { id: string }>(items: T[]): T[] {
+  const seen = new Set<string>();
+  return items.filter((item) => !seen.has(item.id) && seen.add(item.id));
+}
+
+// Step ids drive ?done= progress and React keys, so they must be unique.
+function uniqueStepIds(steps: Guide["steps"]): Guide["steps"] {
+  const seen = new Set<string>();
+  return steps.map((step, index) => {
+    const id = seen.has(step.id) ? `${step.id}-${index + 1}` : step.id;
+    seen.add(id);
+    return { ...step, id };
+  });
+}
+
+export function isHttpUrl(value: string | undefined): boolean {
   if (!value) return false;
   try {
     const url = new URL(value);
@@ -127,6 +152,9 @@ function attachMissingEvidence(guide: Guide, date: string): void {
       added = true;
     }
   }
+  for (const entry of guide.changelog) {
+    if (entry.evidenceIds) entry.evidenceIds = entry.evidenceIds.filter((id) => known.has(id));
+  }
   if (added && !known.has(NO_SOURCE_ID)) {
     guide.evidence.push({
       id: NO_SOURCE_ID,
@@ -139,11 +167,19 @@ function attachMissingEvidence(guide: Guide, date: string): void {
   }
 }
 
-/** Rule 8: high confidence needs at least one non-inferred source behind the verdict. */
+const OFFICIAL_KINDS = new Set(["official_docs", "official_policy", "official_forum_or_blog", "probe"]);
+
+/**
+ * Rule 8 plus the confidence rules: high needs 2+ non-inferred items behind the verdict, one of them official;
+ * medium needs at least one non-inferred item.
+ */
 function capConfidence(guide: Guide): void {
-  if (guide.verdict.confidence !== "high") return;
-  const levels = guide.verdict.evidenceIds.map((id) => guide.evidence.find((e) => e.id === id)?.level);
-  if (levels.every((level) => level === "inferred" || level === undefined)) guide.verdict.confidence = "medium";
+  const backing = guide.verdict.evidenceIds
+    .map((id) => guide.evidence.find((e) => e.id === id))
+    .filter((e): e is Evidence => e !== undefined && e.level !== "inferred");
+  const official = backing.some((e) => e.level === "tested" || OFFICIAL_KINDS.has(e.sourceKind ?? ""));
+  if (guide.verdict.confidence === "high" && !(backing.length >= 2 && official)) guide.verdict.confidence = "medium";
+  if (guide.verdict.confidence === "medium" && backing.length === 0) guide.verdict.confidence = "low";
 }
 
 /** Rule 9: no OAuth means nothing to approve; say so plainly. */

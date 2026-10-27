@@ -1,4 +1,5 @@
 import type { Guide, Stage } from "./schema";
+import { NO_SOURCE_ID } from "./postprocess";
 import { REVIEW_LEVEL_LABEL, USE_CASE_LABEL } from "./tiers";
 
 // Guide -> Markdown for "Copy as Markdown" and /api/guides/[slug]?format=md.
@@ -18,7 +19,15 @@ export function formatHours(range: { min: number; max: number }): string {
 }
 
 function cell(text: string): string {
-  return text.replace(/\|/g, "\\|").replace(/\n/g, " ");
+  return oneLine(text).replace(/\|/g, "\\|");
+}
+
+function oneLine(text: string): string {
+  return text.replace(/\s*\n\s*/g, " ");
+}
+
+function isPlaceholder(stage: Stage): boolean {
+  return stage.evidenceIds.length === 1 && stage.evidenceIds[0] === NO_SOURCE_ID;
 }
 
 function stageWait(stage: Stage): string {
@@ -52,7 +61,7 @@ export function guideToMarkdown(guide: Guide, shareUrl?: string): string {
   push("## Time and effort", "", "| Stage | Who can connect | Hands-on | Waiting | Review |", "|---|---|---|---|---|");
   for (const stage of guide.stages) {
     push(
-      `| ${cell(stage.name)} | ${cell(stage.whoCanConnect)} | ${formatHours(stage.handsOnHours)} | ${cell(stageWait(stage))} | ${stage.reviewRequired ? "yes" : "no"} |`,
+      `| ${cell(stage.name)} | ${cell(stage.whoCanConnect)} | ${isPlaceholder(stage) ? "unknown" : formatHours(stage.handsOnHours)} | ${cell(stageWait(stage))} | ${stage.reviewRequired ? "yes" : "no"} |`,
     );
   }
   push("");
@@ -73,21 +82,21 @@ export function guideToMarkdown(guide: Guide, shareUrl?: string): string {
 
   push("## Steps", "");
   for (const step of guide.steps) {
-    push(`- [ ] **${step.title}** (${step.owner}, ${step.estimate}, ${step.stage}). ${step.detail}${step.url ? ` ${step.url}` : ""}`);
+    push(`- [ ] **${step.title}** (${step.owner}, ${step.estimate}, ${step.stage}). ${oneLine(step.detail)}${step.url ? ` ${step.url}` : ""}`);
   }
   push("");
 
   if (guide.blockers.length > 0) {
     push("## If you get stuck", "");
     for (const b of guide.blockers) {
-      push(`- **${b.symptom}.** Cause: ${b.cause} Fix: ${b.fix}${b.escalation ? ` Help: ${b.escalation}` : ""}`);
+      push(oneLine(`- **${b.symptom}.** Cause: ${b.cause} Fix: ${b.fix}${b.escalation ? ` Help: ${b.escalation}` : ""}`));
     }
     push("");
   }
 
   if (guide.uncertainties.length > 0) {
     push("## What we don't know", "");
-    for (const u of guide.uncertainties) push(`- **${u.question}** ${u.why} To resolve: ${u.howToResolve}`);
+    for (const u of guide.uncertainties) push(oneLine(`- **${u.question}** ${u.why} To resolve: ${u.howToResolve}`));
     push("");
   }
 

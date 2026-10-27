@@ -63,7 +63,7 @@ describe("postprocess", () => {
     const g = fixtureGuide();
     g.verdict.confidence = "high";
     g.verdict.evidenceIds = ["e3"];
-    expect(postprocess(g).verdict.confidence).toBe("medium");
+    expect(postprocess(g).verdict.confidence).toBe("low");
   });
 
   it("rule 9: no OAuth says so in the summary and keeps alternatives", () => {
@@ -93,5 +93,35 @@ describe("postprocess", () => {
     const before = JSON.stringify(g);
     postprocess({ ...g, verdict: { ...g.verdict, label: "x" } });
     expect(JSON.stringify(g)).toBe(before);
+  });
+});
+
+describe("postprocess review fixes", () => {
+  it("strips non-http URLs from model output", () => {
+    const g = fixtureGuide();
+    g.steps[0]!.url = "javascript:alert(1)";
+    g.app.developerPortalUrl = "data:text/html,hi";
+    g.evidence[0]!.sourceUrl = "javascript:alert(1)";
+    const out = postprocess(g);
+    expect(out.steps[0]!.url).toBeUndefined();
+    expect(out.app.developerPortalUrl).toBeUndefined();
+    expect(out.evidence[0]!.sourceUrl).toBeUndefined();
+    expect(out.evidence[0]!.level).toBe("inferred");
+  });
+  it("dedupes evidence ids and makes step ids unique", () => {
+    const g = fixtureGuide();
+    g.evidence.push({ ...g.evidence[0]!, level: "inferred" });
+    g.steps[1]!.id = "s1";
+    const out = postprocess(g);
+    expect(out.evidence.filter((e) => e.id === "e1")).toHaveLength(1);
+    expect(new Set(out.steps.map((s) => s.id)).size).toBe(out.steps.length);
+  });
+  it("high confidence needs two non-inferred sources", () => {
+    const g = fixtureGuide();
+    g.verdict.confidence = "high";
+    g.verdict.evidenceIds = ["e1"];
+    expect(postprocess(g).verdict.confidence).toBe("medium");
+    g.verdict.evidenceIds = ["e1", "e2"];
+    expect(postprocess(g).verdict.confidence).toBe("high");
   });
 });
