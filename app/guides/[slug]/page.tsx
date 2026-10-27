@@ -38,7 +38,7 @@ export default async function GuidePage({ params, searchParams }: Params): Promi
       <header className="max-w-[720px] space-y-4">
         <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-wider">
           <span className={`rounded border px-1.5 py-px ${seed ? "border-foreground" : "border-dashed border-border text-muted"}`}>
-            {seed ? "Verified seed" : "Live-generated, not checked by a person"}
+            {seed ? "Verified" : "Live, not verified"}
           </span>
           <span className="text-muted">Researched {guide.generatedAt.slice(0, 10)}</span>
           <span className="text-muted">Confidence {guide.verdict.confidence}</span>
@@ -68,7 +68,7 @@ export default async function GuidePage({ params, searchParams }: Params): Promi
           {guide.verdict.customerSideGate ? (
             <span
               className="inline-flex items-center gap-2 rounded border border-border px-2 py-0.5 font-mono text-xs uppercase tracking-wider"
-              title="Your users' admins may need to approve or allowlist your app."
+              title="Your users' admins may need to approve the app."
             >
               <span aria-hidden className="h-2 w-2 rounded-full bg-warning" />
               Customer-side gate
@@ -80,11 +80,11 @@ export default async function GuidePage({ params, searchParams }: Params): Promi
           {guide.verdict.summary} <EvidenceList ids={guide.verdict.evidenceIds} evidence={evidence} />
         </div>
         {guide.verdict.customerSideGate && guide.verdict.customerSideGateNote ? (
-          <p className="text-sm text-muted">Customer-side gate: {guide.verdict.customerSideGateNote}</p>
+          <p className="text-sm text-muted"><strong>Customer-side gate:</strong> {guide.verdict.customerSideGateNote}</p>
         ) : null}
         {guide.oauth.appTypes && guide.oauth.appTypes.length > 0 ? (
           <details className="text-sm">
-            <summary className="cursor-pointer text-muted">Which kind of app to create ({guide.oauth.appTypes.length} options)</summary>
+            <summary className="cursor-pointer text-muted">App types ({guide.oauth.appTypes.length})</summary>
             <ul className="mt-2 space-y-1">
               {guide.oauth.appTypes.map((t, index) => (
                 <li key={`${index}-${t.name}`}>
@@ -101,8 +101,7 @@ export default async function GuidePage({ params, searchParams }: Params): Promi
         </div>
         {seed ? (
           <p className="no-print text-xs text-muted">
-            Want to see what our live agent finds today?{" "}
-            <Link href={`/generate?q=${encodeURIComponent(guide.input.query)}&fresh=1`}>Generate a fresh live guide</Link>.
+            <Link href={`/generate?q=${encodeURIComponent(guide.input.query)}&fresh=1`}>Generate a live guide</Link> to compare with this one.
           </p>
         ) : null}
       </header>

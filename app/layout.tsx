@@ -8,8 +8,7 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jet
 
 export const metadata: Metadata = {
   title: "OAuth Readiness",
-  description:
-    "Look up an app and get a shareable guide for creating its OAuth app and getting it approved: effort, waiting time, blockers, and evidence.",
+  description: "Guides for creating and getting approval for an OAuth app: effort, wait time, review, and blockers.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>): React.ReactElement {
@@ -37,7 +36,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </header>
         <main className="mx-auto max-w-[1240px] px-4 py-8">{children}</main>
         <footer className="no-print mx-auto max-w-[1240px] border-t border-border px-4 py-6 text-xs text-muted">
-          Built as a take-home for Composio&apos;s APM Integrations role. Not an official Composio product.
+          A take-home for Composio&apos;s APM Integrations role. Not an official Composio product.
         </footer>
       </body>
     </html>

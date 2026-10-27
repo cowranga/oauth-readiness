@@ -11,14 +11,14 @@ export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map
       {guide.blockers.length > 0 ? (
         <section aria-labelledby="stuck">
           <h2 id="stuck" className="text-lg font-medium">
-            If you get stuck
+            Blockers
           </h2>
           <ul className="mt-3 space-y-3">
             {guide.blockers.map((b, index) => (
               <li key={`${index}-${b.symptom}`} className="rounded-md border border-border bg-card p-3 text-sm">
                 <p>{b.symptom}</p>
                 <p className="mt-1 text-muted">
-                  <span className="font-mono text-[10px] uppercase tracking-wider">Why: </span>
+                  <span className="font-mono text-[10px] uppercase tracking-wider">Cause: </span>
                   {b.cause}
                 </p>
                 <p className="mt-1">
@@ -27,7 +27,7 @@ export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map
                 </p>
                 {b.escalation ? (
                   <p className="mt-1 text-muted">
-                    <span className="font-mono text-[10px] uppercase tracking-wider">Get help: </span>
+                    <span className="font-mono text-[10px] uppercase tracking-wider">Help: </span>
                     {b.escalation}
                   </p>
                 ) : null}
@@ -42,16 +42,16 @@ export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map
 
       <section aria-labelledby="agent">
         <h2 id="agent" className="text-lg font-medium">
-          What the agent did, and what you must do
+          Agent and you
         </h2>
         <div className="mt-3 grid gap-4 sm:grid-cols-3">
-          <AssistList title="Our agent did" items={guide.agentAssist.didForYou} />
-          <AssistList title="An agent can do next" items={guide.agentAssist.canDoForYou} />
-          <AssistList title="Only you can do" items={guide.agentAssist.youMustDo} />
+          <AssistList title="Agent did" items={guide.agentAssist.didForYou} />
+          <AssistList title="Agent can do" items={guide.agentAssist.canDoForYou} />
+          <AssistList title="You must do" items={guide.agentAssist.youMustDo} />
         </div>
         {guide.drafts.length > 0 ? (
           <div className="mt-6 space-y-3">
-            <h3 className="text-base">Drafts to edit and paste</h3>
+            <h3 className="text-base">Drafts</h3>
             {guide.drafts.map((draft, index) => (
               <details key={`${index}-${draft.title}`} className="rounded-md border border-border bg-card p-3">
                 <summary className="cursor-pointer text-sm">
@@ -70,7 +70,7 @@ export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map
       {guide.uncertainties.length > 0 ? (
         <section aria-labelledby="unknowns">
           <h2 id="unknowns" className="text-lg font-medium">
-            What we don&apos;t know
+            Open questions
           </h2>
           <ul className="mt-3 space-y-3 text-sm">
             {guide.uncertainties.map((u, index) => (
@@ -108,7 +108,7 @@ export function GuideSections({ guide, evidence }: { guide: Guide; evidence: Map
       {guide.changelog.length > 0 ? (
         <section aria-labelledby="changes">
           <h2 id="changes" className="text-lg font-medium">
-            Changes after verification
+            Verification changes
           </h2>
           <ul className="mt-3 space-y-2 text-sm">
             {guide.changelog.map((c, index) => (

@@ -73,14 +73,14 @@ async function researchAndSubmit(input: NormalizedInput, options: RunOptions, us
     toolCalls += response.content.filter((b) => b.type === "server_tool_use").length;
 
     if (response.stop_reason === "pause_turn") continue;
-    if (response.stop_reason === "refusal") throw new AgentError("The model declined to research this input.", false);
+    if (response.stop_reason === "refusal") throw new AgentError("The model declined this request.", false);
 
     const toolUses = response.content.filter((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
     if (toolUses.length === 0) {
       const text = response.content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join(" ");
       const notFound = text.indexOf(NOT_FOUND_PREFIX);
       if (notFound >= 0) throw new AgentError(notFoundMessage(input, text.slice(notFound + NOT_FOUND_PREFIX.length)), false);
-      if (nudges++ >= 1) throw new AgentError("The agent stopped without producing a guide. Try again.", true);
+      if (nudges++ >= 1) throw new AgentError("The agent stopped without a guide. Try again.", true);
       messages.push({ role: "user", content: WRAP_UP_MESSAGE });
       wrappedUp = true;
       continue;
@@ -91,7 +91,7 @@ async function researchAndSubmit(input: NormalizedInput, options: RunOptions, us
       if (toolUse.name === "submit_guide") {
         const parsed = guideContentSchema.safeParse(toolUse.input);
         if (parsed.success) return finish(parsed.data, input, options, { started, usage, toolCalls, ctx });
-        if (repairs++ >= 1) throw new AgentError("The agent produced an invalid guide twice. Try again.", true);
+        if (repairs++ >= 1) throw new AgentError("The agent returned an invalid guide twice. Try again.", true);
         emit({ type: "status", message: "Fixing the guide format" });
         results.push({ type: "tool_result", tool_use_id: toolUse.id, is_error: true, content: repairMessage(formatIssues(parsed.error)) });
         continue;
@@ -109,12 +109,12 @@ async function researchAndSubmit(input: NormalizedInput, options: RunOptions, us
     const content: Anthropic.ContentBlockParam[] = [...results];
     if (outOfBudget && !wrappedUp) {
       wrappedUp = true;
-      emit({ type: "status", message: "Research budget reached. Writing the guide with what was found" });
+      emit({ type: "status", message: "Research time is up. Writing the guide" });
       content.push({ type: "text", text: WRAP_UP_MESSAGE });
     }
     messages.push({ role: "user", content });
   }
-  throw new AgentError("The agent ran out of turns before producing a guide. Try again.", true);
+  throw new AgentError("The agent ran out of turns. Try again.", true);
 }
 
 async function callModel(
@@ -150,16 +150,16 @@ async function callModel(
   try {
     return await stream.finalMessage();
   } catch (error) {
-    if (signal.aborted) throw new AgentError("The agent took too long. Try again, or try a more specific app name.", true);
-    if (error instanceof Anthropic.RateLimitError) throw new AgentError("The model is rate limited right now. Try again in a minute.", true);
-    if (error instanceof Anthropic.AuthenticationError) throw new AgentError("The server's model API key is not valid.", false);
+    if (signal.aborted) throw new AgentError("The agent timed out. Try again or enter a more specific app name.", true);
+    if (error instanceof Anthropic.RateLimitError) throw new AgentError("The model is rate limited. Try again in a minute.", true);
+    if (error instanceof Anthropic.AuthenticationError) throw new AgentError("The model API key is not valid.", false);
     if (error instanceof Anthropic.BadRequestError) {
       // Billing problems arrive as a plain 400 with no dedicated error type, so the message is the only signal.
       const billing = /credit balance|billing/i.test(error.message);
       throw new AgentError(
         billing
-          ? "Live generation is unavailable right now because the server's model API account is out of credits. The verified guides still work."
-          : "The model API rejected the request. This is a server problem, not your input.",
+          ? "Live guides are unavailable: the model API account is out of credits. Verified guides still work."
+          : "The model API rejected the request. This is a server error.",
         false,
       );
     }
@@ -222,5 +222,5 @@ function notFoundMessage(input: NormalizedInput, detail: string): string {
   const what = input.kind === "url" ? input.domain : `"${input.query}"`;
   const firstSentence = detail.trim().match(/^[^\n]*?[.!?](\s|$)/)?.[0] ?? detail.trim().split("\n")[0] ?? "";
   const reason = firstSentence.length <= 220 ? firstSentence.trim() : "";
-  return `We could not find an app called ${what}.${reason ? ` ${reason}` : ""} Check the spelling or paste the app's website.`;
+  return `No app found for ${what}.${reason ? ` ${reason}` : ""} Check the spelling or enter the app's website.`;
 }

@@ -4,16 +4,16 @@ export const ATTEMPT_LEVELS = ["docs_read", "endpoints_probed", "portal_checked"
 export type AttemptLevel = (typeof ATTEMPT_LEVELS)[number];
 
 export const ATTEMPT_LABEL: Record<AttemptLevel, { label: string; explain: string }> = {
-  docs_read: { label: "Docs read", explain: "Our agent read the provider's docs and policies." },
+  docs_read: { label: "Docs read", explain: "The agent read the provider's docs." },
   endpoints_probed: {
     label: "Endpoints probed",
-    explain: "Our agent called the live OAuth endpoints with a fake client and recorded the response.",
+    explain: "The agent called the OAuth endpoints with a fake client ID.",
   },
   portal_checked: {
     label: "Portal checked",
-    explain: "Our agent loaded the developer portal without signing in and saw what it requires.",
+    explain: "The agent loaded the developer portal without signing in.",
   },
-  human_setup: { label: "Set up by a person", explain: "A person followed the steps for real and noted what matched." },
+  human_setup: { label: "Set up by a person", explain: "A person completed the steps." },
 };
 
 // Portal probes are recorded with claims like "Developer portal at ... loads and asks you to sign in".

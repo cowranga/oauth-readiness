@@ -2,25 +2,25 @@ import type { Guide, ReviewLevel, Tier, UseCase } from "./schema";
 
 // The only place tier labels and meanings live (docs/PRODUCT.md tier table).
 export const TIERS: Record<Tier, { label: string; meaning: string; risk: "low" | "medium" | "high" }> = {
-  1: { label: "Self-serve", meaning: "Register and any user can connect. No review.", risk: "low" },
+  1: { label: "Self-serve", meaning: "Any user can connect after you register. No review.", risk: "low" },
   2: {
     label: "Self-serve, optional review",
-    meaning: "Works for any user without review. Review only for a public listing or higher limits.",
+    meaning: "Any user can connect. Review applies only to a public listing or higher limits.",
     risk: "low",
   },
   3: {
     label: "Review required",
-    meaning: "The provider must approve before users outside your test list can connect.",
+    meaning: "The provider must approve the app before users outside your test list can connect.",
     risk: "medium",
   },
   4: {
     label: "Review + external audit",
-    meaning: "Review plus a third-party security assessment, often paid and recurring.",
+    meaning: "Review plus a third-party security assessment. Often paid and yearly.",
     risk: "high",
   },
   5: {
     label: "Gated",
-    meaning: "Needs a partner application, paid tier, or business approval that may be refused.",
+    meaning: "Requires a partner application, paid plan, or business approval. The provider can refuse.",
     risk: "high",
   },
 };

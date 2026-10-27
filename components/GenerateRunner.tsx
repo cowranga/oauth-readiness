@@ -13,15 +13,15 @@ function describe(event: AgentEvent): string {
     case "status":
       return event.message;
     case "search":
-      return `Searching: ${event.query}`;
+      return `Search: ${event.query}`;
     case "read":
-      return `${event.ok ? "Read" : "Could not read"}: ${event.title ?? event.url}`;
+      return `${event.ok ? "Read" : "Failed"}: ${event.title ?? event.url}`;
     case "probe":
       return `Probe: ${event.result}`;
     case "finding":
       return event.message;
     case "done":
-      return "Guide ready. Opening it.";
+      return "Guide ready";
     case "error":
       return event.message;
   }
@@ -79,7 +79,7 @@ export function GenerateRunner({ query, fresh }: { query: string; fresh: boolean
         // handled below
       }
       // A stream that ends with no done or error event means the server was cut off (for example a timeout).
-      if (!finishedCleanly) setFailure({ message: "The connection dropped before the guide was ready. Try again.", retryable: true });
+      if (!finishedCleanly) setFailure({ message: "The connection dropped. Try again.", retryable: true });
     })();
   }, [attempt, query, fresh, router]);
 
@@ -99,11 +99,10 @@ export function GenerateRunner({ query, fresh }: { query: string; fresh: boolean
         </span>
       </div>
       <p className="text-sm text-muted">
-        The agent searches the provider&apos;s docs, opens the pages it cites, probes the live OAuth endpoints with a fake client, and checks
-        Composio&apos;s managed app list. This usually takes about a minute. You can leave this tab open.
+        The agent reads the provider&apos;s docs, probes the OAuth endpoints, and checks Composio&apos;s managed apps. This takes about a minute.
       </p>
       <ol className="space-y-1 rounded-md border border-border bg-card p-4 font-mono text-xs" role="log" aria-label="Agent progress">
-        {lines.length === 0 ? <li className="text-muted">Starting...</li> : null}
+        {lines.length === 0 ? <li className="text-muted">Starting</li> : null}
         {lines.map((line, index) => (
           <li key={index} className={`flex gap-3 ${line.event.type === "error" ? "text-destructive" : ""}`}>
             <span className="w-12 shrink-0 text-muted">{(line.at / 1000).toFixed(1)}s</span>
@@ -131,7 +130,7 @@ export function GenerateRunner({ query, fresh }: { query: string; fresh: boolean
               </button>
             ) : null}
             <Link href="/" className="rounded-md border border-white/15 px-4 py-2 text-foreground no-underline hover:bg-accent">
-              Back to the library
+              Back to library
             </Link>
           </div>
         </div>

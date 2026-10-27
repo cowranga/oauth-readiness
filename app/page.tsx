@@ -23,11 +23,8 @@ export default async function HomePage(): Promise<React.ReactElement> {
   return (
     <div className="space-y-12">
       <section className="max-w-[720px] space-y-3">
-        <h1 className="text-3xl sm:text-4xl">How hard is it to get your OAuth app approved?</h1>
-        <p className="text-muted">
-          Look up an app your AI agent needs to connect to. Get a shareable guide: how hard it is, hands-on time versus waiting time, what
-          triggers review, what can block you, and which claims are checked.
-        </p>
+        <h1 className="text-3xl sm:text-4xl">OAuth app approval guides</h1>
+        <p className="text-muted">Each guide shows the work, wait time, and review needed to get an app&apos;s OAuth app approved.</p>
       </section>
 
       <Library seeds={seeds} />
@@ -35,9 +32,9 @@ export default async function HomePage(): Promise<React.ReactElement> {
       {recent.length > 0 ? (
         <section aria-labelledby="recent" className="space-y-3">
           <h2 id="recent" className="text-xl font-medium">
-            Recently generated
+            Recent live guides
           </h2>
-          <p className="text-sm text-muted">Live guides written by the agent. Not checked by a person.</p>
+          <p className="text-sm text-muted">Written by the agent. Not verified.</p>
           <ul className="space-y-1 text-sm">
             {recent.map((g) => (
               <li key={g.slug} className="flex flex-wrap items-center gap-3">
@@ -52,9 +49,9 @@ export default async function HomePage(): Promise<React.ReactElement> {
 
       <section aria-labelledby="legend" className="space-y-3">
         <h2 id="legend" className="text-xl font-medium">
-          What the tiers mean
+          Tiers
         </h2>
-        <p className="text-sm text-muted">The tier is decided by what you wait on, not by how much you click.</p>
+        <p className="text-sm text-muted">The tier reflects what you wait on.</p>
         <ul className="space-y-2">
           {([1, 2, 3, 4, 5] as Tier[]).map((tier) => (
             <li key={tier} className="flex flex-wrap items-center gap-3 text-sm">
@@ -64,7 +61,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
           ))}
         </ul>
         <p className="text-sm text-muted">
-          A customer-side gate badge means your users&apos; admins may also need to approve your app. <Link href="/about">How guides are made and checked</Link>.
+          <strong>Customer-side gate</strong>: your users&apos; admins may need to approve the app. See <Link href="/about">About</Link> for how guides are made.
         </p>
       </section>
     </div>

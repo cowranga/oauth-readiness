@@ -34,7 +34,7 @@ export async function generateGuide(query: string, fresh: boolean, deps: Generat
   const input = normalizeInput(query);
   const seed = fresh ? undefined : deps.findSeed(input);
   if (seed) {
-    deps.emit({ type: "status", message: `${seed.app.name} has a verified guide. Opening it.` });
+    deps.emit({ type: "status", message: `Opening the verified ${seed.app.name} guide` });
     deps.emit({ type: "done", slug: seed.slug, durationMs: Date.now() - started });
     return { kind: "seed", slug: seed.slug };
   }
@@ -44,7 +44,7 @@ export async function generateGuide(query: string, fresh: boolean, deps: Generat
   if (deps.env.mockAgent) {
     outcome = { kind: "generated", guide: await runMockAgent(input, slug, deps.emit) };
   } else {
-    if (!deps.env.anthropicApiKey) throw new AgentError("Live generation is not configured on this server (no model API key).", false);
+    if (!deps.env.anthropicApiKey) throw new AgentError("Live guides are not configured: no model API key.", false);
     const result = await runAgent(input, {
       apiKey: deps.env.anthropicApiKey,
       model: deps.env.guideModel,

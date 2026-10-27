@@ -42,21 +42,21 @@ export function guideToMarkdown(guide: Guide, shareUrl?: string): string {
     lines.push(...items);
   };
 
-  push(`# ${guide.app.name}: OAuth app setup and approval`, "");
+  push(`# ${guide.app.name}: OAuth app guide`, "");
   push(`**Tier ${guide.verdict.tier}: ${guide.verdict.label}.** ${guide.verdict.summary}`, "");
   if (guide.oauth.support === "none") push("**This app does not offer OAuth.**", "");
   if (guide.verdict.customerSideGate) {
-    push(`**Customer-side gate:** ${guide.verdict.customerSideGateNote ?? "Your users' admins may need to approve your app."}`, "");
+    push(`**Customer-side gate:** ${guide.verdict.customerSideGateNote ?? "Your users' admins may need to approve the app."}`, "");
   }
   push(`**Next step:** ${guide.verdict.nextStep}`, "");
   push(
     `Confidence: ${guide.verdict.confidence}. Researched ${guide.generatedAt.slice(0, 10)}. ` +
-      `${guide.origin === "verified_seed" ? "Verified seed guide." : "Live-generated, not human-verified."}` +
+      `${guide.origin === "verified_seed" ? "Verified." : "Live, not verified."}` +
       (shareUrl ? ` Source: ${shareUrl}` : ""),
     "",
   );
 
-  push("## Start today with Composio", "", `Managed app: ${guide.composio.managedApp.replace("_", " ")}. ${guide.composio.note}`, "");
+  push("## Start today", "", `Composio-managed OAuth: ${guide.composio.managedApp.replace("_", " ")}. ${guide.composio.note}`, "");
 
   push("## Time and effort", "", "| Stage | Who can connect | Hands-on | Waiting | Review |", "|---|---|---|---|---|");
   for (const stage of guide.stages) {
@@ -67,7 +67,7 @@ export function guideToMarkdown(guide: Guide, shareUrl?: string): string {
   push("");
 
   if (guide.scopeTiers.length > 0) {
-    push("## Scopes decide the difficulty", "", "| Scope tier | Example scopes | Review | Serves | Effect |", "|---|---|---|---|---|");
+    push("## Scopes", "", "| Scope tier | Example scopes | Review | Serves | Effect |", "|---|---|---|---|---|");
     for (const tier of guide.scopeTiers) {
       push(
         `| ${cell(tier.name)} | ${cell(tier.exampleScopes.map((s) => `\`${s}\``).join(", "))} | ${REVIEW_LEVEL_LABEL[tier.reviewLevel]} | ${tier.useCases.map((u) => USE_CASE_LABEL[u]).join(", ")} | ${cell(tier.effect)} |`,
@@ -76,7 +76,7 @@ export function guideToMarkdown(guide: Guide, shareUrl?: string): string {
     push("");
   }
 
-  push("## What you need before you start", "");
+  push("## Requirements", "");
   for (const req of guide.requirements) push(`- [ ] ${req.item} (${req.stage})${req.detail ? `: ${req.detail}` : ""}`);
   push("");
 
@@ -87,7 +87,7 @@ export function guideToMarkdown(guide: Guide, shareUrl?: string): string {
   push("");
 
   if (guide.blockers.length > 0) {
-    push("## If you get stuck", "");
+    push("## Blockers", "");
     for (const b of guide.blockers) {
       push(oneLine(`- **${b.symptom}.** Cause: ${b.cause} Fix: ${b.fix}${b.escalation ? ` Help: ${b.escalation}` : ""}`));
     }
@@ -95,7 +95,7 @@ export function guideToMarkdown(guide: Guide, shareUrl?: string): string {
   }
 
   if (guide.uncertainties.length > 0) {
-    push("## What we don't know", "");
+    push("## Open questions", "");
     for (const u of guide.uncertainties) push(oneLine(`- **${u.question}** ${u.why} To resolve: ${u.howToResolve}`));
     push("");
   }

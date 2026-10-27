@@ -13,19 +13,19 @@ export function CopyButtons({ slug }: { slug: string }): React.ReactElement {
       await navigator.clipboard.writeText(await getText());
       flash(done);
     } catch {
-      flash("Copy failed. Your browser blocked the clipboard.");
+      flash("Copy failed: clipboard blocked");
     }
   };
   const button = "rounded-md border border-white/15 px-3 py-1.5 text-sm hover:bg-accent";
   return (
     <div className="no-print flex flex-wrap items-center gap-2">
-      <button type="button" className={button} onClick={() => copy(async () => window.location.href, "Link copied, with your progress.")}>
+      <button type="button" className={button} onClick={() => copy(async () => window.location.href, "Link copied")}>
         Copy link
       </button>
       <button
         type="button"
         className={button}
-        onClick={() => copy(async () => (await fetch(`/api/guides/${slug}?format=md`)).text(), "Markdown copied.")}
+        onClick={() => copy(async () => (await fetch(`/api/guides/${slug}?format=md`)).text(), "Markdown copied")}
       >
         Copy as Markdown
       </button>

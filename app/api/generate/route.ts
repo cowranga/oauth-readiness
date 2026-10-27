@@ -16,7 +16,7 @@ const bodySchema = z.object({ query: z.string().max(500), fresh: z.boolean().opt
 
 export async function POST(request: Request): Promise<Response> {
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
-  if (!parsed.success) return eventResponse({ type: "error", message: "Send JSON like {\"query\": \"Gmail\"}.", retryable: false }, 400);
+  if (!parsed.success) return eventResponse({ type: "error", message: "Send JSON: {\"query\": \"Gmail\"}.", retryable: false }, 400);
 
   const env = getEnv();
   const store = getStore();
@@ -30,14 +30,14 @@ export async function POST(request: Request): Promise<Response> {
 
   if (fresh || !findSeed(input)) {
     if (!allowRequest(clientIdFrom(request.headers))) {
-      return eventResponse({ type: "error", message: "You have started 5 guides in the last hour. Try again later, or browse the library.", retryable: false }, 429);
+      return eventResponse({ type: "error", message: "Limit reached: 5 live guides per hour. Try again later.", retryable: false }, 429);
     }
     try {
       if ((await store.countGeneration(new Date().toISOString().slice(0, 10))) > env.dailyCap) {
-        return eventResponse({ type: "error", message: "This demo has reached its daily limit for live guides. Try again tomorrow, or browse the library.", retryable: false }, 429);
+        return eventResponse({ type: "error", message: "Daily limit for live guides reached. Try again tomorrow.", retryable: false }, 429);
       }
     } catch {
-      return eventResponse({ type: "error", message: "Guide storage is not reachable right now. Try again in a minute.", retryable: true }, 503);
+      return eventResponse({ type: "error", message: "Guide storage is unavailable. Try again in a minute.", retryable: true }, 503);
     }
   }
 
@@ -60,7 +60,7 @@ export async function POST(request: Request): Promise<Response> {
       // Comment frames keep proxies from closing an idle connection while the model writes.
       heartbeat = setInterval(() => write(": keep-alive\n\n"), 15_000);
       try {
-        if (!store.persistent) send({ type: "status", message: "Note: this server has no persistent storage, so the share link may expire." });
+        if (!store.persistent) send({ type: "status", message: "This server has no persistent storage. The share link may expire." });
         await generateGuide(query, fresh, { env, emit: send, findSeed, save: (guide) => store.put(guide) });
       } catch (error) {
         send(toErrorEvent(error));
@@ -88,7 +88,7 @@ function toErrorEvent(error: unknown): AgentEvent {
   if (error instanceof InputError) return { type: "error", message: error.message, retryable: false };
   if (error instanceof AgentError) return { type: "error", message: error.message, retryable: error.retryable };
   console.error("generate failed", error instanceof Error ? error.message : "unknown error");
-  return { type: "error", message: "Something went wrong while building the guide. Try again.", retryable: true };
+  return { type: "error", message: "The guide could not be built. Try again.", retryable: true };
 }
 
 function eventResponse(event: AgentEvent, status: number): Response {

@@ -48,7 +48,7 @@ describe("runAgent loop (fake model, no network)", () => {
     const { result, sent, events } = await run([[toolUse("t1", "unknown_tool", {})], [toolUse("t2", "submit_guide", content())]], 0);
     const last = sent[1]!.at(-1)!;
     expect(JSON.stringify(last.content)).toContain(WRAP_UP_MESSAGE);
-    expect(events.some((e) => e.type === "status" && /budget reached/.test(e.message))).toBe(true);
+    expect(events.some((e) => e.type === "status" && /Research time is up/.test(e.message))).toBe(true);
     expect(result?.guide.slug).toBe("example-notes-test01");
     expect(result?.guide.origin).toBe("live");
   });
@@ -76,12 +76,12 @@ describe("runAgent loop (fake model, no network)", () => {
     expect(result).toBeUndefined();
     expect(error).toBeInstanceOf(AgentError);
     expect((error as AgentError).retryable).toBe(false);
-    expect((error as AgentError).message).toMatch(/^We could not find an app called "Example Notes"\. no product called Example Notes exists\./);
+    expect((error as AgentError).message).toMatch(/^No app found for "Example Notes"\. no product called Example Notes exists\./);
   });
 
   it("nudges once when the model stops without submitting, then gives up", async () => {
     const { error } = await run([[text("I think I am done.")], [text("Still done.")]]);
-    expect((error as AgentError).message).toMatch(/stopped without producing a guide/);
+    expect((error as AgentError).message).toMatch(/stopped without a guide/);
   });
 });
 

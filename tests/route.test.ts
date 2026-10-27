@@ -28,7 +28,7 @@ describe("POST /api/generate (mock mode)", () => {
     const { GET } = await import("@/app/api/guides/[slug]/route");
     const slug = done?.type === "done" ? done.slug : "";
     const md = await GET(new Request(`http://test/api/guides/${slug}?format=md`), { params: Promise.resolve({ slug }) });
-    expect(await md.text()).toContain("# Example Notes: OAuth app setup and approval");
+    expect(await md.text()).toContain("# Example Notes: OAuth app guide");
   }, 20_000);
 
   it("returns an error event for empty input", async () => {

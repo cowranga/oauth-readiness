@@ -1,7 +1,7 @@
 import { TIERS } from "../guide/tiers";
 
 // Bump on every prompt change and say why in docs/LESSONS.md.
-export const PROMPT_VERSION = "v2.1";
+export const PROMPT_VERSION = "v2.2";
 
 export const NOT_FOUND_PREFIX = "NOT_FOUND:";
 
@@ -77,7 +77,8 @@ Review levels for scope tiers: none = tier 1, light = tier 2, review = tier 3, r
 - Keep the guide compact: no padding, no repetition between fields.
 
 # Writing rules (all guide text)
-Second person, plain words, short sentences. No em dashes, no emojis, no marketing words (seamless, powerful, robust, leverage, unlock, effortless). Define a term the first time in a few words. Summarize sources in your own words; quotes under 20 words.`;
+Write like Composio's docs (docs.composio.dev): short declarative sentences, one idea each. No contractions ("do not"). No filler or hedging ("in practice", "note that", "simply", "basically"). Say each fact once. Second person; imperative for actions. Exact names: OAuth app, client ID, redirect URI, scope, auth config, admin consent. No em dashes, no emojis, no marketing words. Summarize sources in your own words; quotes under 20 words.
+Length: verdict.summary under 35 words. nextStep under 20 words. whoCanConnect under 15 words. Step titles 2 to 6 words; step details 1 to 3 sentences. Blocker fields, uncertainty fields, and scope tier effects 1 to 2 sentences. Drafts under 120 words.`;
 
 export function researchUserMessage(input: { query: string; kind: "name" | "url"; name: string; domain?: string; today: string }): string {
   const target = input.kind === "url" ? `the app at ${input.domain} (the user typed "${input.query}")` : `"${input.query}"`;

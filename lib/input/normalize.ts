@@ -28,15 +28,15 @@ export function slugify(text: string): string {
 
 export function normalizeInput(raw: string): NormalizedInput {
   const query = raw.trim().replace(/\s+/g, " ");
-  if (query.length === 0) throw new InputError("Type an app name or website, for example Gmail or https://slack.com.");
-  if (query.length > MAX_LENGTH) throw new InputError(`Keep it under ${MAX_LENGTH} characters: just the app name or its website.`);
+  if (query.length === 0) throw new InputError("Enter an app name or website, such as Gmail or slack.com.");
+  if (query.length > MAX_LENGTH) throw new InputError(`Enter ${MAX_LENGTH} characters or fewer.`);
 
   if (!query.includes(" ") && LOOKS_LIKE_URL.test(query) && !NAME_SUFFIX.test(query)) {
     let url: URL;
     try {
       url = new URL(/^https?:\/\//i.test(query) ? query : `https://${query}`);
     } catch {
-      throw new InputError("That website address does not look valid. Try just the domain, like slack.com.");
+      throw new InputError("Enter a valid website, such as slack.com.");
     }
     const domain = url.hostname.toLowerCase().replace(/^www\./, "");
     const name = nameFromDomain(domain);
@@ -44,7 +44,7 @@ export function normalizeInput(raw: string): NormalizedInput {
   }
 
   const slug = slugify(query);
-  if (!slug) throw new InputError("That does not look like an app name. Try a name like Notion or a website like notion.so.");
+  if (!slug) throw new InputError("Enter an app name, such as Notion, or a website, such as notion.so.");
   return { query, kind: "name", name: query, slug };
 }
 

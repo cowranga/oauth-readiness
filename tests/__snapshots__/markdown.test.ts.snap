@@ -1,17 +1,17 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`guideToMarkdown > matches the snapshot for the fixture 1`] = `
-"# Example Notes: OAuth app setup and approval
+"# Example Notes: OAuth app guide
 
 **Tier 2: Self-serve, optional review.** Any user can connect as soon as you register. Review only matters if you want a directory listing.
 
 **Next step:** Create a public integration in the Example Notes developer portal.
 
-Confidence: medium. Researched 2026-10-28. Live-generated, not human-verified. Source: https://example.org/guides/example-notes-mock01
+Confidence: medium. Researched 2026-10-28. Live, not verified. Source: https://example.org/guides/example-notes-mock01
 
-## Start today with Composio
+## Start today
 
-Managed app: unknown. This is a fictional app, so there is no Composio toolkit for it.
+Composio-managed OAuth: unknown. This is a fictional app, so there is no Composio toolkit for it.
 
 ## Time and effort
 
@@ -20,7 +20,7 @@ Managed app: unknown. This is a fictional app, so there is no Composio toolkit f
 | Prototype | You and anyone you share the link with. | 15 min to 30 min | none | no |
 | Production | Any user. | 1 h to 3 h | Provider says 0 to 7 days; developers report 0 to 14 days | no |
 
-## Scopes decide the difficulty
+## Scopes
 
 | Scope tier | Example scopes | Review | Serves | Effect |
 |---|---|---|---|---|
@@ -28,7 +28,7 @@ Managed app: unknown. This is a fictional app, so there is no Composio toolkit f
 | Edit pages | \`pages:write\` | No review | Write data, Act while offline | No review. Refresh tokens are issued by default. |
 | Workspace admin | \`workspace:admin\` | Light review | Admin-level | A short form review before admin scopes work outside your own workspace. |
 
-## What you need before you start
+## Requirements
 
 - [ ] An Example Notes account (prototype)
 - [ ] A privacy policy URL (production): Needed only for a directory listing.
@@ -40,11 +40,11 @@ Managed app: unknown. This is a fictional app, so there is no Composio toolkit f
 - [ ] **Draft the directory listing text** (agent, 5 min, production). Use the app description draft below and edit it to match your product.
 - [ ] **Wait for listing review** (provider, 0 to 14 days, production). Only if you applied for a listing. Your app keeps working for all users while you wait.
 
-## If you get stuck
+## Blockers
 
 - **redirect_uri_mismatch on the consent screen.** Cause: The redirect URI in your request does not exactly match one registered on the integration. Fix: Copy the exact callback URL, including the trailing path, into the integration settings. Help: Example Notes developer forum
 
-## What we don't know
+## Open questions
 
 - **How long does listing review take in practice?** We found no developer reports. To resolve: Ask in the developer forum.
 

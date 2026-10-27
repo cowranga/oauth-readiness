@@ -53,13 +53,13 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
             <TierBadge tier={yourTier} noOauth={noOauth} />
             {!noOauth && guide.scopeTiers.length > 0 ? (
               <p className="text-xs text-muted">
-                Your tier for: {useCases.length ? useCases.map((u) => USE_CASE_LABEL[u]).join(", ") : "nothing selected"}. The header shows the overall tier.
+                For: {useCases.length ? useCases.map((u) => USE_CASE_LABEL[u]).join(", ") : "nothing selected"}
               </p>
             ) : null}
           </div>
           <dl className="grid grid-cols-2 gap-3 text-sm">
             <div>
-              <dt className="text-xs text-muted">Hands-on work</dt>
+              <dt className="text-xs text-muted">Hands-on</dt>
               <dd className="font-mono">{formatHours(totals.hours)}</dd>
             </div>
             <div>
@@ -68,7 +68,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
             </div>
           </dl>
           <div>
-            <p className="text-xs text-muted">Your next step</p>
+            <p className="text-xs text-muted">Next step</p>
             <p className="mt-1 text-sm">{next ? next.title : "All steps done."}</p>
           </div>
           <CopyButtons slug={guide.slug} />
@@ -78,7 +78,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
       <div className="min-w-0 space-y-10">
         <section aria-labelledby="next-step" className="rounded-md border border-border bg-card p-5">
           <h2 id="next-step" className="text-lg font-medium">
-            Your next step
+            Next step
           </h2>
           {next ? (
             <div className="mt-3 space-y-2">
@@ -94,7 +94,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
               ) : null}
             </div>
           ) : (
-            <p className="mt-3 text-sm text-muted">You have checked every step. Keep this link to show your team where you are.</p>
+            <p className="mt-3 text-sm text-muted">All steps done. Share this link to show your progress.</p>
           )}
           <div className="mt-4 flex items-center gap-3">
             <div className="h-1 flex-1 rounded bg-border" role="progressbar" aria-valuemin={0} aria-valuemax={progress.total} aria-valuenow={progress.done} aria-label="Steps done">
@@ -109,9 +109,9 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
         {!noOauth && guide.scopeTiers.length > 0 ? (
           <section aria-labelledby="needs">
             <h2 id="needs" className="text-lg font-medium">
-              What does your agent need to do?
+              What does your agent need?
             </h2>
-            <p className="mt-1 text-sm text-muted">Pick everything it needs. The difficulty depends on what you ask for.</p>
+            <p className="mt-1 text-sm text-muted">Select everything it does. Scopes decide the tier.</p>
             <div className="mt-4 flex flex-wrap items-center gap-2">
               {USE_CASES.map((useCase) => {
                 const selected = useCases.includes(useCase);
@@ -137,7 +137,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
             </div>
             {bestCaseTier < yourTier ? (
               <p className="mt-2 text-sm text-muted">
-                This is the hardest case among the marked rows. If the lighter scopes cover what your agent does, you may only need tier {bestCaseTier} ({TIERS[bestCaseTier].label}).
+                This is the hardest marked scope. If lighter scopes cover your use case, you need tier {bestCaseTier} ({TIERS[bestCaseTier].label}).
               </p>
             ) : null}
           </section>
@@ -145,10 +145,10 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
 
         <section aria-labelledby="start-today">
           <h2 id="start-today" className="text-lg font-medium">
-            Can you start today?
+            Start today
           </h2>
           <div className="mt-2 text-sm">
-            <span className="font-mono text-xs uppercase tracking-wider text-muted">Composio managed app: </span>
+            <span className="font-mono text-xs uppercase tracking-wider text-muted">Composio-managed OAuth: </span>
             {MANAGED_LABEL[guide.composio.managedApp]} <EvidenceList ids={guide.composio.evidenceIds} evidence={evidence} />
           </div>
           <p className="mt-2 text-sm text-muted">{guide.composio.note}</p>
@@ -158,7 +158,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
           <h2 id="time" className="text-lg font-medium">
             Time and effort
           </h2>
-          <p className="mt-1 text-sm text-muted">Hands-on work and waiting are different. You can build while you wait.</p>
+          <p className="mt-1 text-sm text-muted">You can build while you wait.</p>
           <div className="mt-3 overflow-x-auto">
             <table className="w-full min-w-[560px] text-left text-sm">
               <thead className="text-xs text-muted">
@@ -208,9 +208,9 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
         {guide.scopeTiers.length > 0 ? (
           <section aria-labelledby="scopes">
             <h2 id="scopes" className="text-lg font-medium">
-              Scopes decide the difficulty
+              Scopes
             </h2>
-            <p className="mt-1 text-sm text-muted">Rows that match what your agent needs are marked on the left.</p>
+            <p className="mt-1 text-sm text-muted">Scopes that match your selection are marked.</p>
             <ul className="mt-3 space-y-2">
               {guide.scopeTiers.map((scopeTier, index) => (
                 <li
@@ -235,7 +235,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
 
         <section aria-labelledby="requirements">
           <h2 id="requirements" className="text-lg font-medium">
-            What you need before you start
+            Requirements
           </h2>
           <ul className="mt-3 space-y-2">
             {guide.requirements.map((req) => (

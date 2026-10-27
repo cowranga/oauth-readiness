@@ -48,7 +48,7 @@ export function Library({ seeds }: { seeds: GuideSummary[] }): React.ReactElemen
             Get guide
           </button>
         </div>
-        <p className="text-xs text-muted">Verified guides open instantly. For any other app, an agent researches it live in about a minute.</p>
+        <p className="text-xs text-muted">Verified guides open instantly. Other apps are researched live in about a minute.</p>
       </form>
 
       <section id="library" aria-labelledby="library-heading" className="space-y-4">
@@ -75,7 +75,7 @@ export function Library({ seeds }: { seeds: GuideSummary[] }): React.ReactElemen
         </div>
         {shown.length === 0 ? (
           <p className="text-sm text-muted">
-            No verified guide matches. Press Get guide and the agent will research {query.trim() ? `"${query.trim()}"` : "it"} live.
+            No verified guide matches. Click <strong>Get guide</strong> to research it live.
           </p>
         ) : (
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
