@@ -13,11 +13,11 @@ Work top to bottom. Tick `[x]` only when the acceptance check passes. Time boxes
 
 ## Phase 1: Domain core (45 min)
 
-- [ ] **1.1 Schema.** `lib/guide/schema.ts` per docs/GUIDE_SCHEMA.md. `lib/guide/tiers.ts`.
-- [ ] **1.2 Postprocess.** `lib/guide/postprocess.ts` with all 9 rules, one test each.
-- [ ] **1.3 Markdown export.** `lib/guide/markdown.ts`. Output readable when pasted into GitHub, Slack, or Notion: title, verdict, next step, time table, requirements as checkboxes, steps, blockers, uncertainties, sources.
-- [ ] **1.4 Input normalize + slug.** `lib/input/normalize.ts` with tests (names, URLs with paths, `www.`, uppercase, junk, too long, empty).
-- [ ] **1.5 Fixture guide.** Hand-write one small valid fixture guide (`lib/agent/fixtures/guide.json`, clearly fake app "Example Notes") for mock mode and tests.
+- [x] **1.1 Schema.** `lib/guide/schema.ts` per docs/GUIDE_SCHEMA.md. `lib/guide/tiers.ts`.
+- [x] **1.2 Postprocess.** `lib/guide/postprocess.ts` with all 9 rules, one test each.
+- [x] **1.3 Markdown export.** `lib/guide/markdown.ts`. Output readable when pasted into GitHub, Slack, or Notion: title, verdict, next step, time table, requirements as checkboxes, steps, blockers, uncertainties, sources.
+- [x] **1.4 Input normalize + slug.** `lib/input/normalize.ts` with tests (names, URLs with paths, `www.`, uppercase, junk, too long, empty).
+- [x] **1.5 Fixture guide.** Hand-write one small valid fixture guide (`lib/agent/fixtures/guide.json`, clearly fake app "Example Notes") for mock mode and tests.
   - Accept (phase): tests pass; code-reviewer pass on the phase diff.
 
 ## Phase 2: Removed

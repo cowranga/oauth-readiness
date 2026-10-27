@@ -14,3 +14,8 @@
 - changed: Next 16.4 App Router + TS strict (noUncheckedIndexedAccess) + Tailwind 4 + eslint; zod 4, @anthropic-ai/sdk 1.3, geist, vitest 5, tsx; brand tokens in globals.css; layout with top bar/footer; check-secrets.sh; .env.example; .claude/agents/*.
 - verified: `npm run build`, `npm test` (1 pass), `npm run lint`, `tsc --noEmit`, `npm run check:secrets` all pass; planted fake key made check-secrets exit 1.
 - next: Phase 1 domain core (schema, tiers, postprocess).
+
+## 2026-10-27T21:25Z Tasks 1.1 to 1.5: Domain core
+- changed: lib/guide/{schema,tiers,attempt,postprocess,markdown}.ts, lib/input/normalize.ts, fixture guide "Example Notes", scripts/validate-guide.ts (schema + voice checks for subagents).
+- verified: `npm test` 28 pass (one test per postprocess rule, normalize cases, tierForUseCases, attemptDepth, markdown snapshot); lint and tsc clean.
+- next: code-reviewer on cf9f12a..HEAD (running), then Phase 3 safeFetch.

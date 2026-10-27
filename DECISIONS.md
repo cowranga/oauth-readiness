@@ -17,3 +17,7 @@
 - 2026-10-28 | Next.js 16.4 with `cacheComponents` turned off | why: classic dynamic rendering is simpler for store-backed pages and searchParams; fewer new rules to get wrong unattended | rejected: Cache Components (Suspense boundaries for all dynamic reads)
 - 2026-10-28 | Dev dep `tsx` | replaces: a build step for `npm run generate`/`eval` CLI scripts in TypeScript | why: Node cannot run .ts with path aliases directly
 - 2026-10-28 | `@types/node@^24` instead of scaffold's `^20` | why: vitest 5 peer range rejects 20.x types | rejected: --legacy-peer-deps
+- 2026-10-28 | `tierForUseCases`: per selected chip take the EASIEST scope tier serving it, then the hardest across chips | why: a developer picks the lightest scope that does the job; "hardest matching" would let an admin-only tier tagged `read` inflate every read selection | rejected: hardest matching tier (GUIDE_SCHEMA.md wording)
+- 2026-10-28 | No-OAuth guides get tier 1 plus a "This app does not offer OAuth" summary; UI shows "No OAuth" instead of the tier label | why: there is no OAuth app to approve, so no review wait; a gated tier would wrongly signal a long wait | rejected: tier 5
+- 2026-10-28 | Postprocess implements all 10 rules listed in GUIDE_SCHEMA.md (TASKS.md says 9) | why: the schema doc lists 10 | rejected: dropping rule 10
+- 2026-10-28 | Missing evidence uses one shared `e_nosource` inferred placeholder | why: avoids dozens of identical placeholder items | rejected: one placeholder per item
