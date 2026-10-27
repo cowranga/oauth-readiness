@@ -1,15 +1,16 @@
 # OAuth Readiness
 
-A guide to getting your OAuth app ready for launch.
+Understand what it takes to get your OAuth app ready for launch.
 
-- Live app: _link_
-- Repository: _link_
+**Live app:** https://gauranga-oauth-readiness.vercel.app/
+
+[![OAuth Readiness home page with verified guides](docs/screenshots/home.png)](https://gauranga-oauth-readiness.vercel.app/)
 
 ## Problem
 
 A developer building an AI agent can start with Composio's managed OAuth app. Before launch, they may need their own app and approval from the provider.
 
-The work is often straightforward. The wait is not. Security audits, partner programs, and customer admin approvals can turn a quick setup into months of waiting.
+The setup is often straightforward. The wait is not. Security audits, partner programs, and customer admin approvals can turn an hour of work into months of waiting.
 
 **OAuth Readiness helps developers understand the path before they build.** Enter an app name or website to get an actionable, shareable guide.
 
@@ -18,18 +19,17 @@ The work is often straightforward. The wait is not. Security audits, partner pro
 Each guide covers:
 
 - **Difficulty:** A tier from 1 (self-serve) to 5 (gated), based on approval requirements.
-- **Scope:** Select what your agent needs to do and see how it affects your tier.
-- **Time:** Estimated hands-on work and waiting time, shown separately.
+- **Time:** Hands-on work and waiting time, shown separately.
 - **Requirements:** Checkable steps tagged Agent, You, or Provider.
-- **Blockers:** What can go wrong, how to resolve it, and where to get help.
+- **Blockers:** Causes, fixes, and support resources.
 - **Drafts:** Scope justifications, demo scripts, and admin emails.
-- **Evidence:** Claims marked Tested, Probed, Sourced, or Inferred, with sources and research dates.
+- **Evidence:** Claims labelled Tested, Probed, Sourced, or Inferred, with sources and research dates.
 
-Guides also explain whether a Composio managed app is available and what changes when you switch to your own.
+Guides also explain how required OAuth scopes affect difficulty and whether a Composio managed app is available.
 
 ## Scope
 
-The library contains seven verified guides, chosen to cover different approval challenges.
+The library contains seven verified guides covering different approval challenges.
 
 | App | Tier | Main challenge |
 |---|---|---|
@@ -38,36 +38,32 @@ The library contains seven verified guides, chosen to cover different approval c
 | Microsoft Outlook | 3 | Customer admin approval |
 | LinkedIn | 3 | Restricted API access |
 | Slack | 2 | History access rate limits |
-| Salesforce | 2 | Installation across customer orgs |
+| Salesforce | 2 | Customer org installations |
 | GitHub | 2 | Organization owner approval |
 
-For other apps, a live agent researches the provider and generates a guide in about a minute.
+Other apps are researched by a live agent, which generates a guide in about a minute.
 
-I chose seven verified guides over 100 unchecked ones. The live agent covers apps outside the library, while the roadmap explains how to expand it safely.
+I chose seven verified guides over 100 unchecked ones. The live agent covers apps outside the library.
 
 ## How it works
 
 1. Enter an app name or website.
 2. The agent searches official documentation, opens cited pages, probes OAuth endpoints with a fake client ID, and checks Composio's managed app directory.
 3. It generates a guide in a fixed format. Invalid output gets one repair attempt.
-4. Code validates the evidence labels. A claim is Sourced only if its page was opened, and Probed only if the URL was actually tested.
+4. Code validates evidence labels. A claim is Sourced only if its page was opened, and Probed only if the URL was tested.
 5. The guide is saved at a shareable link.
 
-The agent does not sign in, create accounts, or submit forms. Tasks involving credentials, DNS, legal agreements, payments, or recordings remain with the developer.
+The agent never signs in, creates accounts, or submits forms. Credentials, DNS, legal agreements, payments, and recordings remain the developer's responsibility.
 
 ## Validation
 
-**Verified guides**
-
-A second agent independently checked the tier-deciding claims against their sources.
+**Verified guides:** A second agent independently checked tier-deciding claims against their sources.
 
 - 231 claims checked: 179 confirmed, 30 narrowed, 10 corrected, 12 unverified.
 - Most issues were overstatements rather than incorrect facts.
 - Corrections are documented in each guide and [verification/](verification/).
 
-**Live agent**
-
-See [docs/EVAL.md](docs/EVAL.md).
+**Live agent:** See [docs/EVAL.md](docs/EVAL.md).
 
 - Tier matched for 5 of 7 apps and was within one tier for all seven.
 - Microsoft and LinkedIn were each rated one tier too easy.
@@ -75,39 +71,17 @@ See [docs/EVAL.md](docs/EVAL.md).
 
 Prompt changes did not fix the tier errors. The verified guides got them right through deeper research and independent checks.
 
-**Edge cases**
-
-See [docs/LIVE_TESTS.md](docs/LIVE_TESTS.md). Websites, ambiguous names, API-key services, apps without public APIs, and invalid inputs were tested. None produced a fabricated guide.
+**Edge cases:** See [docs/LIVE_TESTS.md](docs/LIVE_TESTS.md). Websites, ambiguous names, API-key services, apps without public APIs, and invalid inputs were tested. None produced a fabricated guide.
 
 Lessons and resulting changes are documented in [docs/LESSONS.md](docs/LESSONS.md).
 
 No setup has been completed by a person, so no claim is marked Tested.
 
-## Key decisions
-
-- **Verified depth over library size.** Seven checked guides are more useful than 100 unchecked ones.
-- **Difficulty reflects waiting.** Customer admin approval is shown separately from provider approval.
-- **Work and waiting are separate.** A day of setup followed by six weeks of review is not a one-day task.
-- **The hardest required scope sets the tier.** Guides also explain when lighter scopes may work.
-- **Evidence is enforced in code.** The agent cannot mark an unopened source as Sourced.
-- **Progress is shareable.** No account is needed; progress is saved in the guide link.
-
-## Roadmap
-
-1. Generate guides for additional apps.
-2. Independently verify tier-deciding claims and escalate disagreements.
-3. Manually validate the 20 most-used apps.
-4. Recheck guides monthly.
-5. Collect developer reports when actual setup differs from the guide.
-
-Provider requirements change. Four of the seven providers changed their rules in the last 18 months.
-
 ## Limitations
 
-- Verified guides have not been tested through complete, human-run setup.
-- Live guides are generated in a single agent run and are not independently verified.
+- Live guides are not independently verified.
 - Waiting-time estimates rely on limited developer reports.
-- Guides are not rechecked automatically.
+- Provider requirements change, and guides are not rechecked automatically.
 - Rate limits are stored in memory per server instance.
 - Without Upstash, live guide links do not persist across redeployments.
 
