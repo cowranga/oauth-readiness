@@ -37,3 +37,25 @@ function pathKey(url: string): string {
 function joinNote(note: string | undefined, extra: string): string {
   return note ? `${note} ${extra}` : extra;
 }
+
+/** Probes the agent ran are facts about this run: record each as probed evidence even if the model forgot to cite it. */
+export function addProbeEvidence(guide: Guide, probes: { url: string; summary: string }[], date: string): Guide {
+  const cited = new Set(guide.evidence.filter((e) => e.level === "probed" && e.sourceUrl).map((e) => pathKey(e.sourceUrl ?? "")));
+  const missing = probes.filter((p) => !cited.has(pathKey(p.url)));
+  if (missing.length === 0) return guide;
+  const added = missing.map((probe, index) => ({
+    id: `e_probe_${index + 1}`,
+    level: "probed" as const,
+    claim: probe.summary,
+    sourceUrl: probe.url,
+    sourceKind: "probe" as const,
+    retrievedAt: date,
+    note: "Recorded automatically from the probe this run made.",
+  }));
+  const authorizeIds = added.filter((e) => /authorization endpoint/i.test(e.claim)).map((e) => e.id);
+  return {
+    ...guide,
+    oauth: { ...guide.oauth, evidenceIds: [...guide.oauth.evidenceIds, ...authorizeIds] },
+    evidence: [...guide.evidence, ...added],
+  };
+}

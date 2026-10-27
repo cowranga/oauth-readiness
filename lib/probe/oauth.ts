@@ -96,7 +96,7 @@ function interpretPortal(record: ProbeRecord): ProbeFinding {
   const wantsSignIn = (final && SIGN_IN.test(`${final.host} ${final.pathname}`)) || SIGN_IN.test(titleOf(record.body) ?? "");
   const summary = wantsSignIn
     ? `Developer portal at ${record.url} loads and asks you to sign in${final ? ` (${final.host})` : ""}. You need an account to register an app.`
-    : `Developer portal at ${record.url} loads without sign-in (HTTP ${status}).`;
+    : `Developer portal at ${record.url} answers a signed-out visitor with HTTP ${status}. The page may still ask you to sign in once it loads in a browser.`;
   return { ...base, ok: true, summary };
 }
 

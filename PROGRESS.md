@@ -19,3 +19,12 @@
 - changed: lib/guide/{schema,tiers,attempt,postprocess,markdown}.ts, lib/input/normalize.ts, fixture guide "Example Notes", scripts/validate-guide.ts (schema + voice checks for subagents).
 - verified: `npm test` 28 pass (one test per postprocess rule, normalize cases, tierForUseCases, attemptDepth, markdown snapshot); lint and tsc clean.
 - next: code-reviewer on cf9f12a..HEAD (running), then Phase 3 safeFetch.
+
+## 2026-10-27T22:10Z Tasks 3.1 to 3.6: Agent pipeline
+- changed: lib/net/safeFetch.ts (SSRF guard), lib/probe/oauth.ts (probes + pure interpretProbe from recorded Google/GitHub/Microsoft/LinkedIn shapes), lib/agent/{tools,audit,prompts,run,mock,generate}.ts, lib/composio/managed.ts (keyless managed-auth parse), scripts/generate.ts.
+- verified: `npm test` 82 pass; `MOCK_AGENT=1 npm run generate -- "Example"` writes a guide in 1.2s; live `npm run generate -- "Notion"` valid guide, tier 2, read and judged useful.
+- live runs so far: 2/30.
+  - run 1 (accidental, nonsense "Blorpify Zzz <pid> !!"): claude-sonnet-5-5, NOT_FOUND handled, clean error; tokens not captured (fixed: usage now attached to AgentError).
+  - run 2 "Notion": claude-sonnet-5-5, 43.4s, in=40209 out=5251 cacheRead=45250 cacheWrite=20427, 1 web search, 7 tool calls.
+- fixes from reading the Notion output: probe findings now always recorded as probed evidence; portal probe no longer claims "loads without sign-in" for client-side apps.
+- next: Phase 4 store, API, pages.

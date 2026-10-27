@@ -27,12 +27,12 @@ No 100-app catalog (decision, 2026-10-28). The 7 seeds are the library; the live
 
 ## Phase 3: Agent pipeline (100 min)
 
-- [ ] **3.1 Safe fetch.** `lib/net/safeFetch.ts` + SSRF tests.
-- [ ] **3.2 Probes.** `lib/probe/oauth.ts`: well-known discovery, invalid-client authorize probe, pure `interpretProbe` with tests from recorded response shapes.
-- [ ] **3.3 Tools.** `lib/agent/tools.ts`: `fetch_page`, `probe_oauth`, `check_composio_managed`, `submit_guide` (schema from zod). Errors returned as data.
-- [ ] **3.4 Prompts.** `lib/agent/prompts.ts` from docs/RESEARCH_PLAYBOOK.md + tier table + schema rules + voice rules. `PROMPT_VERSION = "v1"`.
-- [ ] **3.5 Run loop.** `lib/agent/run.ts` per ARCHITECTURE.md: budgets, deadline, forced synthesis, one repair attempt, postprocess, events via callback. `lib/agent/mock.ts` for `MOCK_AGENT=1`.
-- [ ] **3.6 CLI.** `scripts/generate.ts`: `npm run generate -- "<query>" [--out <dir>]` prints events and writes JSON.
+- [x] **3.1 Safe fetch.** `lib/net/safeFetch.ts` + SSRF tests.
+- [x] **3.2 Probes.** `lib/probe/oauth.ts`: well-known discovery, invalid-client authorize probe, pure `interpretProbe` with tests from recorded response shapes.
+- [x] **3.3 Tools.** `lib/agent/tools.ts`: `fetch_page`, `probe_oauth`, `check_composio_managed`, `submit_guide` (schema from zod). Errors returned as data.
+- [x] **3.4 Prompts.** `lib/agent/prompts.ts` from docs/RESEARCH_PLAYBOOK.md + tier table + schema rules + voice rules. `PROMPT_VERSION = "v1"`.
+- [x] **3.5 Run loop.** `lib/agent/run.ts` per ARCHITECTURE.md: budgets, deadline, forced synthesis, one repair attempt, postprocess, events via callback. `lib/agent/mock.ts` for `MOCK_AGENT=1`.
+- [x] **3.6 CLI.** `scripts/generate.ts`: `npm run generate -- "<query>" [--out <dir>]` prints events and writes JSON.
   - Accept: `MOCK_AGENT=1 npm run generate -- "Example"` works. With key: `npm run generate -- "Notion"` returns a valid guide in under 3 minutes; log duration and tokens. Inspect the output by reading it: is it actually useful? Fix the prompt if not.
 
 ## Phase 4: API and UI (100 min)

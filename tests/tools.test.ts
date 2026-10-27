@@ -77,3 +77,21 @@ describe("submit_guide tool", () => {
     expect("$schema" in tool.input_schema).toBe(false);
   });
 });
+
+describe("addProbeEvidence", () => {
+  it("adds uncited probes as probed evidence and links authorize probes to oauth", async () => {
+    const { addProbeEvidence } = await import("@/lib/agent/audit");
+    const g = fixtureGuide();
+    const out = addProbeEvidence(
+      g,
+      [
+        { url: "https://example.com/oauth/authorize?client_id=x", summary: "already cited" },
+        { url: "https://api.example.com/oauth/authorize?client_id=x", summary: "Authorization endpoint at api.example.com is live." },
+      ],
+      "2026-10-28",
+    );
+    expect(out.evidence).toHaveLength(g.evidence.length + 1);
+    expect(out.evidence.at(-1)).toMatchObject({ id: "e_probe_1", level: "probed", sourceKind: "probe" });
+    expect(out.oauth.evidenceIds).toContain("e_probe_1");
+  });
+});

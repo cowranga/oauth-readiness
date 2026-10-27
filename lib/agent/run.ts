@@ -3,7 +3,7 @@ import { guideContentSchema, type Guide, type GuideContent } from "../guide/sche
 import { postprocess } from "../guide/postprocess";
 import type { NormalizedInput } from "../input/normalize";
 import { MAX_PROBE_REQUESTS } from "../probe/oauth";
-import { auditEvidence } from "./audit";
+import { addProbeEvidence, auditEvidence } from "./audit";
 import type { EmitEvent } from "./events";
 import { NOT_FOUND_PREFIX, PROMPT_VERSION, repairMessage, researchUserMessage, SYSTEM_PROMPT, WRAP_UP_MESSAGE } from "./prompts";
 import { RESEARCH_TOOLS, runTool, submitGuideTool, WEB_SEARCH_TOOL, type ToolContext } from "./tools";
@@ -173,6 +173,7 @@ function finish(
     changelog: [],
   };
   const audited = auditEvidence(assembled, run.ctx.fetchedUrls, run.ctx.probes.map((p) => p.url));
+  audited.guide = addProbeEvidence(audited.guide, run.ctx.probes, assembled.generatedAt.slice(0, 10));
   if (audited.downgraded > 0) {
     options.emit({ type: "finding", message: `${audited.downgraded} claims cited pages the agent did not open, so they are marked inferred.` });
   }
