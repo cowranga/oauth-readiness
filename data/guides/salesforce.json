@@ -47,10 +47,10 @@
   "verdict": {
     "tier": 2,
     "label": "Self-serve, optional review",
-    "summary": "Salesforce does not approve your app: you ship an External Client App in a managed package and each customer's admin installs it. Review is only needed to list on AgentExchange or to reach Group and Professional Edition customers, but the admin install is a gate in every deal.",
+    "summary": "Salesforce does not approve your app: you ship an External Client App in a managed package and each customer's admin installs it, which is the gate in every deal. Security review is only needed to list on AgentExchange, to reach Group or Professional Edition orgs without the API add-on, or to remove the install notice that says your package is not authorized for distribution.",
     "nextStep": "Sign up for a free Developer Edition org and create a Local External Client App with the api and refresh_token scopes and PKCE required.",
     "customerSideGate": true,
-    "customerSideGateNote": "A customer admin must install your package and decide who may use it (self-authorize or pre-authorized profiles and permission sets). Admins can also set the refresh token policy, and orgs with API Access Control only allow allowlisted apps. The customer's edition must include API access.",
+    "customerSideGateNote": "A customer admin must install your package and decide who may use it (self-authorize or pre-authorized profiles and permission sets). Admins can also set the refresh token policy, and orgs with API Access Control only allow allowlisted apps, with no user-level bypass since late 2025. The customer's edition must include API access.",
     "confidence": "medium",
     "evidenceIds": [
       "e3",
@@ -59,17 +59,23 @@
       "e13",
       "e26",
       "e6",
-      "e7"
+      "e7",
+      "e31",
+      "e32",
+      "e33",
+      "e34",
+      "e30"
     ]
   },
   "composio": {
     "managedApp": "available",
-    "note": "Composio lists Salesforce with managed OAuth, so you can try it today without your own app. Users then see Composio's app, and your customers' admins may still need to allow or install it. Composio names private Salesforce subdomains as a reason to bring your own app. When you switch to your own auth config, only new connections use it; existing users stay on the old one until they reconnect.",
+    "note": "Composio lists Salesforce with managed OAuth, so you can try it today without your own app. Users then see Composio's app, and Composio's own FAQ says a customer admin may need to approve or install it before users can connect. Composio names private Salesforce subdomains as a reason to bring your own app. When you switch to your own auth config, only new connections use it; existing users stay on the old one until they reconnect.",
     "evidenceIds": [
       "e21",
       "e22",
       "e23",
-      "e6"
+      "e6",
+      "e29"
     ]
   },
   "stages": [
@@ -131,12 +137,13 @@
         "max": 42
       },
       "reviewRequired": false,
-      "notes": "Unlisted distribution needs no Salesforce wait. The provider-stated 4 to 6 weeks applies only if you go for an AgentExchange listing: 1 to 2 weeks to verify plus 3 to 4 weeks to test, and 2 to 3 weeks per resubmission. A consultancy says two or three round trips are common for first-timers, so plan for 2 to 4 months if you list. Listing prep adds a large amount of hands-on work not counted here.",
+      "notes": "Unlisted distribution needs no Salesforce wait. The provider-stated 4 to 6 weeks applies only if you go for an AgentExchange listing: 1 to 2 weeks to verify plus 3 to 4 weeks to test, and 2 to 3 weeks per resubmission. Salesforce says most submissions pass on the second attempt, and a consultancy says first-timers often need two or three rounds. Our estimate if you list: 2 to 4 months, including your fix time. Listing prep adds a large amount of hands-on work not counted here.",
       "evidenceIds": [
         "e8",
         "e9",
         "e10",
-        "e25"
+        "e25",
+        "e12"
       ]
     }
   ],
@@ -277,7 +284,7 @@
       "id": "r7",
       "item": "OAuth security controls turned on and attested",
       "stage": "production",
-      "detail": "PKCE, refresh token rotation, 30-day idle refresh token limit, and a refresh token IP allowlist, once you are a partner used by more than two customer production orgs.",
+      "detail": "PKCE, refresh token rotation, 30-day idle refresh token limit, and a refresh token IP allowlist (the allowlist only if your callback is a web URL, not localhost or a custom scheme), once you are a partner used by more than two customer production orgs.",
       "agentCanHelp": true,
       "evidenceIds": [
         "e14"
@@ -333,7 +340,7 @@
       "id": "s2",
       "stage": "prototype",
       "title": "Create a Local External Client App",
-      "detail": "In Setup, search External Client App Manager and click New External Client App. Enter a name and contact email, keep Distribution State Local, click Enable OAuth, add your callback URL, and select the api and refresh_token, offline_access scopes. Select Require PKCE and the option to issue a new refresh token on each refresh. Save, then copy the consumer key and secret from the Settings tab.",
+      "detail": "In Setup, search App Manager and click New External Client App. Enter a name and contact email, keep Distribution State Local, click Enable OAuth, add your callback URL, and select the api and refresh_token, offline_access scopes. Select Require PKCE and the option to issue a new refresh token on each refresh. Save. To copy the consumer key and secret later, open External Client App Manager, pick your app, and use the Settings tab (Salesforce emails you a code first).",
       "owner": "you",
       "estimate": "20 to 40 min",
       "evidenceIds": [
@@ -415,7 +422,8 @@
       "estimate": "15 min",
       "evidenceIds": [
         "e13",
-        "e6"
+        "e6",
+        "e31"
       ]
     },
     {
@@ -435,7 +443,7 @@
       "id": "s10",
       "stage": "production",
       "title": "Turn on the four OAuth controls and attest",
-      "detail": "On your app's OAuth settings, enable PKCE, refresh token rotation, Limit Idle Refresh Token TTL to 30 days, and Enforce Refresh Token IP Allowlist with your egress IPs. Test, then click Review Controls and confirm. The controls lock after that.",
+      "detail": "On your app's OAuth settings, enable PKCE, refresh token rotation, Limit Idle Refresh Token TTL to 30 Days, and, if your callback is a web URL, Enforce Refresh Token IP Allowlist with your egress IPs (256 addresses total). Test, then click Review Controls and confirm. The controls lock after that, though you can still edit the IP ranges.",
       "owner": "you",
       "estimate": "1 to 2 hours",
       "evidenceIds": [
@@ -552,7 +560,8 @@
       "cause": "The package has not passed security review.",
       "fix": "Explain it in your install email, or pass security review to remove the notice.",
       "evidenceIds": [
-        "e13"
+        "e13",
+        "e31"
       ]
     },
     {
@@ -563,6 +572,14 @@
       "evidenceIds": [
         "e10",
         "e25"
+      ]
+    },
+    {
+      "symptom": "Older connections for the same Salesforce user start failing with token errors.",
+      "cause": "Salesforce keeps only five active refresh tokens per user per app. A sixth connection can revoke the oldest.",
+      "fix": "Reuse one connection per user and app. Do not reconnect the same user repeatedly in tests.",
+      "evidenceIds": [
+        "e29"
       ]
     }
   ],
@@ -613,7 +630,7 @@
   "uncertainties": [
     {
       "question": "Can you sell to paying customers through an unlisted managed package without security review?",
-      "why": "Docs show it installs with a warning, but we did not find the partner agreement terms on unreviewed commercial distribution.",
+      "why": "Unreviewed packages install with a notice and work (e13, e33), but Salesforce calls them not authorized for distribution, and its review page says a not approved solution cannot be distributed to customers (e32). We did not find the partner agreement terms.",
       "howToResolve": "Ask your partner account manager or send the support email draft."
     },
     {
@@ -628,18 +645,13 @@
     },
     {
       "question": "What is the current security review fee?",
-      "why": "A Trailhead unit says $999 per attempt for paid solutions. Older guide versions listed $2,550 plus listing fees. The current ISVforce page does not state an amount.",
+      "why": "A current Trailhead unit says $999 per attempt for paid solutions. Search results show an older fee of $2,550 and an older fee table that may not charge resubmissions; we did not open those pages. The current ISVforce page does not state an amount.",
       "howToResolve": "Check the fee in the Partner Console review wizard."
     },
     {
       "question": "How long does security review really take?",
       "why": "We found Salesforce's stated times and a consultancy's view, but no first-hand developer reports with dates.",
       "howToResolve": "Search the Trailblazer Community ISV groups or ask other ISVs."
-    },
-    {
-      "question": "Does Composio's managed Salesforce app need customer admin approval after the September 2025 change?",
-      "why": "Composio's app is not installed in customer orgs by default, and uninstalled apps are now blocked for most users.",
-      "howToResolve": "Connect a fresh Developer Edition org through Composio's managed app and see if a standard user is blocked."
     }
   ],
   "evidence": [
@@ -700,11 +712,12 @@
     {
       "id": "e7",
       "level": "sourced",
-      "claim": "API Access Control lets an admin block API access except through allowlisted connected apps. It is turned on by request to Salesforce Customer Support. When on, installed apps are set to Admin approved users are pre-authorized, and only users with the assigned profile or permission set can use them. Users with Use Any API Client bypass it.",
+      "claim": "API Access Control lets an admin block API access except through allowlisted apps. It is turned on by request to Salesforce Customer Support. When on, installed apps are set to Admin approved users are pre-authorized, and only users with the assigned profile or permission set can use them.",
       "retrievedAt": "2026-10-28",
       "sourceUrl": "https://help.salesforce.com/s/articleView?id=xcloud.security_api_access_control_all_users.htm&type=5",
       "sourceTitle": "Restrict Access to APIs with Connected Apps",
-      "sourceKind": "official_docs"
+      "sourceKind": "official_docs",
+      "note": "Salesforce Help pages did not load for the verifier (JavaScript app), so this claim could not be rechecked. The earlier line that Use Any API Client bypasses API Access Control was removed: Salesforce is deprecating that bypass (e30)."
     },
     {
       "id": "e8",
@@ -727,7 +740,7 @@
     {
       "id": "e10",
       "level": "sourced",
-      "claim": "Managed packages and API solutions must pass security review to be distributed on AgentExchange (the marketplace formerly called AppExchange). Salesforce's typical times: 1 to 2 weeks to verify the submission, 3 to 4 weeks for the first test, 2 to 3 weeks to retest a resubmission. Free solutions pay no fee.",
+      "claim": "Managed packages and API solutions must pass security review to be distributed on AgentExchange (Salesforce's marketplace; older pages and partners call it AppExchange). Salesforce's typical times: 1 to 2 weeks to verify the submission, 3 to 4 weeks for the first test, 2 to 3 weeks to retest a resubmission. Free solutions pay no fee.",
       "retrievedAt": "2026-10-28",
       "sourceUrl": "https://developer.salesforce.com/docs/platform/isvforce/guide/security-review-how-it-works.html",
       "sourceTitle": "How the AgentExchange Security Review Works",
@@ -745,7 +758,7 @@
     {
       "id": "e12",
       "level": "sourced",
-      "claim": "For each paid solution, Salesforce asks for a $999 fee for the initial security review submission and for each later attempt, paid by card or bank account in the Partner Console.",
+      "claim": "For each paid solution, Salesforce asks for a $999 fee for the initial security review submission and for each later attempt, paid by card or bank account in the Partner Console. Most submissions pass on the second attempt.",
       "retrievedAt": "2026-10-28",
       "sourceUrl": "https://trailhead.salesforce.com/content/learn/modules/isv_security_review/isv_security_review_submit",
       "sourceTitle": "Trailhead: Guide to Submitting Your Solution for Security Review",
@@ -759,7 +772,7 @@
       "sourceUrl": "https://developer.salesforce.com/docs/platform/pkg1-dev/guide/packaging-install-notification.html",
       "sourceTitle": "Install Notifications for Unauthorized Managed Packages",
       "sourceKind": "official_docs",
-      "note": "Page sits in the first-generation packaging guide. We assume the same notice applies to 2GP managed packages; not confirmed."
+      "note": "Page sits in the first-generation packaging guide. The second-generation guide has the same text (e31)."
     },
     {
       "id": "e14",
@@ -892,7 +905,155 @@
       "claim": "Developers report that a packaged ECA can install fine in a customer org and still fail at authorization when the global OAuth settings association is wrong.",
       "retrievedAt": "2026-10-28",
       "note": "Seen only in search result snippets of a Trailblazer Community thread (OAUTH_AUTHORIZATION_BLOCKED, 'Cross-org OAuth flows are not supported'), which we did not open. Consistent with the association rules in e4."
+    },
+    {
+      "id": "e29",
+      "level": "sourced",
+      "claim": "Composio's Salesforce toolkit page lists Composio-managed OAuth as available. Its FAQ says users may see OAUTH_APPROVAL_ERROR_GENERIC or 'app must be installed into org', and the fix is for a Salesforce org admin to approve or install the app. It also says Salesforce keeps only five active refresh tokens per user per app, so a sixth connection can revoke the oldest.",
+      "sourceUrl": "https://docs.composio.dev/toolkits/salesforce",
+      "sourceTitle": "Composio: Salesforce toolkit",
+      "sourceKind": "composio_docs",
+      "retrievedAt": "2026-10-28",
+      "note": "FAQ answers are in collapsed sections; read from the page HTML."
+    },
+    {
+      "id": "e30",
+      "level": "sourced",
+      "claim": "A CData community post says Salesforce announced on October 15, 2025 that it is deprecating the Use Any API Client permission within API Access Control. With API Access Control on, only allowlisted apps can use the API.",
+      "sourceUrl": "https://community.cdata.com/ideas/if-you-use-api-access-control-salesforce-change-may-stop-dbamp-on-nov-4-2025-1722",
+      "sourceTitle": "CData Community: API Access Control change (Oct 2025)",
+      "sourceKind": "community",
+      "retrievedAt": "2026-10-28"
+    },
+    {
+      "id": "e31",
+      "level": "sourced",
+      "claim": "The second-generation packaging guide has the same install notice: customers must confirm they understand an unauthorized managed package is not authorized for distribution before installing. The notice is removed once the ISV Partner Program approves the package.",
+      "sourceUrl": "https://developer.salesforce.com/docs/atlas.en-us.264.0.pkg2_dev.meta/pkg2_dev/packaging_install_notification.htm",
+      "sourceTitle": "Install Notifications for Unauthorized Managed Packages (2GP guide)",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-28"
+    },
+    {
+      "id": "e32",
+      "level": "sourced",
+      "claim": "Salesforce's security review page says an approved solution can be listed and distributed to customers immediately. A not approved solution cannot be listed on AgentExchange or distributed to customers.",
+      "sourceUrl": "https://developer.salesforce.com/docs/platform/isvforce/guide/security-review-how-it-works.html",
+      "sourceTitle": "How the AgentExchange Security Review Works",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-28",
+      "note": "The page frames this in the context of AgentExchange listing. It does not say whether an unlisted package that never went to review may be sold."
+    },
+    {
+      "id": "e33",
+      "level": "sourced",
+      "claim": "An accepted 2019 answer on Salesforce Stack Exchange says a managed package installs and works without security review, and customers do not need to reinstall after the package passes review.",
+      "sourceUrl": "https://salesforce.stackexchange.com/questions/276138/managed-package-and-security-review",
+      "sourceTitle": "Salesforce Stack Exchange: Managed package and security review",
+      "sourceKind": "community",
+      "retrievedAt": "2026-10-28",
+      "note": "Read through the public Stack Exchange API because the page blocks plain fetches. The answer is from 2019."
+    },
+    {
+      "id": "e34",
+      "level": "sourced",
+      "claim": "A Torii admin guide says that since September 2025 most users are blocked from connected apps not installed in their org, and that Spring '26 turned off new connected app creation by default in the UI and the Metadata API, making external client apps the main way to define inbound integrations.",
+      "sourceUrl": "https://www.toriihq.com/articles/blog/how-to-audit-connected-apps-salesforce.txt",
+      "sourceTitle": "Torii: How to audit connected apps in Salesforce",
+      "sourceKind": "community",
+      "retrievedAt": "2026-10-28"
     }
   ],
-  "changelog": []
+  "changelog": [
+    {
+      "at": "2026-10-28",
+      "change": "Verdict summary now names Group and Professional Edition orgs without the API add-on, and the 'not authorized for distribution' install notice.",
+      "reason": "Professional Edition with the API add-on has API access without review (e8). Salesforce's own wording calls unreviewed packages not authorized for distribution (e31, e32). Added a community source that unreviewed packages install and work (e33) and a second source for the connected app changes (e35).",
+      "evidenceIds": [
+        "e8",
+        "e31",
+        "e32",
+        "e33",
+        "e34"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Removed the claim that users with Use Any API Client bypass API Access Control, and noted the bypass is going away.",
+      "reason": "A community post reports Salesforce deprecated Use Any API Client within API Access Control in October 2025. The cited help page could not be loaded to recheck.",
+      "evidenceIds": [
+        "e7",
+        "e30"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Composio note now says a customer admin may need to approve or install Composio's app. Removed the matching open question.",
+      "reason": "Composio's Salesforce toolkit FAQ answers it: the 'app must be installed into org' error is fixed by an org admin approving or installing the app.",
+      "evidenceIds": [
+        "e29"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Confirmed the install notice applies to 2GP packages and linked the 2GP guide.",
+      "reason": "The same page exists in the second-generation packaging guide.",
+      "evidenceIds": [
+        "e13",
+        "e31"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Production notes now give Salesforce's 'most pass on the second attempt' and label 2 to 4 months as our estimate.",
+      "reason": "The 2 to 4 month figure is not stated by any source. It is arithmetic from the stated stage times plus one or two retests and fix time.",
+      "evidenceIds": [
+        "e10",
+        "e12",
+        "e25"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Narrowed the IP allowlist control to apps with a web callback URL, and noted IP ranges stay editable after attestation.",
+      "reason": "The ISVforce page says to enable the allowlist only if the callback is not localhost, a Salesforce org, or a custom URL scheme, and that IP ranges can still be updated.",
+      "evidenceIds": [
+        "e14"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Step s2 now starts from App Manager and says a verification code is emailed before you can copy the key and secret.",
+      "reason": "The Salesforce CLI guide creates the app from App Manager and shows the email verification step on the Settings tab.",
+      "evidenceIds": [
+        "e16"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Rewrote two open questions: unreviewed distribution now cites Salesforce's 'not authorized for distribution' wording; the fee question says the older figures were not opened.",
+      "reason": "Keep uncertainty honest about what was read.",
+      "evidenceIds": [
+        "e12",
+        "e32",
+        "e33"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "e10 no longer says AgentExchange was 'formerly called AppExchange'.",
+      "reason": "The cited page uses only AgentExchange. Other pages use AppExchange, but none we read states the rename.",
+      "evidenceIds": [
+        "e10"
+      ]
+    },
+    {
+      "at": "2026-10-28",
+      "change": "Added a blocker: only five active refresh tokens per user per app.",
+      "reason": "Found on Composio's Salesforce toolkit FAQ while checking managed app status.",
+      "evidenceIds": [
+        "e29"
+      ]
+    }
+  ]
 }

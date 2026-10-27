@@ -55,7 +55,7 @@ What I learned while building this:
 - **Sourced:** most claims, each linked to the official page it came from, and opened during research.
 - **Inferred:** marked with a dashed badge and the reasoning. Mostly real-world wait times, where no source measures them.
 
-**How the seeds were checked.** A research agent wrote each seed from official sources. A second agent, with no access to the first one's notes, re-checked every tier-deciding claim against its cited page, looked for a second source, and fixed what was wrong. Across the seeds it checked about 230 claims: VERIFY_TOTALS. Most fixes were overstatements, not wrong facts. Every change is listed at the bottom of each guide and in `verification/<slug>.md`.
+**How the seeds were checked.** A research agent wrote each seed from official sources. A second agent, with no access to the first one's notes, re-checked every tier-deciding claim against its cited page, looked for a second source, and fixed what was wrong. Across the 7 seeds it checked 231 claims: 179 confirmed, 30 narrowed (overstated, made more precise), 10 corrected, 12 it could not verify, none removed. Most fixes were overstatements, not wrong facts. For example, the Salesforce guide said an unlisted app needs no approval; it works in practice, but Salesforce calls an unreviewed package "not authorized for distribution", and the guide now says so. Every change is listed at the bottom of each guide and in `verification/<slug>.md`.
 
 - What verification and the eval taught us, and how the prompt changed: [docs/LESSONS.md](docs/LESSONS.md)
 - Live generator against the verified seeds: [docs/EVAL.md](docs/EVAL.md). The tier was exact for 5 of 7 and within one for all 7; both misses were too easy. Prompt v2 is written but not yet measured.
