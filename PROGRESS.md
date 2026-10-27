@@ -40,3 +40,9 @@
   - salesforce: 67.5s, tier 2 (low confidence), in=24660 out=8201 cacheRead=45732 cacheWrite=18933, 2 searches
   - linkedin: 67.6s, tier 2, in=30121 out=11244 cacheRead=36200, 0 searches
 - next: oauth-researcher subagents (google-gmail, meta, microsoft-outlook running), finish Phase 4 pages meanwhile.
+
+## 2026-10-27T23:30Z Tasks 4.1 to 4.4: Store, API, pages, route test
+- changed: lib/store (file + Upstash REST + seeds loader), /api/generate (SSE, per-IP limit, daily cap, seed shortcut, maxDuration 300), /api/guides/[slug] (+ ?format=md), pages /, /guides/[slug], /generate, /about, not-found; components for tier/evidence/owner/attempt-depth/copy/interactive guide; lib/guide/progress.ts (URL state, tested).
+- verified: `npm test` 104 pass incl. mock route stream ending in done; `npm run build` ok; `MOCK_AGENT=1 npm run start` + curl: all pages 200, unknown slug 404, SSE ends with done, md endpoint ok; Playwright (cached browser): checking a step sets ?done=s1, chip sets ?use=, tier updates, home -> generate -> guide flow works; screenshots in docs/screenshots at 375 and 1280.
+- fixes found by looking: global link color overrode nav utilities (scoped to class-less links), sidebar tier now captioned as "your tier for <chips>", generate timer no longer renders Date.now() on the server (intermittent hydration warning).
+- next: Phase 4 code review; Phase 5 research agents running (google-gmail, meta, microsoft-outlook).

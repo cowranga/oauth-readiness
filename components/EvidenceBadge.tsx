@@ -20,7 +20,7 @@ export function EvidenceBadge({ evidence }: { evidence: Evidence }): React.React
       <div className="absolute left-0 z-20 mt-1 w-72 max-w-[80vw] rounded-md border border-border bg-popover p-3 text-xs leading-relaxed text-foreground shadow-lg">
         <p>{evidence.claim}</p>
         {evidence.sourceUrl ? (
-          <a href={evidence.sourceUrl} target="_blank" rel="noreferrer noopener" className="mt-2 block break-all">
+          <a href={evidence.sourceUrl} target="_blank" rel="noreferrer noopener" className="mt-2 block break-all text-ink">
             {evidence.sourceTitle ?? evidence.sourceUrl}
           </a>
         ) : null}

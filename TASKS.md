@@ -37,10 +37,10 @@ No 100-app catalog (decision, 2026-10-28). The 7 seeds are the library; the live
 
 ## Phase 4: API and UI (100 min)
 
-- [ ] **4.1 Store.** `lib/store/*` (file + Upstash REST) with file round-trip test.
-- [ ] **4.2 API.** `/api/generate` (SSE, rate limit, daily cap, seed shortcut, `fresh` flag, `maxDuration`), `/api/guides/[slug]` (+ `?format=md`).
-- [ ] **4.3 Pages.** `/`, `/guides/[slug]`, `/generate`, `/about` per docs/PRODUCT.md section order, ARCHITECTURE.md UI notes, and docs/DESIGN.md (styling time box: 45 min). Must include: use-case chips that highlight scope tiers and show "your tier" (pure function `tierForUseCases` in `lib/guide/tiers.ts`, tested); checkable steps and requirements with progress in the URL (`?done=`), next step = first unchecked step; attempt-depth indicator (pure function `attemptDepth(guide)`, tested); provider-stated vs developer-reported wait shown side by side when both exist. About page content: mental model, managed vs own app, tiers, evidence legend, how guides are made and checked, limitations.
-- [ ] **4.4 Route test.** With `MOCK_AGENT=1`, POST to `/api/generate` streams events and ends with `done`.
+- [x] **4.1 Store.** `lib/store/*` (file + Upstash REST) with file round-trip test.
+- [x] **4.2 API.** `/api/generate` (SSE, rate limit, daily cap, seed shortcut, `fresh` flag, `maxDuration`), `/api/guides/[slug]` (+ `?format=md`).
+- [x] **4.3 Pages.** `/`, `/guides/[slug]`, `/generate`, `/about` per docs/PRODUCT.md section order, ARCHITECTURE.md UI notes, and docs/DESIGN.md (styling time box: 45 min). Must include: use-case chips that highlight scope tiers and show "your tier" (pure function `tierForUseCases` in `lib/guide/tiers.ts`, tested); checkable steps and requirements with progress in the URL (`?done=`), next step = first unchecked step; attempt-depth indicator (pure function `attemptDepth(guide)`, tested); provider-stated vs developer-reported wait shown side by side when both exist. About page content: mental model, managed vs own app, tiers, evidence legend, how guides are made and checked, limitations.
+- [x] **4.4 Route test.** With `MOCK_AGENT=1`, POST to `/api/generate` streams events and ends with `done`.
   - Accept (phase): `npm run build` passes; run `npm run start` with `MOCK_AGENT=1`, curl the SSE endpoint and the md endpoint, fetch each page and confirm 200 + key headings present. If Playwright is quick to add, take screenshots at 375px and 1280px into `docs/screenshots/` and look at them; otherwise skip. code-reviewer pass.
 
 ## Phase 5: Seed guides (150 min)

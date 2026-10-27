@@ -36,6 +36,7 @@
   --font-mono: var(--font-jetbrains-mono), monospace;
 }
 
+@layer base {
 body {
   background: var(--background);
   color: var(--foreground);
@@ -48,7 +49,8 @@ strong {
   font-weight: 500;
 }
 
-a {
+/* Plain links are blue; links styled with utility classes keep their own color. */
+a:not([class]) {
   color: var(--brand-ink);
 }
 
@@ -59,6 +61,7 @@ a {
 
 input[type="checkbox"] {
   accent-color: var(--brand);
+}
 }
 
 /* Printed guides use the light values so they stay readable on paper. */

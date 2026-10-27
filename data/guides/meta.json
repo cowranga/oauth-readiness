@@ -1,0 +1,986 @@
+{
+  "schemaVersion": 1,
+  "slug": "meta",
+  "app": {
+    "name": "Meta (Facebook, Instagram, WhatsApp)",
+    "provider": "Meta Platforms",
+    "website": "https://developers.facebook.com",
+    "category": "Social and messaging",
+    "developerPortalUrl": "https://developers.facebook.com/apps/"
+  },
+  "input": {
+    "query": "Meta",
+    "kind": "name"
+  },
+  "origin": "verified_seed",
+  "generatedAt": "2026-10-28T00:00:00.000Z",
+  "generator": {
+    "model": "oauth-researcher subagent",
+    "promptVersion": "seed-v1"
+  },
+  "oauth": {
+    "support": "oauth2",
+    "pkce": "unknown",
+    "alternatives": "For your own accounts only, you can use tokens for people with a role on your app or a system user in your business portfolio. There is no Instagram API for personal accounts.",
+    "appTypes": [
+      {
+        "name": "Use case: Manage everything on your Page (Facebook Login for Business)",
+        "whenToUse": "Your users connect Facebook Pages, and Instagram accounts linked to those Pages. Adds pages_show_list and business_management."
+      },
+      {
+        "name": "Use case: Instagram API with Instagram Login",
+        "whenToUse": "Your users have Instagram business or creator accounts and may not have a Facebook Page. Uses instagram_business_* permissions on graph.instagram.com."
+      },
+      {
+        "name": "Use case: WhatsApp, onboarded as a Tech Provider",
+        "whenToUse": "Your users connect their WhatsApp Business accounts through Embedded Signup and you send messages for them."
+      }
+    ],
+    "evidenceIds": [
+      "e13",
+      "e14",
+      "e18",
+      "e25"
+    ]
+  },
+  "verdict": {
+    "tier": 3,
+    "label": "Review required",
+    "summary": "Users without a role on your app can only grant a permission after it gets Advanced Access, which needs App Review per permission plus Business Verification. Plan for about 1 to 8 weeks of waiting, and far less hands-on work.",
+    "nextStep": "Create a Meta app with the use cases you need, connect a business portfolio, and start Business Verification today while you build against your own test Page.",
+    "customerSideGate": true,
+    "customerSideGateNote": "The person connecting must have the right task on the Facebook Page or be an admin of their business portfolio. For WhatsApp, the client's business admin runs Embedded Signup and adds a payment method.",
+    "confidence": "high",
+    "evidenceIds": [
+      "e1",
+      "e3",
+      "e4",
+      "e14",
+      "e32"
+    ]
+  },
+  "composio": {
+    "managedApp": "available",
+    "note": "Composio lists Facebook, Instagram, and WhatsApp with managed OAuth, so you can start today without your own Meta app. Users then see Composio's app on the consent screen and you share its rate limits and scopes. When you switch to your own app, only new connections use it; existing users keep the old connection until they reconnect.",
+    "evidenceIds": [
+      "e27",
+      "e28",
+      "e29"
+    ]
+  },
+  "stages": [
+    {
+      "id": "prototype",
+      "name": "Prototype",
+      "whoCanConnect": "Only people with a role on your app (admin, developer, tester). They can grant any permission your use cases include.",
+      "handsOnHours": {
+        "min": 2,
+        "max": 6
+      },
+      "waitDays": {
+        "min": 0,
+        "max": 0
+      },
+      "reviewRequired": false,
+      "notes": "Standard Access is automatic. Use your own test Page, Instagram professional account, or a WhatsApp test number.",
+      "evidenceIds": [
+        "e1",
+        "e13"
+      ]
+    },
+    {
+      "id": "limited",
+      "name": "Limited beta",
+      "whoCanConnect": "Design partners you add as testers in App Roles, after they accept the invite with their Facebook account.",
+      "handsOnHours": {
+        "min": 1,
+        "max": 3
+      },
+      "waitDays": {
+        "min": 0,
+        "max": 2
+      },
+      "reviewRequired": false,
+      "notes": "Each beta user must accept a role on your app. This does not scale and is not meant for production. We did not confirm a tester count limit. For WhatsApp, Embedded Signup for client businesses needs Advanced Access first, so a WhatsApp beta is limited to numbers you own.",
+      "evidenceIds": [
+        "e1",
+        "e4",
+        "e20"
+      ]
+    },
+    {
+      "id": "production",
+      "name": "Production",
+      "whoCanConnect": "Any Facebook Page admin, Instagram professional account, or WhatsApp business, for the permissions that have Advanced Access.",
+      "handsOnHours": {
+        "min": 12,
+        "max": 30
+      },
+      "waitDays": {
+        "min": 7,
+        "max": 56
+      },
+      "providerStatedWaitDays": {
+        "min": 1,
+        "max": 7
+      },
+      "reviewRequired": true,
+      "notes": "Meta says App Review takes about a week. A forum report shows the dashboard estimating about 10 days. Business verification comes first and a WhatsApp partner reports up to 14 business days for it. Each rejection adds another review cycle. WhatsApp onboarding is capped at 200 new customers a week after approval.",
+      "evidenceIds": [
+        "e7",
+        "e10",
+        "e30",
+        "e31",
+        "e33",
+        "e20"
+      ]
+    }
+  ],
+  "scopeTiers": [
+    {
+      "name": "Log in only",
+      "exampleScopes": [
+        "public_profile",
+        "email"
+      ],
+      "reviewLevel": "none",
+      "useCases": [
+        "read"
+      ],
+      "effect": "public_profile is granted to every app. Enough to identify the user, not to touch their Pages or messages.",
+      "evidenceIds": [
+        "e1",
+        "e16"
+      ]
+    },
+    {
+      "name": "Read Facebook Pages",
+      "exampleScopes": [
+        "pages_show_list",
+        "pages_read_engagement"
+      ],
+      "reviewLevel": "review",
+      "useCases": [
+        "read",
+        "offline"
+      ],
+      "effect": "Needs App Review and Business Verification. Long-lived Page tokens have no expiry date, which fits background agents.",
+      "evidenceIds": [
+        "e16",
+        "e1",
+        "e23"
+      ]
+    },
+    {
+      "name": "Post and message as a Page",
+      "exampleScopes": [
+        "pages_manage_posts",
+        "pages_messaging",
+        "pages_manage_metadata"
+      ],
+      "reviewLevel": "review",
+      "useCases": [
+        "write",
+        "offline"
+      ],
+      "effect": "Each permission is reviewed on its own with a screencast of the action. pages_manage_posts depends on the read permissions, so you submit those too.",
+      "evidenceIds": [
+        "e16",
+        "e5"
+      ]
+    },
+    {
+      "name": "Instagram professional accounts",
+      "exampleScopes": [
+        "instagram_business_basic",
+        "instagram_business_manage_messages",
+        "instagram_business_content_publish",
+        "instagram_business_manage_comments"
+      ],
+      "reviewLevel": "review",
+      "useCases": [
+        "read",
+        "write"
+      ],
+      "effect": "Needs App Review and Business Verification. Only business or creator accounts can connect. Personal accounts cannot.",
+      "evidenceIds": [
+        "e14",
+        "e17",
+        "e15"
+      ]
+    },
+    {
+      "name": "WhatsApp messaging for clients",
+      "exampleScopes": [
+        "whatsapp_business_messaging",
+        "whatsapp_business_management"
+      ],
+      "reviewLevel": "review",
+      "useCases": [
+        "read",
+        "write",
+        "offline"
+      ],
+      "effect": "Tech Provider onboarding: business verification first, then App Review with two videos. Then 200 new client businesses a week; more needs Meta Business Partner status.",
+      "evidenceIds": [
+        "e18",
+        "e19",
+        "e20"
+      ]
+    },
+    {
+      "name": "Business portfolio assets",
+      "exampleScopes": [
+        "business_management"
+      ],
+      "reviewLevel": "review",
+      "useCases": [
+        "admin"
+      ],
+      "effect": "Reads and writes Business Manager assets. Needs App Review. The Page use case adds it by default, so be ready to justify it or explain it as a dependency.",
+      "evidenceIds": [
+        "e13",
+        "e16"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "r1",
+      "item": "Meta developer account and an app with the right use cases",
+      "stage": "prototype",
+      "detail": "Use cases cannot be removed later, so pick them on purpose.",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e13",
+        "e26"
+      ]
+    },
+    {
+      "id": "r2",
+      "item": "Business portfolio connected to the app",
+      "stage": "prototype",
+      "detail": "Required when your app accesses data you do not own. You can connect it at creation or later.",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e13"
+      ]
+    },
+    {
+      "id": "r3",
+      "item": "Test assets you own",
+      "stage": "prototype",
+      "detail": "A Facebook Page, an Instagram business or creator account, and a WhatsApp test number.",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e14"
+      ]
+    },
+    {
+      "id": "r4",
+      "item": "Verified business",
+      "stage": "production",
+      "detail": "Only a Business Admin can finish it. Documents must match your Business Info and website.",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e3",
+        "e30"
+      ]
+    },
+    {
+      "id": "r5",
+      "item": "App settings complete",
+      "stage": "production",
+      "detail": "1024x1024 icon without Meta logos, privacy policy URL, category, business email, platforms.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e10",
+        "e5"
+      ]
+    },
+    {
+      "id": "r6",
+      "item": "Data deletion instructions URL or callback",
+      "stage": "production",
+      "detail": "Set in Basic Settings. A callback must use HTTPS.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e11"
+      ]
+    },
+    {
+      "id": "r7",
+      "item": "One successful API call per requested permission in the last 30 days",
+      "stage": "production",
+      "detail": "The request button stays grayed out until Meta logs a call.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e6"
+      ]
+    },
+    {
+      "id": "r8",
+      "item": "One screen recording per permission and test instructions for reviewers",
+      "stage": "production",
+      "detail": "Reviewers use their own test accounts. The app must be reachable by them.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e5",
+        "e8",
+        "e4"
+      ]
+    },
+    {
+      "id": "r9",
+      "item": "Data handling questions answered",
+      "stage": "production",
+      "detail": "Unlocks after business verification.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e10"
+      ]
+    },
+    {
+      "id": "r10",
+      "item": "Annual Data Use Checkup",
+      "stage": "production",
+      "detail": "Needed before going Live and every year after to keep access.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e12"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "stage": "prototype",
+      "title": "Create the Meta app",
+      "detail": "Sign in at developers.facebook.com/apps and click Create App. Enter a name and contact email. Pick your use cases: Manage everything on your Page, Instagram API, and/or WhatsApp. Incompatible ones are greyed out. Connect or create a business portfolio. You should land on the app dashboard.",
+      "owner": "you",
+      "estimate": "20 to 40 min",
+      "url": "https://developers.facebook.com/apps/",
+      "evidenceIds": [
+        "e13",
+        "e26"
+      ]
+    },
+    {
+      "id": "s2",
+      "stage": "prototype",
+      "title": "Start Business Verification now",
+      "detail": "It takes the longest and review cannot finish without it. A Business Admin starts it from the app's verification settings or Security Center. See the document checklist draft.",
+      "owner": "you",
+      "estimate": "1 to 2 hours",
+      "url": "https://developers.facebook.com/docs/development/release/business-verification",
+      "evidenceIds": [
+        "e3",
+        "e10"
+      ]
+    },
+    {
+      "id": "s3",
+      "stage": "prototype",
+      "title": "Add your redirect URI",
+      "detail": "In the Facebook Login for Business settings, add your HTTPS callback URL, for example your Composio or app callback. Send exactly that value in the authorize request.",
+      "owner": "you",
+      "estimate": "15 min",
+      "evidenceIds": [
+        "e35"
+      ]
+    },
+    {
+      "id": "s4",
+      "stage": "prototype",
+      "title": "Build the connect flow and token storage",
+      "detail": "Redirect to www.facebook.com/v26.0/dialog/oauth with client_id, redirect_uri, state, and scope. On your server, exchange the code, then swap for a long-lived user token (about 60 days) and fetch long-lived Page tokens, which have no expiry date. There are no refresh tokens, so plan a reconnect prompt.",
+      "owner": "agent",
+      "estimate": "2 to 4 hours",
+      "evidenceIds": [
+        "e23",
+        "e24",
+        "e25"
+      ]
+    },
+    {
+      "id": "s5",
+      "stage": "prototype",
+      "title": "Call every permission once",
+      "detail": "With your own test Page and accounts, make at least one successful API call per permission you will request. Meta needs this logged within 30 days before you submit.",
+      "owner": "agent",
+      "estimate": "30 to 60 min",
+      "evidenceIds": [
+        "e6"
+      ]
+    },
+    {
+      "id": "s6",
+      "stage": "limited",
+      "title": "Add beta users as testers",
+      "detail": "In App Roles, add each design partner as a tester. They accept the invite in their Facebook account. They can then connect their own Pages without review.",
+      "owner": "you",
+      "estimate": "10 min per user",
+      "evidenceIds": [
+        "e1",
+        "e4"
+      ]
+    },
+    {
+      "id": "s7",
+      "stage": "production",
+      "title": "Fill App Settings",
+      "detail": "In Settings > Basic, upload a 1024x1024 icon without Meta logos, and add the privacy policy URL, data deletion instructions or callback URL, category, contact email, and platforms.",
+      "owner": "you",
+      "estimate": "30 to 60 min",
+      "evidenceIds": [
+        "e10",
+        "e11",
+        "e5"
+      ]
+    },
+    {
+      "id": "s8",
+      "stage": "production",
+      "title": "Answer the data handling questions",
+      "detail": "After business verification passes, Meta asks how you process, share, and protect data. Answers are checked right away.",
+      "owner": "you",
+      "estimate": "30 min",
+      "evidenceIds": [
+        "e10"
+      ]
+    },
+    {
+      "id": "s9",
+      "stage": "production",
+      "title": "Record one screencast per permission",
+      "detail": "Show a user granting the permission and your app using it. 1080p or higher, English UI, captions, no audio, a large cursor. Request only permissions you can show.",
+      "owner": "you",
+      "estimate": "2 to 6 hours",
+      "evidenceIds": [
+        "e5",
+        "e16",
+        "e17"
+      ]
+    },
+    {
+      "id": "s10",
+      "stage": "production",
+      "title": "Write usage descriptions and submit",
+      "detail": "In App Review, request Advanced Access per permission. Write a specific description for each, add reviewer test instructions, attach the recordings, and submit. Do not switch to Live mode or change settings while in review.",
+      "owner": "you",
+      "estimate": "1 to 3 hours",
+      "evidenceIds": [
+        "e8",
+        "e9",
+        "e6"
+      ]
+    },
+    {
+      "id": "s11",
+      "stage": "production",
+      "title": "Wait for the review decision",
+      "detail": "Meta says about a week. Watch the contact email. If a permission is rejected, fix what the notice names and resubmit.",
+      "owner": "provider",
+      "estimate": "1 to 3 weeks per cycle",
+      "evidenceIds": [
+        "e7",
+        "e31"
+      ]
+    },
+    {
+      "id": "s12",
+      "stage": "production",
+      "title": "Onboard as a WhatsApp Tech Provider",
+      "detail": "Only if you need WhatsApp. In Use cases > Customize > WhatsApp, choose Tech Provider onboarding. Submit the two videos, set up webhooks, and use Embedded Signup v4 for clients.",
+      "owner": "you",
+      "estimate": "4 to 8 hours",
+      "url": "https://developers.facebook.com/docs/whatsapp/solution-providers/get-started-for-tech-providers",
+      "evidenceIds": [
+        "e18",
+        "e20",
+        "e21"
+      ]
+    },
+    {
+      "id": "s13",
+      "stage": "production",
+      "title": "Go Live and schedule the Data Use Checkup",
+      "detail": "Complete the Data Use Checkup, switch the app to Live, and confirm each permission shows Advanced Access. Put the yearly checkup on your calendar.",
+      "owner": "you",
+      "estimate": "30 min",
+      "evidenceIds": [
+        "e12",
+        "e1"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "symptom": "The Request advanced access button is grayed out.",
+      "cause": "Meta has not logged a successful API call for that permission in the last 30 days.",
+      "fix": "Make one successful call with that permission from your test account, wait for it to register, then retry.",
+      "evidenceIds": [
+        "e6"
+      ]
+    },
+    {
+      "symptom": "Your whole submission is rejected.",
+      "cause": "Reviewers could not access your app or follow your instructions.",
+      "fix": "Give a public URL or step-by-step access instructions that work with the reviewer's own test account.",
+      "escalation": "App Review support through the Meta developer support page.",
+      "evidenceIds": [
+        "e4",
+        "e8"
+      ]
+    },
+    {
+      "symptom": "A single permission is rejected.",
+      "cause": "Missing or unclear screencast, a copied usage description, or a use that does not match allowed usage.",
+      "fix": "Re-record showing the grant and the exact use, rewrite the description for that permission, and resubmit only it.",
+      "evidenceIds": [
+        "e5",
+        "e9"
+      ]
+    },
+    {
+      "symptom": "Real users cannot grant permissions or see missing-permission errors.",
+      "cause": "The permission still has Standard Access, which only covers people with a role on your app.",
+      "fix": "Add them as testers for now, or get Advanced Access through App Review.",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "symptom": "Business verification is rejected.",
+      "cause": "Legal name, address, or phone on documents does not match Business Info or the website, or the email is not on your domain.",
+      "fix": "Make the website, Business Info, and documents match exactly, use a domain email, and resubmit.",
+      "escalation": "Meta Business Help Center support chat.",
+      "evidenceIds": [
+        "e30"
+      ]
+    },
+    {
+      "symptom": "WhatsApp calls on a client's account fail with error code 200.",
+      "cause": "No Advanced Access for whatsapp_business_management.",
+      "fix": "Complete Tech Provider App Review for that permission.",
+      "evidenceIds": [
+        "e19"
+      ]
+    },
+    {
+      "symptom": "Embedded Signup stops onboarding new WhatsApp clients for the week.",
+      "cause": "You hit the limit of 10 (or 200 after review) new businesses per rolling 7 days.",
+      "fix": "Finish verification and review to reach 200. Above that, apply to be a Meta Business Partner.",
+      "evidenceIds": [
+        "e20"
+      ]
+    },
+    {
+      "symptom": "A user's Instagram account cannot connect.",
+      "cause": "It is a personal account. There is no Instagram API for personal accounts since December 4, 2024.",
+      "fix": "Ask the user to switch to a business or creator account in the Instagram app.",
+      "evidenceIds": [
+        "e15",
+        "e14"
+      ]
+    },
+    {
+      "symptom": "Your agent's Facebook token stops working after about two months.",
+      "cause": "Long-lived user tokens last about 60 days and expired tokens cannot be exchanged.",
+      "fix": "Use long-lived Page tokens for Page work, and prompt the user to reconnect before the user token expires.",
+      "evidenceIds": [
+        "e23"
+      ]
+    }
+  ],
+  "agentAssist": {
+    "didForYou": [
+      "Read about 25 official Meta and Composio pages and recorded each claim with its source.",
+      "Probed the v26.0 OAuth dialog with an invalid client ID: it is live and shows an Invalid app ID page.",
+      "Checked the developer portal URL: it loads and needs a signed-in developer account to show apps.",
+      "Drafted a permission justification, a screencast script, and a business verification checklist."
+    ],
+    "canDoForYou": [
+      "Write the OAuth flow, token exchange, and Page token storage code.",
+      "Make the one API call per permission that unlocks the review request.",
+      "Draft usage descriptions, reviewer test instructions, and data handling answers for you to check.",
+      "Check that your website, Business Info, and documents use the same name, address, and phone.",
+      "Fill App Settings fields in a browser while you watch, after you sign in."
+    ],
+    "youMustDo": [
+      "Sign in to Meta, pass any security checks, and create the app.",
+      "Run Business Verification as a Business Admin and upload legal documents.",
+      "Record the screencasts.",
+      "Publish a privacy policy and data deletion instructions you stand behind.",
+      "Submit App Review and accept Meta's Platform Terms.",
+      "Complete the Data Use Checkup every year."
+    ]
+  },
+  "drafts": [
+    {
+      "kind": "scope_justification",
+      "title": "pages_read_engagement usage description",
+      "body": "DRAFT, edit before use.\n\n[App name] is an AI assistant for small businesses. A Page admin connects their Facebook Page so the assistant can summarize new posts, comments, and engagement, and suggest replies.\n\nWe use pages_read_engagement to read the posts, comments, and Page metadata of Pages the user manages and chose to connect. We show this content in the [App name] dashboard as a daily summary and use it to draft replies the admin approves before anything is posted.\n\nWe request pages_show_list as a dependency so the user can pick which Page to connect.\n\nWe do not sell this data or use it for ads. We keep it only while the Page is connected, and the user can delete it at [data deletion URL].\n\nTo test: go to [URL], sign in with [test login steps], click Connect Facebook Page, grant access, and open Daily summary."
+    },
+    {
+      "kind": "demo_video_script",
+      "title": "App Review screencast for pages_read_engagement",
+      "body": "DRAFT. One recording per permission. 1080p or higher, browser width 1440 or less, English UI, no audio, large cursor, captions added in editing.\n\n1. (0:00) Caption: \"This shows how [App name] uses pages_read_engagement.\" Show the logged-out home page at its public URL.\n2. (0:10) Sign in to [App name] with the test account. Caption the steps.\n3. (0:20) Click Connect Facebook Page. Show the Facebook login dialog with your app name.\n4. (0:35) Log in with a Facebook test user who manages a test Page. Show the permission screen listing the Page access. Click Continue.\n5. (0:55) Back in [App name], choose the test Page from the list. Caption: \"pages_show_list lets the user pick a Page.\"\n6. (1:10) Open Daily summary. Show the Page's recent posts and comments in the app. Caption: \"Post content read with pages_read_engagement.\"\n7. (1:30) Show a drafted reply and the admin approving it. Caption that nothing posts without approval.\n8. (1:45) Open Settings > Disconnect and show how to remove data.\n\nRepeat this structure for each other permission. Show only what that permission does."
+    },
+    {
+      "kind": "other",
+      "title": "Business verification document checklist",
+      "body": "DRAFT. Check Meta's current accepted list in the Business Help Center before uploading.\n\n- Legal business name: certificate of incorporation, business license, or tax registration in the company's name (not the owner's).\n- Address or phone: a recent utility bill or bank statement showing the legal name and the same address or phone.\n- Website: live, HTTPS, showing the same legal name, address, and phone as Business Info.\n- Email: an address on your website's domain to receive the code, or domain verification done in Business Settings.\n- Business Info in the portfolio: legal name, address, phone, website typed exactly as on the documents.\n- A Business Admin who will do the upload. Partners cannot upload for you.\n- No expired documents."
+    },
+    {
+      "kind": "privacy_policy_checklist",
+      "title": "Privacy policy and data deletion checklist for Meta",
+      "body": "DRAFT.\n\n- Public URL, reachable without login.\n- Names your company and how to contact you.\n- Lists the Meta data you collect (Page content, Instagram messages, WhatsApp messages) and why.\n- Says who you share it with, including your AI model provider.\n- States how long you keep it.\n- Explains how a user requests deletion, and links your data deletion instructions URL (or describes the callback).\n- Matches what you say in the data handling questions."
+    }
+  ],
+  "uncertainties": [
+    {
+      "question": "How long does App Review really take?",
+      "why": "Meta's guide says a week. A forum report shows the dashboard estimating about 10 days and a review still open at 13 days. We found no official numbers on resubmission cycles.",
+      "howToResolve": "Record dates on your own first submission and add them to this guide as tested."
+    },
+    {
+      "question": "Which documents does Business Verification accept today, and how long does it take?",
+      "why": "Meta's Business Help Center page did not render for us. The list here comes from a WhatsApp partner's docs.",
+      "howToResolve": "Open the Business Help Center article on verification documents while signed in and compare."
+    },
+    {
+      "question": "Is Access Verification still part of the WhatsApp onboarding limit?",
+      "why": "The Access Verification page says it is no longer required, but the Embedded Signup page still lists it to raise the limit to 200.",
+      "howToResolve": "Check the limit shown in your WhatsApp Manager after review, or ask Meta developer support."
+    },
+    {
+      "question": "How long do Instagram Login tokens last and can they be refreshed?",
+      "why": "We did not read the Instagram Login token page in this run.",
+      "howToResolve": "Read the Instagram Platform access token docs before building background jobs."
+    },
+    {
+      "question": "Does the Facebook Login dialog support PKCE, and is there a tester count limit?",
+      "why": "Neither was confirmed in the pages we read.",
+      "howToResolve": "Check the Facebook Login manual flow docs and the App Roles page in your dashboard."
+    },
+    {
+      "question": "What exactly does Composio's managed WhatsApp auth cover?",
+      "why": "The managed table lists WhatsApp but not which permissions or flows.",
+      "howToResolve": "Check the WhatsApp toolkit page or the toolkit API's composio_managed_auth_schemes field."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "e1",
+      "level": "sourced",
+      "claim": "With Standard Access, only people who have a role on your app can grant permissions. Advanced Access lets any user grant them, and each permission must be approved through App Review.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/graph-api/overview/access-levels",
+      "sourceTitle": "Access Levels",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e2",
+      "level": "sourced",
+      "claim": "Advanced Access requires Business Verification (since February 1, 2023), and apps with Advanced Access must complete the annual Data Use Checkup.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/graph-api/overview/access-levels",
+      "sourceTitle": "Access Levels",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e3",
+      "level": "sourced",
+      "claim": "Business Verification is needed if your app requests Advanced Access or lets other businesses access their own data. Only an Admin of the Business can complete it. Apps used only by people with app roles do not need it.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/development/release/business-verification",
+      "sourceTitle": "Business Verification",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e4",
+      "level": "sourced",
+      "claim": "Apps used by anyone without a role on the app must pass App Review. If reviewers cannot access the app, the entire submission is rejected.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/app-review",
+      "sourceTitle": "App Review",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e5",
+      "level": "sourced",
+      "claim": "Each permission or feature needs its own screen recording showing a user granting it and how the app uses it: at least 1080p, monitor width 1440 or less, English UI, captions, no audio.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/resp-plat-initiatives/individual-processes/app-review/submission-guide",
+      "sourceTitle": "App Review submission guide",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e6",
+      "level": "sourced",
+      "claim": "You must make at least one successful API call for each permission you request, within 30 days before submitting. The request button stays grayed out until a call is logged.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/resp-plat-initiatives/individual-processes/app-review/submission-guide",
+      "sourceTitle": "App Review submission guide",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e7",
+      "level": "sourced",
+      "claim": "Meta says you should receive an App Review decision within a week of submitting.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/resp-plat-initiatives/individual-processes/app-review/submission-guide",
+      "sourceTitle": "App Review submission guide",
+      "sourceKind": "official_docs",
+      "note": "Quote: \"should receive a decision within a week\"."
+    },
+    {
+      "id": "e8",
+      "level": "sourced",
+      "claim": "Reviewers use their own test accounts. The app must be public or you must give access instructions. Do not include your personal Meta credentials.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/resp-plat-initiatives/individual-processes/app-review/submission-guide",
+      "sourceTitle": "App Review submission guide",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e9",
+      "level": "sourced",
+      "claim": "Listed problems include copied or vague usage descriptions, missing screen recordings, changing settings after submission, and switching the app to Live mode before review completes.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/resp-plat-initiatives/individual-processes/app-review/submission-guide",
+      "sourceTitle": "App Review submission guide",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e10",
+      "level": "sourced",
+      "claim": "Business verification is required to complete App Review (since 2023). Data handling questions are required for Advanced Access from June 12, 2023. App settings need an icon, privacy policy URL, category, business email, and platforms.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/documentation/resp-plat-initiatives/individual-processes/app-review/content.md",
+      "sourceTitle": "App Review: content",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e11",
+      "level": "sourced",
+      "claim": "Apps that access user data must give either a data deletion instructions URL or a data deletion callback URL in Basic Settings. A callback must use HTTPS.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/development/create-an-app/app-dashboard/data-deletion-callback",
+      "sourceTitle": "Data Deletion Callback",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e12",
+      "level": "sourced",
+      "claim": "The Data Use Checkup is an annual review for apps that are live or have Advanced Access. You must complete it before switching an app to Live mode and to keep API access.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/resp-plat-initiatives/individual-processes/data-use-checkup",
+      "sourceTitle": "Data Use Checkup",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e13",
+      "level": "sourced",
+      "claim": "Apps are created by choosing use cases. Use cases cannot be removed later and some are incompatible. Apps that access data you do not own must connect a business portfolio. The Page use case adds business_management and pages_show_list.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/development/create-an-app",
+      "sourceTitle": "Create an App",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e14",
+      "level": "sourced",
+      "claim": "Instagram API with Instagram Login works with professional (business or creator) accounts and needs no Facebook Page. The Facebook Login path needs a professional account linked to a Page. Advanced Access needs App Review and Business Verification.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/instagram-platform/overview",
+      "sourceTitle": "Instagram Platform overview",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e15",
+      "level": "sourced",
+      "claim": "Instagram Basic Display API stopped working on December 4, 2024, announced September 4, 2024. After that there is no Instagram API for consumer apps.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/blog/post/2024/09/04/update-on-instagram-basic-display-api",
+      "sourceTitle": "Update on Instagram Basic Display API",
+      "sourceKind": "official_forum_or_blog"
+    },
+    {
+      "id": "e16",
+      "level": "sourced",
+      "claim": "pages_read_engagement depends on pages_show_list. Review asks why you need this data for Pages you do not own and for a screencast showing Page content in your app.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/permissions",
+      "sourceTitle": "Permissions Reference",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e17",
+      "level": "sourced",
+      "claim": "instagram_business_manage_messages depends on instagram_business_basic. Review asks you to show sending a message and a cURL request.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/permissions",
+      "sourceTitle": "Permissions Reference",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e18",
+      "level": "sourced",
+      "claim": "WhatsApp Tech Provider onboarding: business verification must finish before App Review starts. App Review needs two videos (a message sent from your app and received in WhatsApp, and a template being created) and Advanced Access to whatsapp_business_messaging and whatsapp_business_management.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/whatsapp/solution-providers/get-started-for-tech-providers",
+      "sourceTitle": "Get started for Tech Providers",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e19",
+      "level": "sourced",
+      "claim": "Without whatsapp_business_management, calls on WhatsApp accounts your business does not own return error code 200. Clients must add their own payment method.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/whatsapp/solution-providers/get-started-for-tech-providers",
+      "sourceTitle": "Get started for Tech Providers",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e20",
+      "level": "sourced",
+      "claim": "You cannot onboard WhatsApp customers through Embedded Signup until each required permission has Advanced Access. Default limit is 10 new business customers per rolling 7 days, raised to 200 after verification and review. Above 200 you must apply to be a Meta Business Partner.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/whatsapp/embedded-signup",
+      "sourceTitle": "Embedded Signup",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e21",
+      "level": "sourced",
+      "claim": "Embedded Signup v2 and v3 are deprecated on October 15, 2026. Migrate to v4.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/whatsapp/embedded-signup",
+      "sourceTitle": "Embedded Signup",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e22",
+      "level": "sourced",
+      "claim": "The Access Verification page now says it is no longer required and keeps the process only as legacy reference.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/development/release/access-verification",
+      "sourceTitle": "Access Verification",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e23",
+      "level": "sourced",
+      "claim": "Short-lived tokens expire in hours. Long-lived user tokens last about 60 days and are exchanged on your server with the app secret. Long-lived Page tokens have no expiry date. An expired token cannot be exchanged; the user must log in again.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/facebook-login/guides/access-tokens/get-long-lived",
+      "sourceTitle": "Get Long-Lived Tokens",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e24",
+      "level": "sourced",
+      "claim": "The latest Graph API version is v26.0, released July 29, 2026.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/docs/graph-api/changelog",
+      "sourceTitle": "Graph API Changelog",
+      "sourceKind": "official_docs"
+    },
+    {
+      "id": "e25",
+      "level": "probed",
+      "claim": "The Facebook Login authorization dialog at www.facebook.com/v26.0/dialog/oauth is live and shows an \"Invalid app ID\" error page for an unknown client_id instead of redirecting.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://www.facebook.com/v26.0/dialog/oauth?client_id=oauth-guide-probe-invalid&redirect_uri=https%3A%2F%2Fexample.com%2Fcallback&response_type=code&state=probe&scope=pages_show_list",
+      "sourceTitle": "Probe: OAuth dialog",
+      "sourceKind": "probe",
+      "note": "HTTP 200, HTML interstitial with header 'Invalid app ID'. No redirect to example.com."
+    },
+    {
+      "id": "e26",
+      "level": "probed",
+      "claim": "Developer portal at developers.facebook.com/apps responds with HTTP 200 and a JavaScript page shell. The app list is not in the HTML, so it renders only for a signed-in developer.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/apps/",
+      "sourceTitle": "Probe: developer portal",
+      "sourceKind": "probe",
+      "note": "Two GETs: HTTP 200 without redirect; body 143 KB JavaScript shell, no app list."
+    },
+    {
+      "id": "e27",
+      "level": "sourced",
+      "claim": "Facebook, Instagram, and WhatsApp appear in Composio's table of toolkits with Composio-managed OAuth.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://docs.composio.dev/toolkits/managed-auth",
+      "sourceTitle": "Composio managed auth",
+      "sourceKind": "composio_docs"
+    },
+    {
+      "id": "e28",
+      "level": "sourced",
+      "claim": "When you switch a toolkit to your own auth config, existing connections keep refreshing with their original config. Only new connections use yours.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://docs.composio.dev/docs/white-labeling-authentication",
+      "sourceTitle": "Composio white-labeling authentication",
+      "sourceKind": "composio_docs"
+    },
+    {
+      "id": "e29",
+      "level": "sourced",
+      "claim": "Reasons to use your own OAuth app with Composio: your name on the consent screen, custom scopes, dedicated rate limits, and trigger polling faster than 15 minutes.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://docs.composio.dev/docs/custom-app-vs-managed-app",
+      "sourceTitle": "Composio custom app vs managed app",
+      "sourceKind": "composio_docs"
+    },
+    {
+      "id": "e30",
+      "level": "sourced",
+      "claim": "A WhatsApp partner reports Meta reviews business verification within up to 14 business days. Documents must match Business Info, the website must show the same name, address, and phone, and the verification email must be on the website's domain.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://docs.360dialog.com/docs/resources/meta-business-verification/classic-business-verification",
+      "sourceTitle": "360dialog: Classic Business Verification",
+      "sourceKind": "community"
+    },
+    {
+      "id": "e31",
+      "level": "sourced",
+      "claim": "A developer on Meta's forum reported in May 2026 that the dashboard showed a review window of about 10 days, and the review was still pending after 13 days with no reply.",
+      "retrievedAt": "2026-10-28",
+      "sourceUrl": "https://developers.facebook.com/community/threads/2119529588613973/",
+      "sourceTitle": "App Review pending for 13 days",
+      "sourceKind": "community"
+    },
+    {
+      "id": "e32",
+      "level": "inferred",
+      "claim": "For an agent product serving other people's Pages, Instagram accounts, or WhatsApp numbers, you cannot launch without App Review and Business Verification, but no paid external audit is required. That is tier 3.",
+      "retrievedAt": "2026-10-28",
+      "note": "Combines e1, e3, e4, e14, e18: non-role users need Advanced Access, which needs App Review and verification. No source mentions a third-party assessment."
+    },
+    {
+      "id": "e33",
+      "level": "inferred",
+      "claim": "Realistic time to production is about 1 to 8 weeks: business verification (up to about 3 weeks), then App Review (a week or more), plus a cycle per rejection.",
+      "retrievedAt": "2026-10-28",
+      "note": "Sequential because business verification must finish before review can complete (e10, e18). Uses e7, e30, e31. Rejection cycles are not measured by any source we opened."
+    },
+    {
+      "id": "e34",
+      "level": "inferred",
+      "claim": "The person connecting must hold the right task on the Facebook Page or be an admin of the client's business portfolio. Staff without those roles cannot connect, so a client's Page admin often has to act first.",
+      "retrievedAt": "2026-10-28",
+      "note": "From e14 (users must be able to perform tasks on the linked Page) and e18/e20 (Embedded Signup creates assets for the client's business)."
+    },
+    {
+      "id": "e35",
+      "level": "inferred",
+      "claim": "The redirect URI for Facebook Login is set in the app dashboard under the Facebook Login (for Business) settings and must match the one you send.",
+      "retrievedAt": "2026-10-28",
+      "note": "Not re-read this run. Standard OAuth behavior and the first-pass generator output; check the Facebook Login settings page in your dashboard."
+    }
+  ],
+  "changelog": []
+}

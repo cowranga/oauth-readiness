@@ -47,7 +47,14 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
     <div className="grid gap-8 lg:grid-cols-[minmax(0,720px)_minmax(260px,320px)] lg:justify-between">
       <aside className="order-first lg:order-last">
         <div className="space-y-4 rounded-md border border-border bg-card p-4 lg:sticky lg:top-6">
-          <TierBadge tier={yourTier} noOauth={noOauth} />
+          <div className="space-y-1">
+            <TierBadge tier={yourTier} noOauth={noOauth} />
+            {!noOauth && guide.scopeTiers.length > 0 ? (
+              <p className="text-xs text-muted">
+                Your tier for: {useCases.length ? useCases.map((u) => USE_CASE_LABEL[u]).join(", ") : "nothing selected"}. The header shows the overall tier.
+              </p>
+            ) : null}
+          </div>
           <dl className="grid grid-cols-2 gap-3 text-sm">
             <div>
               <dt className="text-xs text-muted">Hands-on work</dt>
@@ -79,7 +86,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
               </p>
               <p className="text-sm text-muted">{next.detail}</p>
               {next.url ? (
-                <a href={next.url} target="_blank" rel="noreferrer noopener" className="text-sm break-all">
+                <a href={next.url} target="_blank" rel="noreferrer noopener" className="text-sm break-all text-ink">
                   {next.url}
                 </a>
               ) : null}
@@ -263,7 +270,7 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
                         <p className="text-sm text-muted">{step.detail}</p>
                         <div className="flex flex-wrap items-center gap-2 text-sm">
                           {step.url ? (
-                            <a href={step.url} target="_blank" rel="noreferrer noopener" className="break-all">
+                            <a href={step.url} target="_blank" rel="noreferrer noopener" className="break-all text-ink">
                               {step.url}
                             </a>
                           ) : null}
