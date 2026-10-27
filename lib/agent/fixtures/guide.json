@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "slug": "example-notes-mock01",
+  "app": {
+    "name": "Example Notes",
+    "provider": "Example Notes Inc. (fictional, used for tests and mock mode)",
+    "website": "https://example.com",
+    "category": "Notes",
+    "developerPortalUrl": "https://example.com/developers"
+  },
+  "input": { "query": "Example Notes", "kind": "name" },
+  "origin": "live",
+  "generatedAt": "2026-10-28T00:00:00.000Z",
+  "generator": { "model": "mock", "promptVersion": "mock", "durationMs": 4200 },
+  "oauth": {
+    "support": "oauth2",
+    "pkce": "supported",
+    "alternatives": "Personal API tokens for your own account.",
+    "appTypes": [{ "name": "Public integration", "whenToUse": "Your product connects many users' workspaces." }],
+    "evidenceIds": ["e1"]
+  },
+  "verdict": {
+    "tier": 2,
+    "label": "Self-serve, optional review",
+    "summary": "Any user can connect as soon as you register. Review only matters if you want a directory listing.",
+    "nextStep": "Create a public integration in the Example Notes developer portal.",
+    "customerSideGate": false,
+    "confidence": "medium",
+    "evidenceIds": ["e1", "e2"]
+  },
+  "composio": {
+    "managedApp": "unknown",
+    "note": "This is a fictional app, so there is no Composio toolkit for it.",
+    "evidenceIds": ["e5"]
+  },
+  "stages": [
+    {
+      "id": "prototype",
+      "name": "Prototype",
+      "whoCanConnect": "You and anyone you share the link with.",
+      "handsOnHours": { "min": 0.25, "max": 0.5 },
+      "waitDays": { "min": 0, "max": 0 },
+      "reviewRequired": false,
+      "evidenceIds": ["e1"]
+    },
+    {
+      "id": "production",
+      "name": "Production",
+      "whoCanConnect": "Any user.",
+      "handsOnHours": { "min": 1, "max": 3 },
+      "waitDays": { "min": 0, "max": 14 },
+      "providerStatedWaitDays": { "min": 0, "max": 7 },
+      "reviewRequired": false,
+      "notes": "The wait only applies if you apply for a directory listing.",
+      "evidenceIds": ["e2", "e4"]
+    }
+  ],
+  "scopeTiers": [
+    {
+      "name": "Read pages",
+      "exampleScopes": ["pages:read"],
+      "reviewLevel": "none",
+      "useCases": ["read"],
+      "effect": "No review. Works for any user right away.",
+      "evidenceIds": ["e1"]
+    },
+    {
+      "name": "Edit pages",
+      "exampleScopes": ["pages:write"],
+      "reviewLevel": "none",
+      "useCases": ["write", "offline"],
+      "effect": "No review. Refresh tokens are issued by default.",
+      "evidenceIds": ["e1"]
+    },
+    {
+      "name": "Workspace admin",
+      "exampleScopes": ["workspace:admin"],
+      "reviewLevel": "light",
+      "useCases": ["admin"],
+      "effect": "A short form review before admin scopes work outside your own workspace.",
+      "evidenceIds": ["e3"]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "r1",
+      "item": "An Example Notes account",
+      "stage": "prototype",
+      "agentCanHelp": false,
+      "evidenceIds": ["e1"]
+    },
+    {
+      "id": "r2",
+      "item": "A privacy policy URL",
+      "stage": "production",
+      "detail": "Needed only for a directory listing.",
+      "agentCanHelp": true,
+      "evidenceIds": ["e2"]
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "stage": "prototype",
+      "title": "Create a public integration",
+      "detail": "Open the developer portal, choose New integration, pick Public, and add your redirect URI.",
+      "owner": "you",
+      "estimate": "10 min",
+      "url": "https://example.com/developers",
+      "evidenceIds": ["e1"]
+    },
+    {
+      "id": "s2",
+      "stage": "prototype",
+      "title": "Paste the client ID and secret into your auth config",
+      "detail": "Copy both values from the integration page into your Composio auth config or secret store.",
+      "owner": "you",
+      "estimate": "5 min",
+      "evidenceIds": ["e1"]
+    },
+    {
+      "id": "s3",
+      "stage": "production",
+      "title": "Draft the directory listing text",
+      "detail": "Use the app description draft below and edit it to match your product.",
+      "owner": "agent",
+      "estimate": "5 min",
+      "evidenceIds": ["e2"]
+    },
+    {
+      "id": "s4",
+      "stage": "production",
+      "title": "Wait for listing review",
+      "detail": "Only if you applied for a listing. Your app keeps working for all users while you wait.",
+      "owner": "provider",
+      "estimate": "0 to 14 days",
+      "evidenceIds": ["e4"]
+    }
+  ],
+  "blockers": [
+    {
+      "symptom": "redirect_uri_mismatch on the consent screen",
+      "cause": "The redirect URI in your request does not exactly match one registered on the integration.",
+      "fix": "Copy the exact callback URL, including the trailing path, into the integration settings.",
+      "escalation": "Example Notes developer forum",
+      "evidenceIds": ["e1"]
+    }
+  ],
+  "agentAssist": {
+    "didForYou": ["Read the developer docs", "Probed the authorization endpoint"],
+    "canDoForYou": ["Draft the listing description"],
+    "youMustDo": ["Sign in to the developer portal", "Accept the developer terms"]
+  },
+  "drafts": [
+    {
+      "kind": "app_description",
+      "title": "Directory listing description",
+      "body": "Example Agent reads your notes and drafts summaries. It never deletes pages."
+    }
+  ],
+  "uncertainties": [
+    {
+      "question": "How long does listing review take in practice?",
+      "why": "We found no developer reports.",
+      "howToResolve": "Ask in the developer forum."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "e1",
+      "level": "sourced",
+      "claim": "Public integrations work for any user without review.",
+      "sourceUrl": "https://example.com/docs/oauth",
+      "sourceTitle": "Example Notes OAuth docs",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-28"
+    },
+    {
+      "id": "e2",
+      "level": "sourced",
+      "claim": "A directory listing requires a privacy policy and a short review.",
+      "sourceUrl": "https://example.com/docs/listing",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-28"
+    },
+    {
+      "id": "e3",
+      "level": "inferred",
+      "claim": "Admin scopes go through a light review.",
+      "retrievedAt": "2026-10-28",
+      "note": "The listing page mentions extra checks for admin access but gives no detail."
+    },
+    {
+      "id": "e4",
+      "level": "probed",
+      "claim": "The authorization endpoint is live and rejects an unknown client ID.",
+      "sourceUrl": "https://example.com/oauth/authorize",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-28",
+      "note": "HTTP 400 invalid_client"
+    },
+    {
+      "id": "e5",
+      "level": "inferred",
+      "claim": "No Composio toolkit exists for a fictional app.",
+      "retrievedAt": "2026-10-28",
+      "note": "Example Notes is a test fixture."
+    }
+  ],
+  "changelog": []
+}
