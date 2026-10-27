@@ -147,10 +147,10 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
           <h2 id="start-today" className="text-lg font-medium">
             Can you start today?
           </h2>
-          <p className="mt-2 text-sm">
+          <div className="mt-2 text-sm">
             <span className="font-mono text-xs uppercase tracking-wider text-muted">Composio managed app: </span>
             {MANAGED_LABEL[guide.composio.managedApp]} <EvidenceList ids={guide.composio.evidenceIds} evidence={evidence} />
-          </p>
+          </div>
           <p className="mt-2 text-sm text-muted">{guide.composio.note}</p>
         </section>
 
@@ -224,9 +224,9 @@ export function GuideInteractive({ guide, initialDone, initialUse, children }: P
                     </span>
                   </div>
                   <p className="mt-1 break-words font-mono text-xs text-muted">{scopeTier.exampleScopes.join("  ")}</p>
-                  <p className="mt-1 text-sm">
+                  <div className="mt-1 text-sm">
                     {scopeTier.effect} <EvidenceList ids={scopeTier.evidenceIds} evidence={evidence} />
-                  </p>
+                  </div>
                 </li>
               ))}
             </ul>

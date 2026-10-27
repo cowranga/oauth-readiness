@@ -75,9 +75,10 @@ export default async function GuidePage({ params, searchParams }: Params): Promi
             </span>
           ) : null}
         </div>
-        <p className="text-lg">
+        {/* div, not p: evidence badges are <details>, which a <p> cannot contain */}
+        <div className="text-lg">
           {guide.verdict.summary} <EvidenceList ids={guide.verdict.evidenceIds} evidence={evidence} />
-        </p>
+        </div>
         {guide.verdict.customerSideGate && guide.verdict.customerSideGateNote ? (
           <p className="text-sm text-muted">Customer-side gate: {guide.verdict.customerSideGateNote}</p>
         ) : null}
