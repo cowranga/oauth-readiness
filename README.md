@@ -58,8 +58,8 @@ What I learned while building this:
 **How the seeds were checked.** A research agent wrote each seed from official sources. A second agent, with no access to the first one's notes, re-checked every tier-deciding claim against its cited page, looked for a second source, and fixed what was wrong. Across the 7 seeds it checked 231 claims: 179 confirmed, 30 narrowed (overstated, made more precise), 10 corrected, 12 it could not verify, none removed. Most fixes were overstatements, not wrong facts. For example, the Salesforce guide said an unlisted app needs no approval; it works in practice, but Salesforce calls an unreviewed package "not authorized for distribution", and the guide now says so. Every change is listed at the bottom of each guide and in `verification/<slug>.md`.
 
 - What verification and the eval taught us, and how the prompt changed: [docs/LESSONS.md](docs/LESSONS.md)
-- Live generator against the verified seeds: [docs/EVAL.md](docs/EVAL.md). The tier was exact for 5 of 7 and within one for all 7; both misses were too easy. Prompt v2 is written but not yet measured.
-- Live runs on odd inputs: [docs/LIVE_TESTS.md](docs/LIVE_TESTS.md). Two of six ran before the API account ran out of credits.
+- Live generator against the verified seeds: [docs/EVAL.md](docs/EVAL.md). The tier was exact for 5 of 7 and within one for all 7; both misses were too easy. Prompt v2 did not fix the two misses (Microsoft stayed at 2, LinkedIn overshot to 5), and the runs ignored its "search at least twice" rule. The next fix belongs in code, not the prompt.
+- Live runs on odd inputs (URL, ambiguous name, API-key service, consumer app with no API, nonsense): [docs/LIVE_TESTS.md](docs/LIVE_TESTS.md). All six ran, none crashed, and none produced a made-up guide.
 
 **What we could not verify:** real review times (developer reports are few, and some forum pages would not load), CASA assessment prices (vendor pages only), and how long your customers' admins take to approve an app. Each guide lists its own open questions.
 
@@ -93,7 +93,7 @@ npm run dev                    # http://localhost:3000
 
 - No human setup attempts yet, so nothing is "tested".
 - Live guides come from one agent run and are not checked by a person. They say so at the top.
-- Prompt v2 is unmeasured (API credits ran out). LIVE_TESTS has 2 of 6 rows filled.
+- Prompt v2 did not improve the tier on the two apps v1 missed. The fix I would make next is in docs/EVAL.md.
 - Wait times rest on few developer reports; guides show them as ranges and mark estimates.
 - Provider rules change often. Each guide shows its research date, and nothing re-checks them automatically.
 - Shortcuts in the code, each marked with a `ponytail:` comment and its upgrade path:
@@ -107,4 +107,4 @@ npm run dev                    # http://localhost:3000
   - On Vercel without Upstash, live guides do not persist: set the Upstash variables.
   - Domain-to-name guessing uses a tiny second-level-domain list: use the Public Suffix List.
 
-**What I would do next:** run the human setup attempts on GitHub, Slack, and Google; measure prompt v2; add a second, narrow research pass that only answers the agent-critical checks; and add monthly re-checks that diff against the stored guides.
+**What I would do next:** run the human setup attempts on GitHub, Slack, and Google; enforce a minimum amount of research in code and re-measure; add a second, narrow research pass that only answers the agent-critical checks; and add monthly re-checks that diff against the stored guides.

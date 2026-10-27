@@ -68,3 +68,16 @@
 - changed: all 7 seeds verified (verification/<slug>.md); README.md with verification totals (231 claims: 179 confirmed, 30 narrowed, 10 corrected, 12 unverifiable); docs/ASSIGNMENT.md traceability filled; final code review (no code must-fix, doc mismatches fixed); docs/MORNING_HANDOFF.md.
 - verified: `npm run build`, `npm test` (121 pass), `npm run lint`, `npm run check:secrets` all pass; no em dashes in user-facing docs, pages, or seeds.
 - not done: Task 6.3 v2 re-runs, Task 7.1 rows 2/3/4/6, Phase 9 (all need API credits; 9.3 needs the Vercel CLI). Stopping here: every remaining task is blocked on the human.
+
+## 2026-10-28 morning: live tests after credits were added
+- ran: `bash scripts/live-tests.sh` (8 live runs, claude-sonnet-5-5; total attempts now 20 of the 30 cap).
+  - Linear 66.9s tier 2, in=69171 out=7828 cacheRead=61767 cacheWrite=36453, 2 searches
+  - https://www.figma.com 63.9s tier 3, in=19687 out=7777 cacheRead=47661 cacheWrite=29985, 2 searches
+  - Google (fresh) 84.3s tier 4, in=34320 out=11124 cacheRead=28662 cacheWrite=27872, 1 search
+  - OpenAI API 61.9s tier 5, in=52107 out=8637 cacheRead=28662 cacheWrite=17711, 2 searches
+  - Blorpify Zzz: clean NOT_FOUND, no guide
+  - BeReal 28.4s no OAuth, in=106 out=3369 cacheRead=36337 cacheWrite=16463, 2 searches
+  - v2 Microsoft 64.2s tier 2 (seed 3); v2 LinkedIn 60.4s tier 5 (seed 3); each made only 1 search
+- changed: Composio managed status from the tool now overrides the model (BeReal run showed the model overwriting "unknown"); LIVE_TESTS rows 2/3/4/6 filled; EVAL v2 section; README/handoff wording.
+- verified: `npm test` 121 pass, lint, tsc.
+- next (proposed to the human, not done): code gate on minimum research before submit_guide, then 2 re-runs.

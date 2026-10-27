@@ -1,0 +1,628 @@
+{
+  "app": {
+    "name": "LinkedIn",
+    "provider": "LinkedIn (Microsoft)",
+    "website": "https://www.linkedin.com",
+    "category": "Social / professional network",
+    "developerPortalUrl": "https://www.linkedin.com/developers/apps"
+  },
+  "oauth": {
+    "support": "oauth2",
+    "pkce": "unknown",
+    "appTypes": [
+      {
+        "name": "Standard developer app (single type, multi-tenant by design)",
+        "whenToUse": "Use one app for all your users. Each member consents with 3-legged OAuth. What the app can do depends on which Products (API bundles) are added to it."
+      },
+      {
+        "name": "2-legged (client credentials) app",
+        "whenToUse": "Only for app-level data that is not tied to a member, and only for products that allow it. Not useful for reading a user's own data."
+      }
+    ],
+    "evidenceIds": [
+      "e1",
+      "e2",
+      "e9"
+    ]
+  },
+  "verdict": {
+    "tier": 5,
+    "label": "Gated",
+    "summary": "Sign-in (profile, email) and posting (w_member_social) are self-serve for any user, but anything beyond that needs LinkedIn approval or a partner program that LinkedIn can refuse. Refresh tokens are limited to approved Marketing Developer Platform partners, so a background agent on an open app gets 60-day tokens and must send users back through consent.",
+    "nextStep": "Create an app at https://www.linkedin.com/developers/apps and add 'Sign in with LinkedIn using OpenID Connect' and 'Share on LinkedIn' from the Products tab to see what works today.",
+    "customerSideGate": false,
+    "customerSideGateNote": "Not found in the docs read. Organization-page scopes need the member to hold a page role, but that is a role check, not an admin allowlist.",
+    "confidence": "medium",
+    "evidenceIds": [
+      "e1",
+      "e2",
+      "e3",
+      "e4",
+      "e5"
+    ]
+  },
+  "composio": {
+    "managedApp": "available",
+    "note": "Composio lists LinkedIn under its managed OAuth apps, so you can start today. Moving to your own app later only affects new connections. Existing users must reconnect.",
+    "evidenceIds": [
+      "e8"
+    ]
+  },
+  "stages": [
+    {
+      "id": "prototype",
+      "name": "Prototype on open permissions",
+      "whoCanConnect": "Any LinkedIn member can consent to the open permissions (profile, email, w_member_social) on your app. No user cap was found in the docs read.",
+      "handsOnHours": {
+        "min": 2,
+        "max": 6
+      },
+      "waitDays": {
+        "min": 0,
+        "max": 1
+      },
+      "reviewRequired": false,
+      "notes": "Our estimate for hours. Community sources say a verified LinkedIn Page and a privacy policy URL are needed to create or verify the app (see uncertainties).",
+      "evidenceIds": [
+        "e2",
+        "e10"
+      ]
+    },
+    {
+      "id": "limited",
+      "name": "Development tier of an approved product",
+      "whoCanConnect": "After approval for a product such as Community Management API, members can connect, but with call caps: 500 calls per app and 100 per member per 24 hours. You must finish within twelve months.",
+      "handsOnHours": {
+        "min": 6,
+        "max": 20
+      },
+      "waitDays": {
+        "min": 1,
+        "max": null
+      },
+      "reviewRequired": true,
+      "notes": "No fixed approval timeline is stated for restricted APIs. Community posts report 2 to 8 weeks for Marketing access. That figure is community-reported only, so treat it as unverified.",
+      "evidenceIds": [
+        "e5",
+        "e6",
+        "e11"
+      ]
+    },
+    {
+      "id": "production",
+      "name": "Standard tier or partner access",
+      "whoCanConnect": "Any member, with no call restrictions on Community Management Standard tier. Programmatic refresh tokens only for approved MDP partners.",
+      "handsOnHours": {
+        "min": 10,
+        "max": 40
+      },
+      "waitDays": {
+        "min": 14,
+        "max": null
+      },
+      "reviewRequired": true,
+      "notes": "LinkedIn can decline an upgrade even if you meet the minimums. Duration is our estimate, not provider-stated.",
+      "evidenceIds": [
+        "e5",
+        "e7",
+        "e12"
+      ]
+    }
+  ],
+  "scopeTiers": [
+    {
+      "name": "Open permissions",
+      "exampleScopes": [
+        "openid",
+        "profile",
+        "email",
+        "w_member_social"
+      ],
+      "reviewLevel": "none",
+      "useCases": [
+        "read",
+        "write"
+      ],
+      "effect": "Self-serve from the Products tab. Gives name, headline, photo, primary email, and posting, commenting and liking as the member. No inbox, messages or feed read.",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "name": "Approved API products",
+      "exampleScopes": [
+        "r_organization_social",
+        "w_organization_social",
+        "rw_organization_admin",
+        "r_member_postAnalytics",
+        "r_member_profileAnalytics",
+        "r_ads",
+        "rw_ads"
+      ],
+      "reviewLevel": "review",
+      "useCases": [
+        "read",
+        "write",
+        "admin"
+      ],
+      "effect": "Needs an application via the Products tab or a program form. Community Management and Advertising start on a Development tier and need a separate upgrade.",
+      "evidenceIds": [
+        "e5",
+        "e2"
+      ]
+    },
+    {
+      "name": "Restricted and partner programs",
+      "exampleScopes": [
+        "r_sales_nav_profiles",
+        "rw_media_plans",
+        "Recruiter System Connect"
+      ],
+      "reviewLevel": "partner_only",
+      "useCases": [
+        "read",
+        "admin"
+      ],
+      "effect": "Partner fit is judged case by case with no fixed timeline. Company Intelligence takes no new applications. Compliance scopes are closed.",
+      "evidenceIds": [
+        "e2",
+        "e5"
+      ]
+    },
+    {
+      "name": "Refresh tokens (offline)",
+      "exampleScopes": [
+        "programmatic refresh token"
+      ],
+      "reviewLevel": "partner_only",
+      "useCases": [
+        "offline"
+      ],
+      "effect": "Programmatic refresh is for approved MDP partners. Without it, tokens last 60 days and the member must reauthorize.",
+      "evidenceIds": [
+        "e3",
+        "e4"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "r1",
+      "item": "LinkedIn developer app with client ID and secret",
+      "stage": "prototype",
+      "detail": "Created in the developer portal. Community sources say a LinkedIn Page you admin is needed to verify it.",
+      "agentCanHelp": false,
+      "evidenceIds": [
+        "e1",
+        "e10"
+      ]
+    },
+    {
+      "id": "r2",
+      "item": "HTTPS redirect URL, exact match",
+      "stage": "prototype",
+      "detail": "Add it on the Auth tab. It must be absolute, cannot contain #, and query parameters are ignored.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "id": "r3",
+      "item": "Products added for the scopes you request",
+      "stage": "prototype",
+      "detail": "Requesting a scope your app lacks returns an Invalid scope error.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e1",
+        "e2"
+      ]
+    },
+    {
+      "id": "r4",
+      "item": "Approved product application (use case, company details)",
+      "stage": "limited",
+      "detail": "Submit from the Products tab. Expired requests (after 21 days) or those declined for thin detail can be resubmitted with Reapply.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e5",
+        "e7"
+      ]
+    },
+    {
+      "id": "r5",
+      "item": "Separate Standard tier request",
+      "stage": "production",
+      "detail": "Advertising Standard is requested through a Developer Support Portal ticket. LinkedIn may refuse.",
+      "agentCanHelp": true,
+      "evidenceIds": [
+        "e5"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "stage": "prototype",
+      "title": "Create the app",
+      "detail": "Sign in and open https://www.linkedin.com/developers/apps. Click Create app and fill in the name, Page and logo. You get a client ID and secret on the Auth tab.",
+      "owner": "you",
+      "estimate": "30 min",
+      "url": "https://www.linkedin.com/developers/apps",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "id": "s2",
+      "stage": "prototype",
+      "title": "Add open products",
+      "detail": "On the Products tab, request 'Sign in with LinkedIn using OpenID Connect' and 'Share on LinkedIn'. The scopes then show on the Auth tab.",
+      "owner": "you",
+      "estimate": "10 min",
+      "evidenceIds": [
+        "e2"
+      ]
+    },
+    {
+      "id": "s3",
+      "stage": "prototype",
+      "title": "Set the redirect URL",
+      "detail": "On the Auth tab add your HTTPS callback. Match it exactly in the authorize and token requests.",
+      "owner": "you",
+      "estimate": "10 min",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "id": "s4",
+      "stage": "prototype",
+      "title": "Run the code flow",
+      "detail": "Send members to https://www.linkedin.com/oauth/v2/authorization with response_type=code, client_id, redirect_uri, state and scope. Exchange the code at /oauth/v2/accessToken within 30 minutes.",
+      "owner": "agent",
+      "estimate": "2 to 4 hours",
+      "evidenceIds": [
+        "e1",
+        "e9"
+      ]
+    },
+    {
+      "id": "s5",
+      "stage": "prototype",
+      "title": "Plan for 60-day tokens",
+      "detail": "Store expiry. Remind users to reconnect before day 60. Do not expect refresh_token in the response unless LinkedIn enabled it for you.",
+      "owner": "agent",
+      "estimate": "2 hours",
+      "evidenceIds": [
+        "e3",
+        "e4"
+      ]
+    },
+    {
+      "id": "s6",
+      "stage": "limited",
+      "title": "Pick the product that matches your use case",
+      "detail": "Check the Increasing Access table. Community Management API covers organization posts and member analytics. Note that no public product reads a member's inbox.",
+      "owner": "you",
+      "estimate": "1 hour",
+      "evidenceIds": [
+        "e5",
+        "e2"
+      ]
+    },
+    {
+      "id": "s7",
+      "stage": "limited",
+      "title": "Apply from the Products tab",
+      "detail": "Add the product and complete the request form with your use case. Keep the privacy policy and a demo ready.",
+      "owner": "you",
+      "estimate": "2 to 4 hours",
+      "evidenceIds": [
+        "e5",
+        "e7"
+      ]
+    },
+    {
+      "id": "s8",
+      "stage": "limited",
+      "title": "Wait for LinkedIn",
+      "detail": "No fixed timeline for restricted APIs. Use Developer Support for status. If the request expired or was declined for detail, use Reapply.",
+      "owner": "provider",
+      "estimate": "unknown, weeks reported",
+      "evidenceIds": [
+        "e5",
+        "e7"
+      ]
+    },
+    {
+      "id": "s9",
+      "stage": "limited",
+      "title": "Build within Development tier limits",
+      "detail": "500 calls per app and 100 per member per 24 hours. Finish within twelve months.",
+      "owner": "agent",
+      "estimate": "varies",
+      "evidenceIds": [
+        "e5"
+      ]
+    },
+    {
+      "id": "s10",
+      "stage": "production",
+      "title": "Request Standard tier",
+      "detail": "Apply for Standard tier of the product, or by support ticket for Advertising. If you need refresh tokens, ask support about MDP partner status.",
+      "owner": "you",
+      "estimate": "3 to 6 hours",
+      "evidenceIds": [
+        "e5",
+        "e3"
+      ]
+    },
+    {
+      "id": "s11",
+      "stage": "production",
+      "title": "Switch off Composio managed auth",
+      "detail": "Add your client ID and secret to your Composio auth config. Existing users must reconnect.",
+      "owner": "you",
+      "estimate": "1 hour",
+      "evidenceIds": [
+        "e8"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "symptom": "401 Invalid scope on /oauth/v2/authorization",
+      "cause": "The scope is not assigned to your app because the Product is not added or approved.",
+      "fix": "Open the Auth tab and request only scopes shown there. Apply for the Product on the Products tab.",
+      "escalation": "LinkedIn Developer Support Portal",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "symptom": "401 Redirect_uri doesn't match",
+      "cause": "The redirect in the request differs from the one on the Auth tab.",
+      "fix": "Make them identical. Remove fragments and do not rely on query parameters.",
+      "escalation": "LinkedIn Developer Support Portal",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "symptom": "No refresh_token in the token response, and users must log in again after 60 days",
+      "cause": "Programmatic refresh tokens are for approved MDP partners only.",
+      "fix": "Plan reconnect prompts, or apply for partner access. LinkedIn may revoke any token at any time.",
+      "escalation": "LinkedIn Developer Support Portal",
+      "evidenceIds": [
+        "e3",
+        "e4"
+      ]
+    },
+    {
+      "symptom": "Product request shows Access denied or expired",
+      "cause": "Requests expire after 21 days or are declined for insufficient detail.",
+      "fix": "Use the Reapply button on the Products page and add more detail.",
+      "escalation": "LinkedIn Developer Support Portal",
+      "evidenceIds": [
+        "e7"
+      ]
+    },
+    {
+      "symptom": "Users must reauthorize after you change scopes",
+      "cause": "A changed scope set requires a new consent. Requesting a different scope than before invalidates earlier tokens.",
+      "fix": "Keep one stable scope set per app and ask once.",
+      "escalation": "LinkedIn Developer Support Portal",
+      "evidenceIds": [
+        "e1"
+      ]
+    },
+    {
+      "symptom": "Cannot get inbox, message or feed read access",
+      "cause": "Open permissions have no such scope. Compliance scopes are closed, and restricted programs are case by case.",
+      "fix": "Scope your product to profile, posting, or approved page and analytics data.",
+      "escalation": "Developer Support for restricted program status",
+      "evidenceIds": [
+        "e2",
+        "e5"
+      ]
+    }
+  ],
+  "agentAssist": {
+    "didForYou": [
+      "Searched for 2026 LinkedIn API changes",
+      "Read the 3-legged OAuth flow, Getting Access, Programmatic Refresh Tokens, Increasing Access and Recent Marketing API Changes pages",
+      "Probed the authorize endpoint, OIDC discovery and the developer portal",
+      "Checked Composio managed apps"
+    ],
+    "canDoForYou": [
+      "Draft the product application text and privacy policy checklist",
+      "Build the OAuth flow and a 55-day reconnect reminder job",
+      "Wire the Composio auth config switch"
+    ],
+    "youMustDo": [
+      "Create the app and verify it with a LinkedIn Page you admin",
+      "Accept LinkedIn terms and submit product applications",
+      "Record any demo video",
+      "Publish privacy policy and homepage"
+    ]
+  },
+  "drafts": [
+    {
+      "kind": "scope_justification",
+      "title": "Product application use case",
+      "body": "Our app lets a LinkedIn member connect their account so our assistant can [post on their behalf / read analytics for pages they administer]. We request only [w_member_social / r_organization_social, rw_organization_admin]. We act only after the member consents and clicks an action. We do not store data beyond [N] days, never sell it, and members can disconnect in settings. Privacy policy: [URL]. Contact: [email]."
+    },
+    {
+      "kind": "support_email",
+      "title": "Ask about refresh tokens",
+      "body": "Hello LinkedIn Developer Support. App ID [ID] uses 3-legged OAuth for a member-facing assistant. Our members reconnect every 60 days. Can programmatic refresh tokens be enabled for our use case, or is MDP partner approval required? We can share our use case, privacy policy and a demo. Thank you."
+    }
+  ],
+  "uncertainties": [
+    {
+      "question": "Is a LinkedIn Page and verification required to create or use an open-permission app?",
+      "why": "Only community blogs state it. The official pages opened do not.",
+      "howToResolve": "Create an app in the portal and note the verification prompts."
+    },
+    {
+      "question": "Is PKCE supported?",
+      "why": "The docs read do not mention it.",
+      "howToResolve": "Check the LinkedIn Native PKCE docs or test."
+    },
+    {
+      "question": "Real approval times for Community Management or Marketing products",
+      "why": "LinkedIn gives no timeline. Only a community blog reports 2 to 8 weeks, for Marketing.",
+      "howToResolve": "Apply and track the case on the Developer Support Portal."
+    },
+    {
+      "question": "Can any open-permission app really serve unlimited members with no review?",
+      "why": "No user cap was found, but the docs do not state it either way.",
+      "howToResolve": "Ask Developer Support."
+    },
+    {
+      "question": "Do organization admins at customers block or allowlist apps?",
+      "why": "No tenant-level consent setting was found in the docs read.",
+      "howToResolve": "Search LinkedIn Page admin settings and Developer Support."
+    },
+    {
+      "question": "Is there any approved route to read a member's own messages or feed for an inbox assistant?",
+      "why": "The Getting Access page shows none, and compliance is closed.",
+      "howToResolve": "Ask Developer Support or use a partner program."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "e1",
+      "level": "sourced",
+      "claim": "3-legged code flow: HTTPS redirect URLs, exact match, errors for Invalid scope and redirect mismatch, 30-minute code, scope change forces reauthorization",
+      "sourceUrl": "https://learn.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow",
+      "sourceTitle": "Authorization Code Flow (3-legged OAuth)",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e2",
+      "level": "sourced",
+      "claim": "Only Open Permissions (profile, email, w_member_social) are available without approval; most others need LinkedIn approval; compliance is closed; SNAP and Talent are partner programs",
+      "sourceUrl": "https://learn.microsoft.com/en-us/linkedin/shared/authentication/getting-access",
+      "sourceTitle": "Getting Access to LinkedIn APIs",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e3",
+      "level": "sourced",
+      "claim": "Programmatic refresh tokens are for approved MDP partners; 60-day access, 365-day refresh; LinkedIn may revoke tokens any time",
+      "sourceUrl": "https://learn.microsoft.com/en-us/linkedin/shared/authentication/programmatic-refresh-tokens",
+      "sourceTitle": "Refresh Tokens with OAuth 2.0",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e4",
+      "level": "sourced",
+      "claim": "All access tokens have a 60-day lifespan; programmatic refresh is for a limited set of partners; otherwise the member goes through authorization again",
+      "sourceUrl": "https://learn.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow",
+      "sourceTitle": "Authorization Code Flow (3-legged OAuth)",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e5",
+      "level": "sourced",
+      "claim": "Restricted APIs have no fixed timeline; Advertising and Community Management start on Development tier with call caps and a 12-month window; Standard upgrade at LinkedIn discretion; Company Intelligence closed to new applications",
+      "sourceUrl": "https://learn.microsoft.com/en-us/linkedin/marketing/increasing-access?view=li-lms-2026-10",
+      "sourceTitle": "Increasing Access",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e6",
+      "level": "inferred",
+      "claim": "Limited stage wait is our estimate",
+      "retrievedAt": "2026-10-27",
+      "note": "The provider gives no timeline for restricted APIs, so we use an open-ended range."
+    },
+    {
+      "id": "e7",
+      "level": "sourced",
+      "claim": "Developers can Reapply for expired (after 21 days) or declined API access requests from the Developer Portal",
+      "sourceUrl": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes?view=li-lms-2026-06",
+      "sourceTitle": "Recent Marketing API Changes",
+      "sourceKind": "official_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e8",
+      "level": "sourced",
+      "claim": "LinkedIn is listed under Composio-managed OAuth",
+      "sourceUrl": "https://docs.composio.dev/toolkits/managed-auth",
+      "sourceTitle": "Composio managed auth",
+      "sourceKind": "composio_docs",
+      "retrievedAt": "2026-10-27"
+    },
+    {
+      "id": "e9",
+      "level": "probed",
+      "claim": "Authorize endpoint is live and rejects an unknown client_id; no OIDC discovery document at www.linkedin.com",
+      "sourceUrl": "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=oauth-guide-probe-invalid&redirect_uri=https%3A%2F%2Fexample.com%2Fcallback&state=probe&scope=openid+profile+email",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Authorization endpoint live, shows error for invalid client_id. Discovery URL returned HTTP 404."
+    },
+    {
+      "id": "e10",
+      "level": "inferred",
+      "claim": "A LinkedIn Page and privacy policy URL may be needed to create and verify an app",
+      "retrievedAt": "2026-10-27",
+      "note": "Stated by community blogs in search results (zernio.com, linkupapi.com) that were not opened. Not confirmed on official pages."
+    },
+    {
+      "id": "e11",
+      "level": "inferred",
+      "claim": "Community reports of 2 to 8 weeks for Marketing access",
+      "retrievedAt": "2026-10-27",
+      "note": "From a search snippet on socialcrawl.dev that was not opened. Unverified."
+    },
+    {
+      "id": "e12",
+      "level": "inferred",
+      "claim": "Production stage duration is our estimate",
+      "retrievedAt": "2026-10-27",
+      "note": "Standard tier needs a separate request with no stated timeline."
+    },
+    {
+      "id": "e_autoprobe_1",
+      "level": "probed",
+      "claim": "No OAuth discovery document at https://www.linkedin.com/.well-known/openid-configuration (HTTP 404).",
+      "sourceUrl": "https://www.linkedin.com/.well-known/openid-configuration",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Recorded automatically from the probe this run made."
+    },
+    {
+      "id": "e_autoprobe_2",
+      "level": "probed",
+      "claim": "Developer portal at https://www.linkedin.com/developers/apps answers a signed-out visitor with HTTP 200. The page may still ask you to sign in once it loads in a browser.",
+      "sourceUrl": "https://www.linkedin.com/developers/apps",
+      "sourceKind": "probe",
+      "retrievedAt": "2026-10-27",
+      "note": "Recorded automatically from the probe this run made."
+    }
+  ],
+  "schemaVersion": 1,
+  "slug": "linkedin-fb2owk",
+  "input": {
+    "query": "LinkedIn",
+    "kind": "name"
+  },
+  "origin": "live",
+  "generatedAt": "2026-10-27T21:29:46.929Z",
+  "generator": {
+    "model": "claude-sonnet-5-5",
+    "promptVersion": "v2",
+    "durationMs": 60385
+  },
+  "changelog": []
+}

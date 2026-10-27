@@ -17,6 +17,8 @@ export type ToolContext = {
   /** Probe URLs and what they showed; probed evidence must point at one of these. */
   probes: { url: string; summary: string }[];
   probeRequestsLeft: number;
+  /** What check_composio_managed returned; it overrides the model's managedApp field. */
+  composioStatus?: "available" | "not_available" | "unknown";
 };
 
 export type ToolResult = { content: string; isError?: boolean };
@@ -158,6 +160,7 @@ async function composio(input: unknown, ctx: ToolContext): Promise<ToolResult> {
   if (!parsed.success) return { content: "check_composio_managed needs {appName}.", isError: true };
   const result = await checkComposioManaged(parsed.data.appName, ctx.composioApiKey);
   if (result.fetchedUrl) ctx.fetchedUrls.add(canonicalUrl(result.fetchedUrl));
+  ctx.composioStatus = result.status;
   ctx.emit({ type: "finding", message: `Composio managed app: ${result.status.replace("_", " ")}. ${result.note}` });
   const forModel = { status: result.status, url: result.url, note: result.note, toolkit: result.toolkit };
   return { content: JSON.stringify({ ...forModel, citeAs: result.fetchedUrl ? "sourced, sourceKind composio_docs" : "inferred" }) };

@@ -174,8 +174,11 @@ function finish(
   run: { started: number; usage: RunUsage; toolCalls: number; ctx: ToolContext },
 ): RunResult {
   const durationMs = Date.now() - run.started;
+  // A deterministic tool result beats the model's restatement of it (BeReal live test: tool said unknown, model wrote not_available).
+  const composio = run.ctx.composioStatus ? { ...content.composio, managedApp: run.ctx.composioStatus } : content.composio;
   const assembled: Guide = {
     ...content,
+    composio,
     schemaVersion: 1,
     slug: options.slug,
     input: { query: input.query, kind: input.kind },

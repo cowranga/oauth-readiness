@@ -84,3 +84,4 @@ describe("runAgent loop (fake model, no network)", () => {
     expect((error as AgentError).message).toMatch(/stopped without producing a guide/);
   });
 });
+
