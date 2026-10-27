@@ -53,3 +53,7 @@
 - tiers: Google 4, Meta 3, Microsoft 3 (+gate), LinkedIn 3, Slack 2 (read+write chips show 3), Salesforce 2 (+gate), GitHub 2 (+gate).
 - note: the Salesforce researcher read JS-only official docs through the human's Chrome tab (read-only); later briefs forbid the browser extension.
 - next: claim-verifier runs (Google done; Meta, Microsoft, GitHub running), then Slack, Salesforce, LinkedIn.
+
+## Blocked
+- 2026-10-28T02:10Z: ANTHROPIC_API_KEY returns HTTP 400 "Your credit balance is too low to access the Anthropic API" (request req_011CgTRcv84JWWC92askrVLs). Tried: two v2 runs (0 tokens used) and a count_tokens call. Blocks: Task 6.3 v2 re-runs and Task 7.1 live tests. Needs the human to add credits. Everything else continues; the remaining live runs are scripted in scripts/live-tests.sh.
+- Live runs used: 9 successful + 1 accidental nonsense run + 2 failed at 0 tokens = 12 attempts, under the 30 cap.

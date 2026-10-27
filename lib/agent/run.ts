@@ -30,6 +30,8 @@ export type RunOptions = {
   researchDeadlineMs?: number;
   hardDeadlineMs?: number;
   maxToolCalls?: number;
+  /** Tests pass a fake client; production builds one from apiKey. */
+  client?: Pick<Anthropic, "messages">;
 };
 
 export type RunUsage = { inputTokens: number; outputTokens: number; cacheReadTokens: number; cacheWriteTokens: number; webSearches: number };
@@ -50,7 +52,7 @@ export async function runAgent(input: NormalizedInput, options: RunOptions): Pro
 async function researchAndSubmit(input: NormalizedInput, options: RunOptions, usage: RunUsage): Promise<RunResult> {
   const started = Date.now();
   const { emit, researchDeadlineMs = 80_000, hardDeadlineMs = 250_000, maxToolCalls = 20 } = options;
-  const client = new Anthropic({ apiKey: options.apiKey, maxRetries: 2 });
+  const client = options.client ?? new Anthropic({ apiKey: options.apiKey, maxRetries: 2 });
   const signal = AbortSignal.timeout(hardDeadlineMs);
   const ctx: ToolContext = { emit, composioApiKey: options.composioApiKey, fetchedUrls: new Set(), probes: [], probeRequestsLeft: MAX_PROBE_REQUESTS };
   const today = new Date(started).toISOString().slice(0, 10);
@@ -115,7 +117,7 @@ async function researchAndSubmit(input: NormalizedInput, options: RunOptions, us
 }
 
 async function callModel(
-  client: Anthropic,
+  client: Pick<Anthropic, "messages">,
   model: string,
   tools: Anthropic.Messages.ToolUnion[],
   messages: Anthropic.MessageParam[],
@@ -150,6 +152,16 @@ async function callModel(
     if (signal.aborted) throw new AgentError("The agent took too long. Try again, or try a more specific app name.", true);
     if (error instanceof Anthropic.RateLimitError) throw new AgentError("The model is rate limited right now. Try again in a minute.", true);
     if (error instanceof Anthropic.AuthenticationError) throw new AgentError("The server's model API key is not valid.", false);
+    if (error instanceof Anthropic.BadRequestError) {
+      // Billing problems arrive as a plain 400 with no dedicated error type, so the message is the only signal.
+      const billing = /credit balance|billing/i.test(error.message);
+      throw new AgentError(
+        billing
+          ? "Live generation is unavailable right now because the server's model API account is out of credits. The verified guides still work."
+          : "The model API rejected the request. This is a server problem, not your input.",
+        false,
+      );
+    }
     if (error instanceof Anthropic.APIError) throw new AgentError(`The model API returned an error (${error.status ?? "network"}). Try again.`, true);
     throw error;
   }
