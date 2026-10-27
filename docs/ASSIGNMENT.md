@@ -55,29 +55,29 @@ Do not edit the verbatim section. The traceability table is how we make sure not
 
 | ID | Requirement (from the text above) | How we satisfy it | Where (fill in) |
 |---|---|---|---|
-| R1 | Look up an app | Search box over seeds + the live generator on the home page | |
-| R2 | Get a guide they can use and share | Stable URL per guide, "Copy link", "Copy as Markdown", print-friendly page | |
-| R3 | Know what to do next; make progress on it | "Your next step" = first unchecked step; checkable steps with progress saved in the share URL; steps ordered by stage with owner tags | |
-| R4 | Know where to start | First step is always the concrete starting action, plus whether a Composio managed app lets them start today | |
-| R5 | How much time and effort to expect | Hands-on hours and waiting days shown separately, per stage | |
-| R6 | How to proceed when they hit a blocker | Blockers section: symptom, cause, fix, who to contact | |
-| R7 | Goal: library of 100 OAuth apps (not required for the take-home) | Deliberately not built. 5 verified seeds + live generator for any app. README names the 100-app path as roadmap and explains the cut. | |
-| R8 | Submit the name or website of an app | Input accepts both; URL normalized to domain + name | |
-| R9 | Agent investigates and generates a shareable guide in real time, including outside the library | `/api/generate` streams agent progress; guide persisted at a stable URL; works for any input | |
-| R10 | Demonstrate a few varied apps | 7 seeds, each a different setup challenge (see PRODUCT.md table) | |
-| R11 | Understand how easy or difficult | Tier verdict (1 to 5) with a one-line reason naming the deciding factor | |
-| R12 | Time and effort, including any wait for approval | Per-stage hands-on and wait ranges; provider-stated vs developer-reported waits side by side; tier for the developer's selected use case | |
-| R13 | Requirements and nuances | Requirements checklist + scope tiers table + gotchas inside steps and blockers | |
-| R14 | What an agent can do for them and where they take over | Every step tagged agent / you / provider; agent-drafted submission materials (scope justifications, demo video script, etc.) | |
-| R15 | Use agents to investigate and attempt as much of the setup as practical | Research agent with web search + page fetch + unauthenticated OAuth endpoint probes; drafts the paperwork; human attempts for a sample in the morning | |
-| R16 | Let what agents discover shape the guidance | Live findings stream into the guide; verification lessons changed the prompts (EVAL.md, LESSONS.md) | |
-| R17 | Be clear about tested / sourced / uncertain | Evidence badge on every claim (tested, probed, sourced, inferred) + attempt-depth indicator per guide + "What we don't know" section | |
-| R18 | Useful without you explaining it | Self-explaining UI: legend for tiers and evidence, plain language, no jargon without a one-line definition | |
-| R19 | Understand provider OAuth app vs integration vs users' connections; managed directory | `/about` explainer + per-guide "Can you start today with a Composio managed app?" field | |
-| R20 | Focused scope, explain why | Scope: the go-live path from Composio's managed app to your own approved app. README "Scope and why", /about, DECISIONS.md | |
-| R21 | Real apps with different challenges; ready for an unfamiliar app live | 7 seeds; live flow hardened against odd inputs; LIVE_TESTS.md | |
-| R22 | Check a sample against real sources or setup attempts; show learned, corrected, not verifiable | `verification/<slug>.md` per seed, EVAL.md, LESSONS.md, human attempt logs | |
-| R23 | Link + repo + short README (setup, key decisions, limitations) | README; deploy is a morning task in MORNING_HANDOFF | |
-| R24 | Judged on: problem understanding, useful guidance, evidence judgment, thoughtful agent use | README opens with these four, each with a pointer to proof | |
-| R25 | 6 to 8 hour slice; no paid accounts, approvals, production polish needed | Ponytail rules; cuts listed in Limitations | |
-| R26 | Keep credentials out of the submission | `.gitignore`, `.env.example`, `check:secrets`, no client IDs in attempt logs | |
+| R1 | Look up an app | Search box over seeds + the live generator on the home page | `app/page.tsx`, `components/Library.tsx` (one box: filters the library, submits to the agent) |
+| R2 | Get a guide they can use and share | Stable URL per guide, "Copy link", "Copy as Markdown", print-friendly page | `app/guides/[slug]/page.tsx`; `components/CopyButtons.tsx` (copy link, Markdown, print); `app/api/guides/[slug]/route.ts` (`?format=md`); `lib/guide/markdown.ts`; print styles in `app/globals.css` |
+| R3 | Know what to do next; make progress on it | "Your next step" = first unchecked step; checkable steps with progress saved in the share URL; steps ordered by stage with owner tags | "Your next step" and progress bar in `components/GuideInteractive.tsx`; `lib/guide/progress.ts` (`?done=`, tested) |
+| R4 | Know where to start | First step is always the concrete starting action, plus whether a Composio managed app lets them start today | First step and `verdict.nextStep` in every seed (`data/guides/*.json`); "Can you start today?" section |
+| R5 | How much time and effort to expect | Hands-on hours and waiting days shown separately, per stage | "Time and effort" table and summary card (`components/GuideInteractive.tsx`, `effortTotals`) |
+| R6 | How to proceed when they hit a blocker | Blockers section: symptom, cause, fix, who to contact | "If you get stuck" (`components/GuideSections.tsx`); blockers in each seed |
+| R7 | Goal: library of 100 OAuth apps (not required for the take-home) | Deliberately not built. 5 verified seeds + live generator for any app. README names the 100-app path as roadmap and explains the cut. | Not built on purpose. README "Scope and why" and "How this gets to 100"; `/about` |
+| R8 | Submit the name or website of an app | Input accepts both; URL normalized to domain + name | `lib/input/normalize.ts` (+ `tests/normalize.test.ts`) |
+| R9 | Agent investigates and generates a shareable guide in real time, including outside the library | `/api/generate` streams agent progress; guide persisted at a stable URL; works for any input | `app/api/generate/route.ts` (SSE), `lib/agent/run.ts`, `app/generate/page.tsx`, `lib/store/*`; `docs/LIVE_TESTS.md` |
+| R10 | Demonstrate a few varied apps | 7 seeds, each a different setup challenge (see PRODUCT.md table) | 7 seeds in `data/guides/` (table in docs/PRODUCT.md and README) |
+| R11 | Understand how easy or difficult | Tier verdict (1 to 5) with a one-line reason naming the deciding factor | Tier badge and verdict in `app/guides/[slug]/page.tsx`; `lib/guide/tiers.ts` |
+| R12 | Time and effort, including any wait for approval | Per-stage hands-on and wait ranges; provider-stated vs developer-reported waits side by side; tier for the developer's selected use case | `stages[].handsOnHours/waitDays/providerStatedWaitDays`; "Provider says / Developers report" in the time table; "Your tier" for selected chips |
+| R13 | Requirements and nuances | Requirements checklist + scope tiers table + gotchas inside steps and blockers | Requirements checklist and scope tiers table (`components/GuideInteractive.tsx`) |
+| R14 | What an agent can do for them and where they take over | Every step tagged agent / you / provider; agent-drafted submission materials (scope justifications, demo video script, etc.) | Owner tags (`components/OwnerTag.tsx`); "What the agent did, and what you must do" plus drafts (`components/GuideSections.tsx`) |
+| R15 | Use agents to investigate and attempt as much of the setup as practical | Research agent with web search + page fetch + unauthenticated OAuth endpoint probes; drafts the paperwork; human attempts for a sample in the morning | `lib/agent/tools.ts`, `lib/probe/oauth.ts`, `lib/composio/managed.ts`; research and verifier subagents (`.claude/agents/`); attempt templates in `verification/attempts/` |
+| R16 | Let what agents discover shape the guidance | Live findings stream into the guide; verification lessons changed the prompts (EVAL.md, LESSONS.md) | `docs/LESSONS.md`, `docs/EVAL.md`, `PROMPT_VERSION` in `lib/agent/prompts.ts`; code fixes `lib/agent/audit.ts` |
+| R17 | Be clear about tested / sourced / uncertain | Evidence badge on every claim (tested, probed, sourced, inferred) + attempt-depth indicator per guide + "What we don't know" section | `components/EvidenceBadge.tsx`, `components/AttemptDepth.tsx` (`lib/guide/attempt.ts`), "What we don't know", `lib/agent/audit.ts` |
+| R18 | Useful without you explaining it | Self-explaining UI: legend for tiers and evidence, plain language, no jargon without a one-line definition | Tier legend on `/`, `/about` (evidence legend, attempt levels, mental model), tooltips on badges |
+| R19 | Understand provider OAuth app vs integration vs users' connections; managed directory | `/about` explainer + per-guide "Can you start today with a Composio managed app?" field | `/about` sections "Three things that are easy to mix up" and "Managed app or your own?"; `composio` field on every guide |
+| R20 | Focused scope, explain why | Scope: the go-live path from Composio's managed app to your own approved app. README "Scope and why", /about, DECISIONS.md | README "Scope and why", `/about` intro, DECISIONS.md |
+| R21 | Real apps with different challenges; ready for an unfamiliar app live | 7 seeds; live flow hardened against odd inputs; LIVE_TESTS.md | 7 seeds; `docs/LIVE_TESTS.md` (2 of 6 live, 4 blocked on API credits); `tests/run.test.ts` (offline failure paths) |
+| R22 | Check a sample against real sources or setup attempts; show learned, corrected, not verifiable | `verification/<slug>.md` per seed, EVAL.md, LESSONS.md, human attempt logs | `verification/<slug>.md` (7 logs), `verification/notes/`, `docs/EVAL.md`, `docs/LESSONS.md`; changelog section on each seed guide |
+| R23 | Link + repo + short README (setup, key decisions, limitations) | README; deploy is a morning task in MORNING_HANDOFF | README.md; deploy steps in docs/MORNING_HANDOFF.md |
+| R24 | Judged on: problem understanding, useful guidance, evidence judgment, thoughtful agent use | README opens with these four, each with a pointer to proof | README sections: The problem, Evidence, How it works, Key decisions |
+| R25 | 6 to 8 hour slice; no paid accounts, approvals, production polish needed | Ponytail rules; cuts listed in Limitations | Limitations in README (harvested `ponytail:` markers) |
+| R26 | Keep credentials out of the submission | `.gitignore`, `.env.example`, `check:secrets`, no client IDs in attempt logs | `.gitignore`, `.env.example`, `scripts/check-secrets.sh` (run before every commit) |
