@@ -64,7 +64,7 @@ input -> normalize -> [seed match?] -> research loop -> synthesis -> postprocess
    - `probe_oauth(input)`: unauthenticated probes (below).
    - `check_composio_managed(appName)`: managed app status.
    Budgets: max 20 tool calls, soft deadline 100s. On budget or deadline, stop researching and synthesize with what we have; the prompt tells the model to lower confidence and list gaps.
-4. **Synthesis.** Same conversation, force `tool_choice` to `submit_guide` whose `input_schema` is generated from the zod schema (omit fields the server fills: slug, origin, generatedAt, generator).
+4. **Synthesis.** (As built: `claude-sonnet-5-5` rejects forced `tool_choice`, so `submit_guide` is offered with `tool_choice: auto`, the prompt says to call it, and a text-only turn gets one nudge. See DECISIONS.md.) Same conversation, force `tool_choice` to `submit_guide` whose `input_schema` is generated from the zod schema (omit fields the server fills: slug, origin, generatedAt, generator).
 5. **Validate.** zod parse. On failure, send the zod issues back once and ask for a corrected `submit_guide`. Second failure: emit `error` with a clear message.
 6. **Postprocess.** Deterministic rules from GUIDE_SCHEMA.md.
 7. **Persist.** Live slug = `<appslug>-<6 random base36>`; immutable. Store, then emit `done {slug}`.
