@@ -43,3 +43,6 @@ next-env.d.ts
 
 # local guide store
 /.data/
+
+# personal notes, not part of the submission
+/docs/MORNING_HANDOFF.md
